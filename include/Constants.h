@@ -1,6 +1,6 @@
 #pragma once
 
-//all of those are in pixel
+// All of those are in pixel
 constexpr int SCREEN_SIZE_W = 256;
 constexpr int SCREEN_SIZE_H = 192;
 
@@ -16,11 +16,17 @@ constexpr int SUB_TILE_COUNT_W = BACKGROUND_SIZE_W / SUB_TILE_SIZE;
 constexpr int SUB_TILE_COUNT_H = BACKGROUND_SIZE_H / SUB_TILE_SIZE;
 
 constexpr int BACKGROUND_ID = 2;
-constexpr bool EXT_ROTATION = false;  // True → Use extended rotation mode (ER)
-constexpr bool BITMAP_MODE = false;   // True → Use bitmap mode (B8/B16), False → Tile mode (T)
-constexpr bool BITDEPTH_16 = false;   // True → 16-bit bitmap mode, False → 8-bit bitmap mode
-constexpr bool TEXT_MODE = false;      // True → Use Text mode (BgType_Text4bpp or BgType_Text8bpp)
-constexpr bool ROTATION_MODE = true; // True → Rotation background (not extended)
+
+// True → Use extended rotation mode (ER)
+constexpr bool EXT_ROTATION = false;
+// True → Use bitmap mode (B8/B16), False → Tile mode (T)
+constexpr bool BITMAP_MODE = false;
+// True → 16-bit bitmap mode, False → 8-bit bitmap mode
+constexpr bool BITDEPTH_16 = false;
+// True → Use Text mode (BgType_Text4bpp or BgType_Text8bpp)
+constexpr bool TEXT_MODE = false;
+// True → Rotation background (not extended)
+constexpr bool ROTATION_MODE = true;
 
 
 constexpr BgSize getBgSize(int width, int height, bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16)
