@@ -11,6 +11,8 @@ int main(void) {
 	vramSetBankA(VRAM_A_MAIN_BG);
 
 	consoleDemoInit();
+
+	printf("%d\n", BG::TYPE);
 	
 	// Initialise le background en mode tilemap 256x256 (32x32 tuiles)
 	// Les paramètres : (numéro, type, taille, map offset, tile offset)
@@ -23,15 +25,7 @@ int main(void) {
 	// Charger la palette
 	dmaCopy(TileSetPal, BG_PALETTE, TileSetPalLen);
 
-	TileMap tileMap({TILE::COUNT_W,TILE::COUNT_H});
-	tileMap[0][1] = TILE::get(2,1);
-	tileMap[0][2] = TILE::get(0,1);
-	tileMap[1][0] = TILE::get(1,2);
-	tileMap[2][0] = TILE::get(0,2);
-	tileMap[1][1] = TILE::get(4,0);
-	tileMap[2][1] = TILE::get(2,2);
-	tileMap[1][2] = TILE::get(1,1);
-	tileMap[2][2] = TILE::get(0,3);
+	TileMap tileMap;
 	tileMap.flush();
 
 	

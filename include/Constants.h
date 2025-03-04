@@ -7,8 +7,8 @@ constexpr int SCREEN_SIZE_H = 192;
 
 namespace BG
 {
-	constexpr int SIZE_W = 1024;
-	constexpr int SIZE_H = 1024;
+	constexpr int SIZE_W = 512;
+	constexpr int SIZE_H = 512;
 	constexpr int ID = 2;
 
 	// True → Use extended rotation mode (ER)
@@ -90,7 +90,7 @@ namespace TILESET
 	constexpr int COUNT_W = 5;
 	constexpr int COUNT_H = 4;
 }
-namespace TILE
+namespace TILE // Tiles like visible on the tileset sprite
 {
 	constexpr int SIZE = 16;
 
@@ -102,9 +102,19 @@ namespace TILE
 		return y*TILESET::COUNT_W + x;
 	}
 }
-namespace SUB_TILE
+namespace SUB_TILE // Tiles like considered by the NDS
 {
 	constexpr int SIZE = 8;
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+}
+namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
+{
+	constexpr int SIZE = 2 * TILE::SIZE;
+
+	constexpr int COUNT_W = BG::SIZE_W / SIZE;
+	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+
+	enum class Type { Path, Wall, Void };
+	enum CORNER { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };
 }
