@@ -1,6 +1,5 @@
 #include "TileMap.h"
 
-//std::vector<std::vector<u8>> TileMap::m_bgTileMap(SUB_TILE::COUNT_W, std::vector<u8>(SUB_TILE::COUNT_H, 0));
 u8 TileMap::m_bgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
 TileMap::TileMap(Vector2i size): 
@@ -10,7 +9,7 @@ TileMap::TileMap(Vector2i size):
 void TileMap::flush()
 {
 	convertMap();
-	dmaCopy(m_bgTileMap, bgGetMapPtr(BG::ID), sizeof(m_bgTileMap));
+	swiFastCopy(m_bgTileMap, bgGetMapPtr(BG::ID), sizeof(m_bgTileMap)>>2);
 }
 
 void TileMap::convertMap()
@@ -20,13 +19,15 @@ void TileMap::convertMap()
 	{
 		for (uint j = 0 ; j < m_tileMap[i].size() ; ++j)
 		{
-			uint ir = i*ratio;
-			uint jr = j*ratio;
-			uint tile = m_tileMap[i][j] * ratio;
+			u8 ir = i*ratio;
+			u8 jr = j*ratio;
+			u8 xAxe = m_tileMap[i][j]%TILESET::COUNT_W;
+			u8 yAxe = m_tileMap[i][j]-xAxe;
+			u8 tile = xAxe * ratio + yAxe * ratio*ratio ;
 			m_bgTileMap[ir  ][jr  ] = tile;
-			m_bgTileMap[ir+1][jr  ] = tile + TILESET::COUNT_W;
+			m_bgTileMap[ir+1][jr  ] = tile + TILESET::COUNT_W * ratio;
 			m_bgTileMap[ir  ][jr+1] = tile + 1;
-			m_bgTileMap[ir+1][jr+1] = tile + TILESET::COUNT_W + 1;
+			m_bgTileMap[ir+1][jr+1] = tile + TILESET::COUNT_W * ratio + 1;
 		}
 	}
 }

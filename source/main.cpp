@@ -24,14 +24,14 @@ int main(void) {
 	dmaCopy(TileSetPal, BG_PALETTE, TileSetPalLen);
 
 	TileMap tileMap({TILE::COUNT_W,TILE::COUNT_H});
-	tileMap[0][1] = 2;
-	tileMap[0][2] = 2;
-	tileMap[1][0] = 1;
-	tileMap[2][0] = 1;
-	tileMap[1][1] = 4;
-	tileMap[2][1] = 4;
-	tileMap[1][2] = 4;
-	tileMap[2][2] = 4;
+	tileMap[0][1] = TILE::get(2,1);
+	tileMap[0][2] = TILE::get(0,1);
+	tileMap[1][0] = TILE::get(1,2);
+	tileMap[2][0] = TILE::get(0,2);
+	tileMap[1][1] = TILE::get(4,0);
+	tileMap[2][1] = TILE::get(2,2);
+	tileMap[1][2] = TILE::get(1,1);
+	tileMap[2][2] = TILE::get(0,3);
 	tileMap.flush();
 
 	
@@ -75,10 +75,6 @@ int main(void) {
 			scale += 1 << 3;
 		else if (keys_held & KEY_START)
 			scale -= 1 << 3;
-
-
-		if (keys_held & KEY_X)
-			tileMap.flush();
 
 		bgSetCenter(bg0, cx, cy);
 		bgSetRotateScale(bg0, angle, scale, scale);

@@ -85,21 +85,26 @@ namespace BG
 	constexpr BgType TYPE = getType(EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16, TEXT_MODE);
 }
 
+namespace TILESET
+{
+	constexpr int COUNT_W = 5;
+	constexpr int COUNT_H = 4;
+}
 namespace TILE
 {
 	constexpr int SIZE = 16;
 
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+
+	constexpr int get(int x, int y)
+	{
+		return y*TILESET::COUNT_W + x;
+	}
 }
 namespace SUB_TILE
 {
 	constexpr int SIZE = 8;
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
-}
-namespace TILESET
-{
-	constexpr int COUNT_W = 16;
-	constexpr int COUNT_H = 2;
 }
