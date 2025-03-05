@@ -132,3 +132,5 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 		};
 	}
 }
+
+#define PALETTE_SIZE 16

@@ -16,7 +16,7 @@ GAME_AUTHOR	:= Zeyzer
 
 SOURCEDIRS	:= source
 INCLUDEDIRS	:= include
-GFXDIRS		:= gfx
+GFXDIRS		:= sprites
 BINDIRS		:=
 AUDIODIRS	:=
 
