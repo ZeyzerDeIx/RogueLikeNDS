@@ -4,34 +4,23 @@
 #include "TileSet.h"
 
 
-int main(void) {
-	// Initialisation du DS en mode 2D (mode 2 pour les backgrounds tilemaps affine)
+int main(void)
+{
 	videoSetMode(MODE_2_2D);
-	// Affecte VRAM_A au background principal
-	vramSetBankA(VRAM_A_MAIN_BG);
+
+	// Memory mapping
+	vramSetBankB(VRAM_B_MAIN_BG_0x06020000);
+	vramSetBankC(VRAM_C_SUB_BG_0x06200000);
+	vramSetBankD(VRAM_D_MAIN_BG_0x06060000);
+	vramSetBankE(VRAM_E_MAIN_SPRITE);
+	vramSetBankF(VRAM_F_MAIN_SPRITE_0x06410000);
+	vramSetBankG(VRAM_G_MAIN_SPRITE_0x06414000);
+	
+	int bg0 = bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
 
 	consoleDemoInit();
-	
-	// Initialise le background en mode tilemap 256x256 (32x32 tuiles)
-	// Les paramètres : (numéro, type, taille, map offset, tile offset)
-	int bg0 = bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
-	
-	// Chargement des données en VRAM :
-	// Charger le tileset en VRAM
-	dmaCopy(TileSetTiles, bgGetGfxPtr(bg0), TileSetTilesLen);
 
-	// Charger la palette
-	dmaCopy(TileSetPal, BG_PALETTE, TileSetPalLen);
-
-	TileMap tileMap({TILE::COUNT_W,TILE::COUNT_H});
-	tileMap[0][1] = 2;
-	tileMap[0][2] = 2;
-	tileMap[1][0] = 1;
-	tileMap[2][0] = 1;
-	tileMap[1][1] = 4;
-	tileMap[2][1] = 4;
-	tileMap[1][2] = 4;
-	tileMap[2][2] = 4;
+	TileMap tileMap;
 	tileMap.flush();
 
 	
@@ -75,10 +64,6 @@ int main(void) {
 			scale += 1 << 3;
 		else if (keys_held & KEY_START)
 			scale -= 1 << 3;
-
-
-		if (keys_held & KEY_X)
-			tileMap.flush();
 
 		bgSetCenter(bg0, cx, cy);
 		bgSetRotateScale(bg0, angle, scale, scale);
