@@ -26,16 +26,16 @@ namespace BG
 	{
 		if (ext_rotation)
 		{ // Extended Rotation backgrounds
-			if (width == 128 && height == 128) return BgSize_ER_128x128;
-			if (width == 256 && height == 256) return BgSize_ER_256x256;
-			if (width == 512 && height == 512) return BgSize_ER_512x512;
+			if (width == 128 && height == 128)   return BgSize_ER_128x128;
+			if (width == 256 && height == 256)   return BgSize_ER_256x256;
+			if (width == 512 && height == 512)   return BgSize_ER_512x512;
 			if (width == 1024 && height == 1024) return BgSize_ER_1024x1024;
 		}
 		else if (rotation_mode)
 		{ // Classic Rotation backgrounds
-			if (width == 128 && height == 128) return BgSize_R_128x128;
-			if (width == 256 && height == 256) return BgSize_R_256x256;
-			if (width == 512 && height == 512) return BgSize_R_512x512;
+			if (width == 128 && height == 128)   return BgSize_R_128x128;
+			if (width == 256 && height == 256)   return BgSize_R_256x256;
+			if (width == 512 && height == 512)   return BgSize_R_512x512;
 			if (width == 1024 && height == 1024) return BgSize_R_1024x1024;
 		}
 		else if (bitmap_mode)
@@ -49,10 +49,10 @@ namespace BG
 			}
 			else
 			{
-				if (width == 128 && height == 128) return BgSize_B8_128x128;
-				if (width == 256 && height == 256) return BgSize_B8_256x256;
-				if (width == 512 && height == 256) return BgSize_B8_512x256;
-				if (width == 512 && height == 512) return BgSize_B8_512x512;
+				if (width == 128 && height == 128)  return BgSize_B8_128x128;
+				if (width == 256 && height == 256)  return BgSize_B8_256x256;
+				if (width == 512 && height == 256)  return BgSize_B8_512x256;
+				if (width == 512 && height == 512)  return BgSize_B8_512x512;
 				if (width == 1024 && height == 512) return BgSize_B8_1024x512;
 				if (width == 512 && height == 1024) return BgSize_B8_512x1024;
 			}
@@ -116,5 +116,19 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 
 	enum class Type { Path, Wall, Void };
-	enum CORNER { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };
+	namespace CORNER {enum { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };}
+	namespace DIRECTION
+	{
+		enum
+		{
+			TOP       = 0b0000'0001,
+			BOT       = 0b0000'0010,
+			LEFT      = 0b0000'0100,
+			RIGHT     = 0b0000'1000,
+			TOP_LEFT  = 0b0001'0000,
+			TOP_RIGHT = 0b0010'0000,
+			BOT_LEFT  = 0b0100'0000,
+			BOT_RIGHT = 0b1000'0000
+		};
+	}
 }

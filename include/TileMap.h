@@ -21,4 +21,6 @@ private:
 
 	//Convert m_tileMap into a background adapted tilemap
 	void convertMap();
+
+	void calculateConnections();
 };
