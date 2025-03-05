@@ -6,7 +6,7 @@ class SpriteManager;
 class Sprite
 {
 	public:
-		Sprite(SpriteManager* manager, int id, SpriteSize size, SpriteColorFormat format, u16* memoryLocation, u16* data, int w = 32, int h = 32);
+		Sprite(SpriteManager* manager, int id, SpriteSize size, SpriteColorFormat format, u16* memoryLocation, u16* data, Vector2i pixelSize = {32, 32});
 		~Sprite();
 		void update();
 		void display(int x = 0, int y = 0, bool zoomed = false);
@@ -14,11 +14,11 @@ class Sprite
 		void skipFrame(int num = 1);
 		void setFrame(int frame);
 		void setState(int state);
-		int getPixelSize(bool xOrY);
+		const Vector2i&  getPixelSize();
 	private:
 		SpriteManager* m_manager;
 		int m_id;
-		int m_pixelSize[2];
+		Vector2i m_pixelSize;
 		SpriteSize m_size;
 		SpriteColorFormat m_format;
 		u16* m_memoryLocation;

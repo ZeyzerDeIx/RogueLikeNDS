@@ -1,8 +1,6 @@
 #include "SpriteManager.h"
 
 using namespace std;
-#define W 0
-#define H 1
 
 SpriteManager::SpriteManager()
 {
@@ -18,7 +16,15 @@ SpriteManager::~SpriteManager()
 }
 
 
-Sprite* SpriteManager::createSprite(const void* tiles, uint32 tilesLen, const void* pal, uint32 palLen, SpriteSize size, SpriteColorFormat format, int h, int w)
+Sprite* SpriteManager::createSprite(
+	const void* tiles,
+	uint32 tilesLen,
+	const void* pal,
+	uint32 palLen,
+	SpriteSize size,
+	SpriteColorFormat format,
+	int h, int w
+)
 {
 	//memory allocation
 	u16* memoryLocation = oamAllocateGfx(&oamMain, size, format);
@@ -26,7 +32,7 @@ Sprite* SpriteManager::createSprite(const void* tiles, uint32 tilesLen, const vo
 	dmaCopy(pal, SPRITE_PALETTE + m_sprites.size()*PALETTE_SIZE, palLen);
 
 	//sprite creation
-	Sprite* newSprite = new Sprite(this,m_sprites.size(),size,format,memoryLocation, (u16*)tiles, h, w);
+	Sprite* newSprite = new Sprite(this,m_sprites.size(),size,format,memoryLocation, (u16*)tiles, {h, w});
 
 	//add the sprite to the sprite list
 	m_sprites.push_back(newSprite);
