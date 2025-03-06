@@ -1,7 +1,7 @@
 #include "TileMap.h"
 #include "TileSet.h"
 
-u8 TileMap::m_bgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
+u16 TileMap::m_bgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
 TileMap::TileMap(): 
 	m_tileMap(META_TILE::COUNT_W, std::vector<MetaTile>(META_TILE::COUNT_H))

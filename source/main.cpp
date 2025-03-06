@@ -5,10 +5,19 @@
 #include "SpriteManager.h"
 #include "MainCharacterSprite.h"
 
+// Utility function to print the background color mode based on BGxCNT register value.
+void printBgColorMode(u16 bgcnt)
+{
+    // If the BG_COLOR_256 bit is set, the background is in 8bpp (256 colors) mode.
+    if(bgcnt & BG_COLOR_256)
+        printf("Background mode: 8bpp (256 colors)\n");
+    else
+        printf("Background mode: 4bpp (16 colors)\n");
+}
 
 int main(void)
 {
-	videoSetMode(MODE_2_2D);
+	videoSetMode(MODE_5_2D);
 
 	// Memory mapping
 	vramSetBankB(VRAM_B_MAIN_BG_0x06020000);
@@ -37,6 +46,8 @@ int main(void)
 	#if __cplusplus >= 202002L
    	printf("C++20 enabled\n");
 	#endif
+
+   printBgColorMode(REG_BG2CNT);
 
 
 	while (1)

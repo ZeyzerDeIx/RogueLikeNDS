@@ -66,5 +66,6 @@ constexpr Vector2<T> operator*(T scalar, const Vector2<T>& v) noexcept
 { return {scalar * v.x, scalar * v.y}; }
 
 
+using Vector2b = Vector2<bool>;
 using Vector2f = Vector2<float>;
 using Vector2i = Vector2<int>;

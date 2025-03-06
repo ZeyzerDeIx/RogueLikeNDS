@@ -101,6 +101,9 @@ namespace TILE // Tiles like visible on the tileset sprite
 	{
 		return y*TILESET::COUNT_W + x;
 	}
+
+	constexpr int FLIP_H = 10;
+	constexpr int FLIP_V = 11;
 }
 namespace SUB_TILE // Tiles like considered by the NDS
 {

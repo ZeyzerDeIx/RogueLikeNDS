@@ -9,7 +9,7 @@ public:
 	
 	void setConnections(u8 connections);
 
-	void flush(std::span<u8[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
+	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos, Vector2b flips = {0,0});
 
 	u8 getId();
 private:

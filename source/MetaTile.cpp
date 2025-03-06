@@ -13,7 +13,7 @@ MetaTile::MetaTile(META_TILE::Type type):
 	m_type(type)
 {}
 
-void MetaTile::flush(std::span<u8[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
+void MetaTile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
 	pos *= 2;
 	m_tiles[CORNER::TOP_LEFT ].flush(bgTileMap, pos);
