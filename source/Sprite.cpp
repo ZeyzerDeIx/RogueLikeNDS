@@ -94,7 +94,7 @@ void Sprite::updateOffset()
 	*  Similarly, the int and u16* conversions are required for correct behavior. */
 }
 
-const Vector2i& Sprite::getPixelSize()
+const Vector2i& Sprite::getPixelSize() const
 {
 	return m_pixelSize;
 }
