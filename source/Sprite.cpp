@@ -88,7 +88,7 @@ void Sprite::updateOffset()
 		(m_currentFrame + m_currentState * m_frameCount) * (rawPixelSize >> 1);
 
 	// Load the desired sprite frame
-	dmaCopy(reinterpret_cast<u16*>(offset), m_memoryLocation, rawPixelSize >> 1);
+	swiFastCopy(reinterpret_cast<u16*>(offset), m_memoryLocation, rawPixelSize >> 3);
 
 	/* Note: The division by 2 (>>1) is essential, although its necessity is unclear.
 	*  Similarly, the int and u16* conversions are required for correct behavior. */
