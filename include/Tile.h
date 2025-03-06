@@ -9,13 +9,8 @@ public:
 	
 	void setConnections(u8 connections);
 
-	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos, Vector2b flips = {0,0});
-
-	u8 getId();
+	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
 private:
-	u8 m_corner;
-	u8 m_id;
 	u8 m_connections;
-
-	void processId();
+	Vector2b m_flips;
 };

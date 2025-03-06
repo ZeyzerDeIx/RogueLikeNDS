@@ -1,53 +1,55 @@
 #include "Tile.h"
 
 Tile::Tile(u8 corner):
-	m_corner(corner)
+	m_flips{(bool)(corner&1), (bool)(corner/2)}
 {
 	m_connections = 0;
-	processId();
 }
 
 void Tile::setConnections(u8 connections)
 {
 	m_connections = connections;
-	processId();
 }
 
-void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos, Vector2b flips)
+void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
-	// Tile to subtile ratio
-	constexpr short ratio = TILE::SIZE / SUB_TILE::SIZE;
-	Vector2i r = pos * ratio;
-	Vector2i axes = {m_id % TILESET::COUNT_W, 0};
-	axes.y = m_id - axes.x;
-	short baseTile = axes.x * ratio + axes.y * ratio * ratio;
+	// Tile/subtile ratio
+	constexpr int r = (TILE::SIZE / SUB_TILE::SIZE);
 
-	u16 topL = baseTile;
-	u16 topR = baseTile + TILESET::COUNT_W * ratio;
-	u16 botL = baseTile + 1;
-	u16 botR = baseTile + TILESET::COUNT_W * ratio + 1;
-	
-	u16 flipBits = (flips.x << TILE::FLIP_H) | (flips.y << TILE::FLIP_V);
+	// Compute base tile indices
+	short xAxe = m_connections % TILESET::COUNT_W;
+	short yAxe = m_connections - xAxe;
+	short tileBase = xAxe * r + yAxe * r * r;
 
-	// Returns the appropriate subtile index for (col, row) after applying horizontal and vertical flips.
-	auto getSubTileIndex = [&](bool col, bool row) -> u16
+	short topL = tileBase;
+	short topR = tileBase + TILESET::COUNT_W * r;
+	short botL = tileBase + 1;
+	short botR = tileBase + TILESET::COUNT_W * r + 1;
+
+	const Vector2b& f = m_flips;
+
+	// Compute flip flags once
+	u16 flipFlags = (f.x << TILE::FLIP_H) | (f.y << TILE::FLIP_V);
+
+	// Array representing the correct tile order
+	short tileMap[2][2] =
 	{
-		bool adjCol = flips.x ? 1 - col : col;
-		bool adjRow = flips.y ? 1 - row : row;
-		return (!adjRow) ? (adjCol ? topR : topL)
-						 : (adjCol ? botR : botL);
+		{
+			f.x ? (f.y ? botR : botL) : (f.y ? topR : topL),
+			f.x ? (f.y ? topR : topL) : (f.y ? botR : botL)
+		},
+		{
+			f.x ? (f.y ? botL : botR) : (f.y ? topL : topR),
+			f.x ? (f.y ? topL : topR) : (f.y ? botL : botR)
+		}
 	};
+	
+	short xr = pos.x * r;
+	short yr = pos.y * r;
 
-	bgTileMap[r.x    ][r.y    ] = getSubTileIndex(0, 0) | flipBits;
-	bgTileMap[r.x + 1][r.y    ] = getSubTileIndex(1, 0) | flipBits;
-	bgTileMap[r.x    ][r.y + 1] = getSubTileIndex(0, 1) | flipBits;
-	bgTileMap[r.x + 1][r.y + 1] = getSubTileIndex(1, 1) | flipBits;
-}
-
-u8 Tile::getId() { return m_id; }
-
-
-void Tile::processId()
-{
-	m_id = TILE::get(m_connections, m_corner);
+	// Assign values to bgTileMap
+	bgTileMap[xr][yr]     = tileMap[0][0] | flipFlags;
+	bgTileMap[xr][yr+1]   = tileMap[0][1] | flipFlags;
+	bgTileMap[xr+1][yr]   = tileMap[1][0] | flipFlags;
+	bgTileMap[xr+1][yr+1] = tileMap[1][1] | flipFlags;
 }

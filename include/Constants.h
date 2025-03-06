@@ -97,11 +97,6 @@ namespace TILE // Tiles like visible on the tileset sprite
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 
-	constexpr int get(int x, int y)
-	{
-		return y*TILESET::COUNT_W + x;
-	}
-
 	constexpr int FLIP_H = 10;
 	constexpr int FLIP_V = 11;
 }
