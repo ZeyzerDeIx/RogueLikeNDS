@@ -1,19 +1,8 @@
-#include <stdio.h>
 #include "PCH.h"
 #include "TileMap.h"
 #include "TileSet.h"
 #include "SpriteManager.h"
 #include "MainCharacterSprite.h"
-
-// Utility function to print the background color mode based on BGxCNT register value.
-void printBgColorMode(u16 bgcnt)
-{
-    // If the BG_COLOR_256 bit is set, the background is in 8bpp (256 colors) mode.
-    if(bgcnt & BG_COLOR_256)
-        printf("Background mode: 8bpp (256 colors)\n");
-    else
-        printf("Background mode: 4bpp (16 colors)\n");
-}
 
 int main(void)
 {
@@ -27,9 +16,10 @@ int main(void)
 	//vramSetBankF(VRAM_F_MAIN_SPRITE_0x06410000);
 	//vramSetBankG(VRAM_G_MAIN_SPRITE_0x06414000);
 	
-	int bg0 = bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
+	bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
 
-	consoleDemoInit();
+	//init debug console
+	Debug::get();
 
 	TileMap tileMap;
 	tileMap.flush();
@@ -44,10 +34,8 @@ int main(void)
 	int angle = 10;
 	int scale = 1 << 8;
 	#if __cplusplus >= 202002L
-   	printf("C++20 enabled\n");
+   	std::cout << "C++20 enabled\n";;
 	#endif
-
-   printBgColorMode(REG_BG2CNT);
 
 
 	while (1)
@@ -85,12 +73,12 @@ int main(void)
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		mainCharacterSprite->display(0,0);
-		
-      oamUpdate(&oamMain);
 
-		bgSetCenter(bg0, cx, cy);
-		bgSetRotateScale(bg0, angle, scale, scale);
-		bgSetScroll(bg0, x, y);
+		oamUpdate(&oamMain);
+
+		bgSetCenter(BG::ID, cx, cy);
+		bgSetRotateScale(BG::ID, angle, scale, scale);
+		bgSetScroll(BG::ID, x, y);
 	}
 	
 	return 0;
