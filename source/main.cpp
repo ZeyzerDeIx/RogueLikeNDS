@@ -3,6 +3,8 @@
 #include "TileSet.h"
 #include "SpriteManager.h"
 #include "MainCharacterSprite.h"
+#include "NDSTime.h"
+
 
 int main(void)
 {
@@ -37,10 +39,10 @@ int main(void)
    	std::cout << "C++20 enabled\n";;
 	#endif
 
-
 	while (1)
 	{
-		swiWaitForVBlank();
+		NDSTime::get().newFrame();
+		Debug::get().displayFps();
 
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
@@ -72,13 +74,14 @@ int main(void)
 		if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		mainCharacterSprite->display(0,0);
+		mainCharacterSprite->display();
 
 		oamUpdate(&oamMain);
 
 		bgSetCenter(BG::ID, cx, cy);
 		bgSetRotateScale(BG::ID, angle, scale, scale);
 		bgSetScroll(BG::ID, x, y);
+		swiWaitForVBlank();
 	}
 	
 	return 0;

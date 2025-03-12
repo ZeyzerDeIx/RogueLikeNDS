@@ -8,6 +8,7 @@ public:
 		static Debug instance;
 		return instance;
 	}
+	void displayFps();
 private:
 	Debug(){consoleDemoInit();};
 	~Debug(){};
