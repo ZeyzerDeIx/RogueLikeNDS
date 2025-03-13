@@ -1,3 +1,5 @@
 /build
 *.nds
 *.sublime*
+*.lnk
+*.bmp
