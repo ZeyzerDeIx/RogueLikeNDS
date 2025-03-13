@@ -16,10 +16,10 @@ MetaTile::MetaTile(META_TILE::Type type):
 void MetaTile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
 	pos *= 2;
-	m_tiles[CORNER::TOP_LEFT ].flush(bgTileMap, pos);
-	m_tiles[CORNER::TOP_RIGHT].flush(bgTileMap, {pos.x  , pos.y+1});
-	m_tiles[CORNER::BOT_LEFT ].flush(bgTileMap, {pos.x+1, pos.y  });
-	m_tiles[CORNER::BOT_RIGHT].flush(bgTileMap, {pos.x+1, pos.y+1});
+	m_tiles[CORNER::TOP_LEFT ].flush(bgTileMap, m_type, pos);
+	m_tiles[CORNER::TOP_RIGHT].flush(bgTileMap, m_type, {pos.x  , pos.y+1});
+	m_tiles[CORNER::BOT_LEFT ].flush(bgTileMap, m_type, {pos.x+1, pos.y  });
+	m_tiles[CORNER::BOT_RIGHT].flush(bgTileMap, m_type, {pos.x+1, pos.y+1});
 }
 
 const Type& MetaTile::getType() const

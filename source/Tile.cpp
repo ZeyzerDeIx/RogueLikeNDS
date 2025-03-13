@@ -11,14 +11,14 @@ void Tile::setConnections(u8 connections)
 	m_connections = connections;
 }
 
-void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
+void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos)
 {
 	// Tile/subtile ratio
 	constexpr int r = (TILE::SIZE / SUB_TILE::SIZE);
 
 	// Compute base tile indices
 	short xAxe = m_connections % TILESET::COUNT_W;
-	short yAxe = m_connections - xAxe;
+	short yAxe = m_connections - xAxe + static_cast<int>(type) * 5;
 	short tileBase = xAxe * r + yAxe * r * r;
 
 	short topL = tileBase;
