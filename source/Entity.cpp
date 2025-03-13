@@ -59,7 +59,7 @@ bool Entity::getDirection(u8 direction)
 	return m_directions & direction;
 }
 
-bool Entity::getIsMoving()
+bool Entity::isMoving()
 {
 	return m_directions != DIRECTION::NONE;
 }
@@ -73,21 +73,16 @@ void Entity::updateHitboxPos()
 
 void Entity::updateSpriteDirection()
 {
-	// isMovingState, MOVING_STATE_OFFSET
-	using namespace ENTITY;
-	//using namespace DIRECTION;
+	namespace Anim = ENTITY::ANIMATION;
+	using AnimDir = Anim::DIRECTION;
+	namespace Dir = DIRECTION;
 
-	if(getIsMoving())
-	{
+	if (isMoving())
 		m_sprite->setState(
-			getDirection(DIRECTION::TOP) ?
-			ANIMATION::DIRECTION::TOP_MOVING :
-			(getDirection(DIRECTION::BOT) ? 
-				ANIMATION::DIRECTION::BOT_MOVING : 
-				(getDirection(DIRECTION::LEFT) ?
-					ANIMATION::DIRECTION::LEFT_MOVING :
-					ANIMATION::DIRECTION::RIGHT_MOVING)));
-	}
-	else if(ANIMATION::isMovingState(m_sprite->getState()))
-		m_sprite->setState(m_sprite->getState() - ANIMATION::MOVING_STATE_OFFSET);
+			getDirection(Dir::TOP)  ? AnimDir::TOP_MOVING  :
+			getDirection(Dir::BOT)  ? AnimDir::BOT_MOVING  :
+			getDirection(Dir::LEFT) ? AnimDir::LEFT_MOVING :
+									  AnimDir::RIGHT_MOVING);
+	else if (Anim::isMovingState(m_sprite->getState()))
+		m_sprite->setState(m_sprite->getState() - Anim::MOVING_STATE_OFFSET);
 }

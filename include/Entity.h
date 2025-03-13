@@ -18,7 +18,7 @@ public:
 	void setAllDirections(u8 directions);
 
 	bool getDirection(u8 direction);
-	bool getIsMoving();
+	bool isMoving();
 	
 private:
 	Sprite* m_sprite;
