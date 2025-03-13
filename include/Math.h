@@ -8,6 +8,13 @@ struct Vector2
 {
 	T x, y;
 
+	template <typename U>
+	constexpr explicit operator Vector2<U>() const noexcept
+	{
+		return Vector2<U>{static_cast<U>(x), static_cast<U>(y)};
+	}
+
+
 	// Addition
 	constexpr Vector2 operator+(const Vector2& other) const noexcept
 	{ return {x + other.x, y + other.y}; }
@@ -39,10 +46,10 @@ struct Vector2
 	}
 
 	// Scalar division (only for floating-point types)
-	constexpr Vector2 operator/(T scalar) const noexcept requires (!std::integral<T>)
+	constexpr Vector2 operator/(T scalar) const noexcept
 	{ return {x / scalar, y / scalar}; }
 
-	constexpr Vector2& operator/=(T scalar) noexcept requires (!std::integral<T>)
+	constexpr Vector2& operator/=(T scalar)
 	{
 		x /= scalar; y /= scalar;
 		return *this;
@@ -69,3 +76,6 @@ constexpr Vector2<T> operator*(T scalar, const Vector2<T>& v) noexcept
 using Vector2b = Vector2<bool>;
 using Vector2f = Vector2<float>;
 using Vector2i = Vector2<int>;
+
+template <typename T>
+struct Rect { T x, y, w, h; };

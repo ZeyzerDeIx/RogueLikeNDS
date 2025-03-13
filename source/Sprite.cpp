@@ -43,11 +43,21 @@ void Sprite::update()
 	}
 }
 
-void Sprite::display(int x, int y, bool zoomed)
+void Sprite::display(Vector2i pos, bool zoomed)
 {
 	float scale = zoomed ? 0.5f : 1.f;
 	oamRotateScale(&oamMain, m_id, 0, 256.f * scale, 256.f * scale);
-	oamSet(&oamMain, m_id, x, y, 0, m_id, m_size, m_format, m_memoryLocation, 0, zoomed, false, false, false, false);
+	oamSet(&oamMain,
+		   m_id,
+		   pos.x, pos.y,
+		   0, //priority
+		   m_id, // palette_alpha
+		   m_size,
+		   m_format,
+		   m_memoryLocation,
+		   0, //affine index
+		   zoomed, //sizeDouble
+		   false, false, false, false);
 }
 
 void Sprite::enableAnim(int frameCount, int stateCount, int animSpeed)
@@ -77,6 +87,8 @@ void Sprite::setFrame(int frame)
 	m_currentFrame = std::min(frame, m_frameCount - 1);
 	updateOffset();
 }
+
+int Sprite::getState() { return m_currentState; }
 
 void Sprite::updateOffset()
 {

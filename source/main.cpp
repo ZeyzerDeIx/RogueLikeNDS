@@ -4,6 +4,7 @@
 #include "SpriteManager.h"
 #include "MainCharacterSprite.h"
 #include "NDSTime.h"
+#include "Entity.h"
 
 
 int main(void)
@@ -29,6 +30,8 @@ int main(void)
 	SpriteManager spManager;
 	Sprite* mainCharacterSprite = CREATE_PARAMETRIZED_SPRITE(spManager, MainCharacterSprite, _16Color, 32, 64);
 	mainCharacterSprite->enableAnim(4,8,8);
+
+	Entity mainCharacter(mainCharacterSprite, {24, 34});
 	
 	int x = 0, y = 0;
 	int cx = 0, cy = 0;
@@ -38,12 +41,11 @@ int main(void)
 	#if __cplusplus >= 202002L
    	std::cout << "C++20 enabled\n";;
 	#endif
+	
+	mainCharacter.move({1,1});
 
 	while (1)
 	{
-		NDSTime::get().newFrame();
-		Debug::get().displayFps();
-
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
@@ -52,14 +54,18 @@ int main(void)
 
 		u16 keys_held = keysHeld();
 
+		u8 dir = DIRECTION::NONE;
+
 		if (keys_held & KEY_UP)
-			y++;
+			dir |= DIRECTION::TOP;
 		else if (keys_held & KEY_DOWN)
-			y--;
+			dir |= DIRECTION::BOT;
 		if (keys_held & KEY_LEFT)
-			x++;
+			dir |= DIRECTION::LEFT;
 		else if (keys_held & KEY_RIGHT)
-			x--;
+			dir |= DIRECTION::RIGHT;
+
+		mainCharacter.setAllDirections(dir);
 
 		if (keys_held & KEY_L)
 			angle -= 1 << 4;
@@ -74,13 +80,18 @@ int main(void)
 		if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		mainCharacterSprite->display();
+		mainCharacter.update(NDSTime::get().getDeltaTime());
+		mainCharacter.display();
 
 		oamUpdate(&oamMain);
 
 		bgSetCenter(BG::ID, cx, cy);
 		bgSetRotateScale(BG::ID, angle, scale, scale);
 		bgSetScroll(BG::ID, x, y);
+
+		NDSTime::get().newFrame();
+		Debug::get().displayFps();
+		
 		swiWaitForVBlank();
 	}
 	

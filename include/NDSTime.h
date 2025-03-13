@@ -3,8 +3,6 @@
 #include "PCH.h"
 #include <cstdlib>
 
-//#ifdef FPS_ENABLE
-
 class NDSTime
 {
 public:
@@ -25,4 +23,3 @@ private:
 	NDSTime() = delete;
 	NDSTime(int updatesPerSeconds);
 };
-//#endif

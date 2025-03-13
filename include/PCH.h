@@ -8,6 +8,8 @@ using ushort = unsigned short;
 #include <vector>
 #include <list>
 #include <span>
+#include <iomanip>
+#include <iostream>
 #include "Constants.h"
 #include "Math.h"
 #include "Debug.h"
