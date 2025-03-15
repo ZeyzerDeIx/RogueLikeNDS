@@ -27,6 +27,11 @@ const Type& MetaTile::getType() const
 	return m_type;
 }
 
+void MetaTile::setType(const META_TILE::Type& type)
+{
+	m_type = type;
+}
+
 constexpr u8 bitCheck(u8 source, u8 filter, u8 offset)
 {
 	return ((source & filter) == filter) << offset;

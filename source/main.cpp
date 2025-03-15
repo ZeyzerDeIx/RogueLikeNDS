@@ -5,10 +5,12 @@
 #include "MainCharacterSprite.h"
 #include "NDSTime.h"
 #include "Entity.h"
+#include "GameMap.h"
 
 
 int main(void)
 {
+	std::srand(std::time({}));
 	videoSetMode(MODE_5_2D);
 
 	// Memory mapping
@@ -24,17 +26,18 @@ int main(void)
 	//init debug console
 	Debug::get();
 
-	TileMap tileMap;
-	tileMap.flush();
-
 	SpriteManager spManager;
 	Sprite* mainCharacterSprite = CREATE_PARAMETRIZED_SPRITE(spManager, MainCharacterSprite, _16Color, 32, 64);
 	mainCharacterSprite->enableAnim(4,8,8);
 
-	Entity mainCharacter(mainCharacterSprite, {24, 34});
+	Entity player(mainCharacterSprite, {24, 34});
+
+	TileMap tileMap;
+	Camera camera(player);
+
+	GameMap gameMap(tileMap, camera);
 	
-	int x = 0, y = 0;
-	int cx = 0, cy = 0;
+	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
 	int angle = 10;
 	int scale = 1 << 8;
@@ -42,13 +45,16 @@ int main(void)
    	std::cout << "C++20 enabled\n";;
 	#endif
 	
-	mainCharacter.move({1,1});
+	player.move({1,1});
 
 	while (1)
 	{
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
+
+		gameMap.update();
+		tileMap.flush();
 
 		scanKeys();
 
@@ -65,7 +71,7 @@ int main(void)
 		else if (keys_held & KEY_RIGHT)
 			dir |= DIRECTION::RIGHT;
 
-		mainCharacter.setAllDirections(dir);
+		player.setAllDirections(dir);
 
 		if (keys_held & KEY_L)
 			angle -= 1 << 4;
@@ -80,14 +86,15 @@ int main(void)
 		if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		mainCharacter.update(NDSTime::get().getDeltaTime());
-		mainCharacter.display();
+		player.update(NDSTime::get().getDeltaTime());
+		player.display();
+
+		camera.update();
 
 		oamUpdate(&oamMain);
 
 		bgSetCenter(BG::ID, cx, cy);
 		bgSetRotateScale(BG::ID, angle, scale, scale);
-		bgSetScroll(BG::ID, x, y);
 
 		NDSTime::get().newFrame();
 		Debug::get().displayFps();

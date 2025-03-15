@@ -113,7 +113,7 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 
-	enum class Type { Path, Wall, Void };
+	enum class Type { Path, Wall, Last };
 	namespace CORNER {enum { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };}
 }
 
@@ -152,6 +152,12 @@ namespace ENTITY
 			return state > DIRECTION::RIGHT;
 		}
 	}
+}
+
+namespace GAME_MAP
+{
+	constexpr int SIZE_W = 200;
+	constexpr int SIZE_H = 200;
 }
 
 #define PALETTE_SIZE 16

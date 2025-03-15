@@ -18,6 +18,7 @@ public:
 	void setAllDirections(u8 directions);
 
 	bool getDirection(u8 direction);
+	const Vector2f& getPosition();
 	bool isMoving();
 	
 private:

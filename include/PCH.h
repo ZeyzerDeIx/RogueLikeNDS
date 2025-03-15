@@ -10,6 +10,8 @@ using ushort = unsigned short;
 #include <span>
 #include <iomanip>
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include "Constants.h"
 #include "Math.h"
 #include "Debug.h"

@@ -3,6 +3,8 @@
 #include "PCH.h"
 #include "MetaTile.h"
 
+class GameMap;
+
 class TileMap
 {
 public:
@@ -23,4 +25,6 @@ private:
 	void convertMap();
 
 	void calculateConnections();
+
+	friend class GameMap;
 };

@@ -12,6 +12,7 @@ public:
 
 	const META_TILE::Type& getType() const;
 	
+	void setType(const META_TILE::Type& type);
 	void setConnections(u8 connections);
 private:
 	Tile m_tiles[4];

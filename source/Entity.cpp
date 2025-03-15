@@ -59,6 +59,11 @@ bool Entity::getDirection(u8 direction)
 	return m_directions & direction;
 }
 
+const Vector2f& Entity::getPosition()
+{
+	return m_position;
+}
+
 bool Entity::isMoving()
 {
 	return m_directions != DIRECTION::NONE;
