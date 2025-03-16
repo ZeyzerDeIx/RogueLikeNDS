@@ -39,7 +39,6 @@ int main(void)
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
-	int angle = 10;
 	int scale = 1 << 8;
 	#if __cplusplus >= 202002L
    	std::cout << "C++20 enabled\n";;
@@ -73,11 +72,6 @@ int main(void)
 
 		player.setAllDirections(dir);
 
-		if (keys_held & KEY_L)
-			angle -= 1 << 4;
-		else if (keys_held & KEY_R)
-			angle += 1 << 4;
-
 		if (keys_held & KEY_SELECT)
 			scale += 1 << 3;
 		else if (keys_held & KEY_START)
@@ -94,7 +88,7 @@ int main(void)
 		oamUpdate(&oamMain);
 
 		bgSetCenter(BG::ID, cx, cy);
-		bgSetRotateScale(BG::ID, angle, scale, scale);
+		bgSetScale(BG::ID, scale, scale);
 
 		NDSTime::get().newFrame();
 		Debug::get().displayFps();
