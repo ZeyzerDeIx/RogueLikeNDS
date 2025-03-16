@@ -2,6 +2,8 @@
 
 #include "PCH.h"
 
+class GameMap;
+
 class Hitbox
 {
 public:
@@ -9,7 +11,8 @@ public:
 	~Hitbox();
 
 	Rect<int>& getBounds();
-	bool intersects(const Hitbox& other);
+	bool intersects(const Hitbox& other) const;
+	bool intersects(const GameMap& gameMap) const;
 private:
 	Rect<int> m_bounds;
 };

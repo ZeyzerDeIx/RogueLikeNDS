@@ -6,14 +6,16 @@
 class Camera
 {
 public:
-	Camera(Entity& player);
+	Camera(GameContext& context);
 	~Camera();
 
 	void update();
+
+	const Vector2i getDisplayPos(const Entity& entity) const;
 
 	const Vector2i getMetaTileOffset() const;
 
 private:
 	Vector2i m_offset;
-	Entity& m_player;
+	GameContext& m_context;
 };

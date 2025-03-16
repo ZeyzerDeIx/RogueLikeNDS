@@ -1,10 +1,12 @@
 #include "Entity.h"
+#include "Camera.h"
 
 
-Entity::Entity(Sprite* sprite, Vector2i size):
+Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
 	m_sprite{sprite},
 	m_position{0,0},
 	m_size{size},
+	m_context(context),
 	m_directions{DIRECTION::NONE},
 	m_hitbox{{0,0,0,0}},
 	m_speed(100.f)
@@ -18,7 +20,26 @@ Entity::Entity(Sprite* sprite, Vector2i size):
 
 void Entity::move(Vector2f delta)
 {
-	m_position += delta;
+	// X axe
+	if (delta.x != 0)
+	{
+		Hitbox futureHitbox = m_hitbox;
+		futureHitbox.getBounds().x += delta.x;
+
+		if (!futureHitbox.intersects(*m_context.gameMap))
+			m_position.x += delta.x;
+	}
+
+	// Y axe
+	if (delta.y != 0)
+	{
+		Hitbox futureHitbox = m_hitbox;
+		futureHitbox.getBounds().y += delta.y;
+
+		if (!futureHitbox.intersects(*m_context.gameMap))
+			m_position.y += delta.y;
+	}
+	
 	updateHitboxPos();
 }
 
@@ -37,9 +58,9 @@ void Entity::update(float delta)
 	m_sprite->update();
 }
 
-void Entity::display()
+void Entity::display(const Camera& camera)
 {
-	m_sprite->display(static_cast<Vector2i>(m_position - static_cast<Vector2f>(m_size)/2.f));
+	m_sprite->display(camera.getDisplayPos(*this) - m_size/2);
 }
 
 

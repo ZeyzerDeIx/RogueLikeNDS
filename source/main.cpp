@@ -6,6 +6,8 @@
 #include "NDSTime.h"
 #include "Entity.h"
 #include "GameMap.h"
+#include "GameContext.h"
+#include "Camera.h"
 
 
 int main(void)
@@ -26,16 +28,21 @@ int main(void)
 	//init debug console
 	Debug::get();
 
+	GameContext context;
+
 	SpriteManager spManager;
 	Sprite* mainCharacterSprite = CREATE_PARAMETRIZED_SPRITE(spManager, MainCharacterSprite, _16Color, 32, 64);
 	mainCharacterSprite->enableAnim(4,8,8);
 
-	Entity player(mainCharacterSprite, {24, 34});
+	Entity player(mainCharacterSprite, {24, 34}, context);
 
-	TileMap tileMap;
-	Camera camera(player);
+	Camera camera(context);
 
-	GameMap gameMap(tileMap, camera);
+	GameMap gameMap(context);
+
+	context.gameMap = &gameMap;
+	context.camera = &camera;
+	context.player = &player;
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
@@ -53,7 +60,6 @@ int main(void)
 		bgUpdate();
 
 		gameMap.update();
-		tileMap.flush();
 
 		scanKeys();
 
@@ -81,7 +87,7 @@ int main(void)
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		player.update(NDSTime::get().getDeltaTime());
-		player.display();
+		player.display(camera);
 
 		camera.update();
 

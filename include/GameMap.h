@@ -2,20 +2,24 @@
 
 #include "PCH.h"
 #include "TileMap.h"
-#include "Camera.h"
+#include "GameContext.h"
 
 class GameMap
 {
 public:
-	GameMap(TileMap& tileMap, Camera& camera);
+	GameMap(GameContext& context);
 	~GameMap();
 
 	void update();
 
+	META_TILE::Type getTile(const Vector2i& tileCoordinate) const;
+
+	bool isCrossable(const Vector2i& tileCoordinate) const;
+
 private:
 	std::vector<std::vector<META_TILE::Type>> m_map;
-	TileMap& m_tileMap;
-	Camera& m_camera;
+	TileMap m_tileMap;
+	GameContext& m_context;
 
 	void loadDisplayableTilesIntoTileMap();
 };
