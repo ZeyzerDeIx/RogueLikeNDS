@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <concepts>
+#include <cmath>
 
 template <typename T>
 struct Vector2
@@ -79,3 +80,8 @@ using Vector2i = Vector2<int>;
 
 template <typename T>
 struct Rect { T x, y, w, h; };
+
+namespace NDSMath
+{
+	int roundAbsCeil(float x);
+}

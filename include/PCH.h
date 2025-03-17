@@ -13,5 +13,5 @@ using ushort = unsigned short;
 #include <cstdlib>
 #include <ctime>
 #include "Constants.h"
-#include "Math.h"
+#include "NDSMath.h"
 #include "Debug.h"
