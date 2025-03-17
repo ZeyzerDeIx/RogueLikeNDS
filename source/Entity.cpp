@@ -24,7 +24,7 @@ void Entity::move(Vector2f delta)
 	if (delta.x != 0)
 	{
 		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.getBounds().x += delta.x;
+		futureHitbox.getBounds().x += NDSMath::roundAbsCeil(delta.x);
 
 		if (!futureHitbox.intersects(*m_context.gameMap))
 			m_position.x += delta.x;
@@ -34,7 +34,7 @@ void Entity::move(Vector2f delta)
 	if (delta.y != 0)
 	{
 		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.getBounds().y += delta.y;
+		futureHitbox.getBounds().y += NDSMath::roundAbsCeil(delta.y);
 
 		if (!futureHitbox.intersects(*m_context.gameMap))
 			m_position.y += delta.y;
