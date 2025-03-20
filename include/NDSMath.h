@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+
 #include <concepts>
 #include <cmath>
 
@@ -84,4 +85,19 @@ struct Rect { T x, y, w, h; };
 namespace NDSMath
 {
 	int roundAbsCeil(float x);
+	// A hash function used to hash a pair of any kind
+	struct HashVector2i
+	{
+		size_t operator()(const Vector2i& vec) const
+		{
+			// Hash the first element
+			size_t hash1 = std::hash<int>{}(vec.x);
+			// Hash the second element
+			size_t hash2 = std::hash<int>{}(vec.y);
+			// Combine the two hash values
+			return hash1
+				   ^ (hash2 + 0x9e3779b9 + (hash1 << 6)
+					  + (hash1 >> 2));
+		}
+	};
 }

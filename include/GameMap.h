@@ -17,7 +17,7 @@ public:
 	bool isCrossable(const Vector2i& tileCoordinate) const;
 
 private:
-	std::vector<std::vector<META_TILE::Type>> m_map;
+	std::unordered_map<Vector2i, META_TILE::Type, NDSMath::HashVector2i> m_map;
 	TileMap m_tileMap;
 	GameContext& m_context;
 

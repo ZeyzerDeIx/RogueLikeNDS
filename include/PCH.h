@@ -12,6 +12,7 @@ using ushort = unsigned short;
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <unordered_map>
 #include "Constants.h"
 #include "NDSMath.h"
 #include "Debug.h"
