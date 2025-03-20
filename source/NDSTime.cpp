@@ -10,9 +10,6 @@ NDSTime::NDSTime(int updatesPerSeconds)
 void NDSTime::newFrame()
 {
 	m_fps = std::ceil(1.f / m_deltaTime);
-	
-	// Display DeltaTime
-	//std::cout << "\x1b[22;12HDeltaTime:" << std::setfill(' ') << std::setw(10) << std::fixed << std::setprecision(6) << m_deltaTime << "\x1b[0;0H";
 
 	m_deltaTime = 0.f;
 }

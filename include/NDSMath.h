@@ -84,8 +84,10 @@ struct Rect { T x, y, w, h; };
 
 namespace NDSMath
 {
+	// Return ceil of the abs value while conserving sign
 	int roundAbsCeil(float x);
-	// A hash function used to hash a pair of any kind
+
+	// A hash function used to hash a Vector2i
 	struct HashVector2i
 	{
 		size_t operator()(const Vector2i& vec) const
