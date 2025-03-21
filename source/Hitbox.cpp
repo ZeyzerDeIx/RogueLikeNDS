@@ -22,11 +22,15 @@ bool Hitbox::intersects(const Hitbox& other) const
 
 bool Hitbox::intersects(const GameMap& gameMap) const
 {
-	 // Convert bounds to tile coordinates
-	int startX = m_bounds.x / META_TILE::SIZE;
-	int startY = m_bounds.y / META_TILE::SIZE;
-	int endX = (m_bounds.x + m_bounds.w) / META_TILE::SIZE;
-	int endY = (m_bounds.y + m_bounds.h) / META_TILE::SIZE;
+	namespace MT = META_TILE;
+
+	// Convert bounds to tile coordinates
+	int startX = m_bounds.x / MT::SIZE - static_cast<int>(m_bounds.x<0);
+	int startY = m_bounds.y / MT::SIZE - static_cast<int>(m_bounds.y<0);
+	int boundsR = m_bounds.x + m_bounds.w;
+	int boundsB = m_bounds.y + m_bounds.h;
+	int endX = boundsR / MT::SIZE - static_cast<int>(boundsR<0);
+	int endY = boundsB / MT::SIZE - static_cast<int>(boundsB<0);
 
 	for (int x = startX; x <= endX; ++x) 
 		for (int y = startY; y <= endY; ++y) 
