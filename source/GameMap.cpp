@@ -12,6 +12,14 @@ GameMap::GameMap(GameContext& context):
 	m_context(context)
 {
 	m_map[{0,0}] = MT::Type::Path;
+	m_map[{1,0}] = MT::Type::Path;
+	m_map[{0,1}] = MT::Type::Path;
+	m_map[{1,1}] = MT::Type::Path;
+	m_map[{0,2}] = MT::Type::Path;
+	m_map[{1,2}] = MT::Type::Path;
+	m_map[{2,0}] = MT::Type::Path;
+	m_map[{2,1}] = MT::Type::Path;
+	m_map[{2,2}] = MT::Type::Path;
 }
 
 

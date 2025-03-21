@@ -4,7 +4,7 @@
 
 Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
 	m_sprite{sprite},
-	m_position{0,0},
+	m_position{META_TILE::SIZE/2,META_TILE::SIZE/3},
 	m_size{size},
 	m_context(context),
 	m_directions{DIRECTION::NONE},

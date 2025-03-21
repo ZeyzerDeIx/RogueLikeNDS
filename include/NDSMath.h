@@ -86,6 +86,7 @@ namespace NDSMath
 {
 	// Return ceil of the abs value while conserving sign
 	int roundAbsCeil(float x);
+	Vector2i roundAbsCeil(Vector2f vec);
 
 	// A hash function used to hash a Vector2i
 	struct HashVector2i

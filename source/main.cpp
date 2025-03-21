@@ -55,6 +55,7 @@ int main(void)
 
 	while (1)
 	{
+		Debug::get().clearConsole();
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
@@ -88,6 +89,7 @@ int main(void)
 
 		player.update(NDSTime::get().getDeltaTime());
 		player.display(camera);
+		Debug::get().displayEntityInfo(player);
 
 		camera.update();
 

@@ -6,6 +6,7 @@
 #include "GameContext.h"
 
 class Camera;
+class Debug;
 
 class Entity
 {
@@ -36,4 +37,6 @@ private:
 
 	void updateHitboxPos();
 	void updateSpriteDirection();
+
+	friend class Debug;
 };

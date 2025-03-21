@@ -1,5 +1,5 @@
 #pragma once
-
+class Entity;
 class Debug
 {
 public:
@@ -8,9 +8,11 @@ public:
 		static Debug instance;
 		return instance;
 	}
+	void clearConsole();
 	void displayFps();
+	void displayEntityInfo(Entity& entity);
 private:
-	Debug(){consoleDemoInit();};
+	Debug();
 	~Debug(){};
 	
 	Debug(const Debug&) = delete;
