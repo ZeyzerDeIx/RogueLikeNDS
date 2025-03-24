@@ -16,7 +16,7 @@ TileMap::TileMap():
 void TileMap::flush()
 {
 	convertMap();
-	swiFastCopy(m_bgTileMap, bgGetMapPtr(BG::ID), sizeof(m_bgTileMap)>>2);
+	dmaCopyAsynch(m_bgTileMap, bgGetMapPtr(BG::ID), sizeof(m_bgTileMap));
 }
 
 std::vector<MetaTile>& TileMap::operator[](int key)
@@ -28,9 +28,12 @@ std::vector<MetaTile>& TileMap::operator[](int key)
 
 void TileMap::convertMap()
 {
-	for (uint i = 0 ; i < m_tileMap.size() ; ++i)
-		for (uint j = 0 ; j < m_tileMap[i].size() ; ++j)
-			m_tileMap[i][j].flush(m_bgTileMap, {(int)i, (int)j});
+	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
+
+	for (int i = WORD_BORDER_SIZE ; i < rows ; ++i)
+		for (int j = WORD_BORDER_SIZE ; j < cols ; ++j)
+			m_tileMap[i][j].flush(m_bgTileMap, {i, j});
 }
 
 
@@ -39,11 +42,12 @@ void TileMap::calculateConnections()
 	using namespace META_TILE;
 	using namespace DIRECTION;
 
-	int rows = m_tileMap.size(), cols = m_tileMap[0].size();
+	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
 
-	for (int y = 0; y < rows; ++y)
+	for (int y = WORD_BORDER_SIZE; y < rows; ++y)
 	{
-		for (int x = 0; x < cols; ++x)
+		for (int x = WORD_BORDER_SIZE; x < cols; ++x)
 		{
 			MetaTile& tile = m_tileMap[y][x];
 			const Type& type = tile.getType();

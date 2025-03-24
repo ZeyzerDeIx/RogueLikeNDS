@@ -4,22 +4,12 @@
 // Alias for better readability
 namespace MT = META_TILE;
 
-MT::Type getRandomTileType()
-{
-	return static_cast<MT::Type>(rand() % static_cast<int>(MT::Type::Debug));
-}
 GameMap::GameMap(GameContext& context):
 	m_context(context)
 {
-	m_map[{0,0}] = MT::Type::Path;
-	m_map[{1,0}] = MT::Type::Path;
-	m_map[{0,1}] = MT::Type::Path;
-	m_map[{1,1}] = MT::Type::Path;
-	m_map[{0,2}] = MT::Type::Path;
-	m_map[{1,2}] = MT::Type::Path;
-	m_map[{2,0}] = MT::Type::Path;
-	m_map[{2,1}] = MT::Type::Path;
-	m_map[{2,2}] = MT::Type::Path;
+	for (int i = 0; i < 10; ++i)
+		for (int j = 0; j < 10; ++j)
+			m_map[{i,j}] = MT::Type::Path;
 }
 
 
@@ -49,9 +39,13 @@ void GameMap::loadDisplayableTilesIntoTileMap()
 {
 	const Vector2i offset = m_context.camera->getMetaTileOffset();
 
-	for (int i = 0; i < MT::COUNT_W; ++i)
-		for (int j = 0; j < MT::COUNT_H; ++j)
-			m_tileMap[i][j].setType(getTile({offset.y + i, offset.x + j}));
+	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
+	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
+
+	// 2 represent how many tiles are out of camera fov
+	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
+		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
+			m_tileMap[i][j].setType(getTile({offset.y+i, offset.x+j}));
 
 	m_tileMap.calculateConnections();
 }
