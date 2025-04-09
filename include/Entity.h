@@ -23,6 +23,7 @@ public:
 
 	bool getDirection(u8 direction);
 	const Vector2f& getPosition();
+	const Vector2i getCoordinates();
 	bool isMoving();
 	
 private:

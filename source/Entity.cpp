@@ -85,6 +85,11 @@ const Vector2f& Entity::getPosition()
 	return m_position;
 }
 
+const Vector2i Entity::getCoordinates()
+{
+	return static_cast<Vector2i>(m_position/META_TILE::SIZE) - Vector2i{m_position.x < 0, m_position.y < 0};
+}
+
 bool Entity::isMoving()
 {
 	return m_directions != DIRECTION::NONE;

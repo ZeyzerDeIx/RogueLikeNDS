@@ -47,15 +47,12 @@ int main(void)
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
 	int scale = 1 << 8;
-	#if __cplusplus >= 202002L
-   	std::cout << "C++20 enabled\n";;
-	#endif
 	
 	player.move({1,1});
 
 	while (1)
 	{
-		Debug::get().clearConsole();
+		//Debug::get().clearConsole();
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
@@ -89,7 +86,7 @@ int main(void)
 
 		player.update(NDSTime::get().getDeltaTime());
 		player.display(camera);
-		Debug::get().displayEntityInfo(player);
+		//Debug::get().displayEntityInfo(player);
 
 		camera.update();
 
@@ -99,7 +96,7 @@ int main(void)
 		bgSetScale(BG::ID, scale, scale);
 
 		NDSTime::get().newFrame();
-		Debug::get().displayFps();
+		//Debug::get().displayFps();
 		
 		swiWaitForVBlank();
 	}
