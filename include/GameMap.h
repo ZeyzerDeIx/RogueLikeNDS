@@ -17,22 +17,22 @@ public:
 	META_TILE::Type getTile(const Vector2i& tileCoordinate) const;
 
 	bool isCrossable(const Vector2i& tileCoordinate) const;
-	bool isChunckGenerated(const Vector2i& chunckCoordinate) const;
+	bool isChunkGenerated(const Vector2i& chunkCoordinate) const;
 
-	void generateChunck(const Vector2i& chunckCoordinate);
+	void generateChunk(const Vector2i& chunkCoordinate);
 
 private:
 	// Speed to expand but also to access + do not store useless data
 	std::unordered_map<Vector2i, META_TILE::Type, NDSMath::HashVector2i> m_map;
-	std::unordered_map<Vector2i, bool, NDSMath::HashVector2i> m_generatedChuncks;
-	std::queue<Vector2i> m_chuncksToGenerate;
+	std::unordered_map<Vector2i, bool, NDSMath::HashVector2i> m_generatedChunks;
+	std::queue<Vector2i> m_chunksToGenerate;
 	TileMap m_tileMap;
 	GameContext& m_context;
-	Vector2i m_playerChunck;
+	Vector2i m_playerChunk;
 
-	void updatePlayerChunck();
+	void updatePlayerChunk();
 	void collapseTile(const Vector2i& tileCoordinate);
-	void addToQueue(const Vector2i& chunckCoordinate);
-	const Vector2i getPlayerChunck() const;
+	void addToQueue(const Vector2i& chunkCoordinate);
+	const Vector2i getPlayerChunk() const;
 	void loadDisplayableTilesIntoTileMap();
 };

@@ -160,7 +160,7 @@ namespace GAME_MAP
 {
 	constexpr int SIZE_W = 200;
 	constexpr int SIZE_H = 200;
-	constexpr int CHUNCK_SIZE = 6;
+	constexpr int CHUNK_SIZE = 6;
 }
 
 #define PALETTE_SIZE 16
