@@ -1,5 +1,7 @@
 #include "GameMap.h"
 #include "Camera.h"
+#include <limits>
+
 
 // Alias for better readability
 namespace MT = META_TILE;
@@ -7,6 +9,7 @@ namespace MT = META_TILE;
 GameMap::GameMap(GameContext& context):
 	m_context(context)
 {
+	createRoom({{-2,-2},{5,5}});
 	generateChunk({0,0});
 	updatePlayerChunk();
 }
@@ -49,12 +52,110 @@ bool GameMap::isChunkGenerated(const Vector2i& chunkCoordinate) const
 
 void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 {
-	for (int i = 0; i < GAME_MAP::CHUNK_SIZE; ++i)
-		for (int j = 0; j < GAME_MAP::CHUNK_SIZE; ++j)
-			collapseTile(Vector2i{chunkCoordinate.y,chunkCoordinate.x} * GAME_MAP::CHUNK_SIZE + Vector2i{i,j});
+	//temporary
+	unsigned int globalSeed = time(0);
+
+	// Generate deterministic seed for this chunk
+	unsigned int seed = globalSeed ^ (chunkCoordinate.x * 73856093) ^ (chunkCoordinate.y * 19349663);
+	std::mt19937 rng(seed);
+	std::uniform_int_distribution<> roomChance(0, 100);
+
+	// Try to generate a room in this chunk
+	if (roomChance(rng) < 60) // 40% chance to create a room
+	{
+		Vector2i roomSize = {
+			2 + rng() % 4,
+			2 + rng() % 4
+		};
+
+		Vector2i roomCoord = {
+			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + (rng() % roomSize.x),
+			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + (rng() % roomSize.y)
+		};
+
+		Room newRoom{roomCoord, roomSize};
+
+		// Check for overlap with existing rooms
+		bool overlaps = false;
+		for (const auto& r : m_reservedRooms)
+			if (roomCoord.x < r.coordinate.x + r.size.x &&
+				roomCoord.x + roomSize.x > r.coordinate.x &&
+				roomCoord.y < r.coordinate.y + r.size.y &&
+				roomCoord.y + roomSize.y > r.coordinate.y &&
+				(overlaps = true))
+				break;
+
+		if (!overlaps)
+		{
+			connectNearestRoom(newRoom, rng);
+			createRoom(newRoom);
+		}
+	}
 		
 	m_generatedChunks[chunkCoordinate] = true;
 }
+
+// Function to compute the center of a room
+Vector2i getRoomCenter(const Room& room) {
+    return { room.coordinate.x + room.size.x / 2, room.coordinate.y + room.size.y / 2 };
+}
+
+// Function to connect the new room to one of the nearest reserved rooms
+// newRoom: the room to connect (not yet in m_reservedRooms)
+// rng: a random number generator passed from the caller
+void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
+{
+	auto connectRooms = [&](const Room& a, const Room& b)
+	{
+		Vector2i centerA = {a.coordinate.x + a.size.x / 2, a.coordinate.y + a.size.y / 2};
+		Vector2i centerB = {b.coordinate.x + b.size.x / 2, b.coordinate.y + b.size.y / 2};
+
+		// Corridor horizontal then vertical
+		for (int x = std::min(centerA.x, centerB.x); x <= std::max(centerA.x, centerB.x); ++x)
+			collapseTile({x, centerA.y});
+
+		for (int y = std::min(centerA.y, centerB.y); y <= std::max(centerA.y, centerB.y); ++y)
+			collapseTile({centerB.x, y});
+	};
+
+
+    if (m_reservedRooms.empty())
+        return; // Nothing to connect to
+
+    // Calculate the center of the new room
+    Vector2i newCenter = getRoomCenter(newRoom);
+    
+    // List to hold indices of rooms with the minimum distance squared
+    std::vector<size_t> candidateIndices;
+    int minDistSq = std::numeric_limits<int>::max();
+    
+    // Traverse all reserved rooms to find those with the smallest distance
+    for (size_t i = 0; i < m_reservedRooms.size(); ++i)
+    {
+        Vector2i roomCenter = getRoomCenter(m_reservedRooms[i]);
+        int dx = newCenter.x - roomCenter.x;
+        int dy = newCenter.y - roomCenter.y;
+        int distSq = dx * dx + dy * dy;
+        
+        if (distSq < minDistSq)
+        {
+            minDistSq = distSq;
+            candidateIndices.clear();
+            candidateIndices.push_back(i);
+        }
+        else if (distSq == minDistSq)
+            candidateIndices.push_back(i);
+    }
+    
+    // Randomly select one candidate room from the candidates
+    if (!candidateIndices.empty())
+    {
+        std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
+        size_t chosenIndex = candidateIndices[candidateDist(rng)];
+        connectRooms(m_reservedRooms[chosenIndex], newRoom);
+    }
+}
+
 
 
 
@@ -74,6 +175,15 @@ void GameMap::updatePlayerChunk()
 void GameMap::collapseTile(const Vector2i& tileCoordinate)
 {
 	m_map[tileCoordinate] = MT::Type::Path;
+}
+
+void GameMap::createRoom(const Room& room)
+{
+	m_reservedRooms.push_back(room);
+
+	for (int dx = 0; dx < room.size.x; ++dx)
+		for (int dy = 0; dy < room.size.y; ++dy)
+			collapseTile({room.coordinate.x + dx, room.coordinate.y + dy});
 }
 
 void GameMap::addToQueue(const Vector2i& chunkCoordinate)
