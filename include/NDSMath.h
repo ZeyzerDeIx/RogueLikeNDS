@@ -4,6 +4,7 @@
 
 #include <concepts>
 #include <cmath>
+#include <compare>
 
 template <typename T>
 struct Vector2
@@ -17,6 +18,7 @@ struct Vector2
 	}
 
 
+
 	// Addition
 	constexpr Vector2 operator+(const Vector2& other) const noexcept
 	{ return {x + other.x, y + other.y}; }
@@ -27,6 +29,16 @@ struct Vector2
 		return *this;
 	}
 
+	// Addition with scalar (Vector2 + T)
+	constexpr Vector2 operator+(const T other) const noexcept {
+		return {x + other, y + other};
+	}
+	constexpr Vector2& operator+=(const T other) noexcept {
+		x += other; y += other;
+		return *this;
+	}
+
+
 	// Subtraction
 	constexpr Vector2 operator-(const Vector2& other) const noexcept
 	{ return {x - other.x, y - other.y}; }
@@ -34,6 +46,14 @@ struct Vector2
 	constexpr Vector2& operator-=(const Vector2& other) noexcept
 	{
 		x -= other.x; y -= other.y;
+		return *this;
+	}
+	// Subtraction with scalar (Vector2 - T)
+	constexpr Vector2 operator-(const T other) const noexcept {
+		return {x - other, y - other};
+	}
+	constexpr Vector2& operator-=(const T other) noexcept {
+		x -= other; y -= other;
 		return *this;
 	}
 

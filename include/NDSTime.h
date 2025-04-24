@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PCH.h"
+#include "pch.h"
 #include <cstdlib>
 
 class NDSTime

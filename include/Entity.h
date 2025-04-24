@@ -1,6 +1,6 @@
 #pragma once
 
-#include "PCH.h"
+#include "pch.h"
 #include "Sprite.h"
 #include "Hitbox.h"
 #include "GameContext.h"

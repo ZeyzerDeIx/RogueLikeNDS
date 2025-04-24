@@ -77,13 +77,18 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 
 		// Check for overlap with existing rooms
 		bool overlaps = false;
-		for (const auto& r : m_reservedRooms)
-			if (roomCoord.x < r.coordinate.x + r.size.x &&
-				roomCoord.x + roomSize.x > r.coordinate.x &&
-				roomCoord.y < r.coordinate.y + r.size.y &&
-				roomCoord.y + roomSize.y > r.coordinate.y &&
-				(overlaps = true))
+		for (const auto& room : m_reservedRooms)
+		{
+			Room o = room.oversized(1);
+			if (roomCoord.x < o.coordinate.x + o.size.x &&
+				roomCoord.x + roomSize.x > o.coordinate.x &&
+				roomCoord.y < o.coordinate.y + o.size.y &&
+				roomCoord.y + roomSize.y > o.coordinate.y)
+			{
+				overlaps = true;
 				break;
+			}
+		}
 
 		if (!overlaps)
 		{
@@ -97,7 +102,7 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 
 // Function to compute the center of a room
 Vector2i getRoomCenter(const Room& room) {
-    return { room.coordinate.x + room.size.x / 2, room.coordinate.y + room.size.y / 2 };
+	return { room.coordinate.x + room.size.x / 2, room.coordinate.y + room.size.y / 2 };
 }
 
 // Function to connect the new room to one of the nearest reserved rooms
@@ -119,41 +124,41 @@ void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
 	};
 
 
-    if (m_reservedRooms.empty())
-        return; // Nothing to connect to
+	if (m_reservedRooms.empty())
+		return; // Nothing to connect to
 
-    // Calculate the center of the new room
-    Vector2i newCenter = getRoomCenter(newRoom);
-    
-    // List to hold indices of rooms with the minimum distance squared
-    std::vector<size_t> candidateIndices;
-    int minDistSq = std::numeric_limits<int>::max();
-    
-    // Traverse all reserved rooms to find those with the smallest distance
-    for (size_t i = 0; i < m_reservedRooms.size(); ++i)
-    {
-        Vector2i roomCenter = getRoomCenter(m_reservedRooms[i]);
-        int dx = newCenter.x - roomCenter.x;
-        int dy = newCenter.y - roomCenter.y;
-        int distSq = dx * dx + dy * dy;
-        
-        if (distSq < minDistSq)
-        {
-            minDistSq = distSq;
-            candidateIndices.clear();
-            candidateIndices.push_back(i);
-        }
-        else if (distSq == minDistSq)
-            candidateIndices.push_back(i);
-    }
-    
-    // Randomly select one candidate room from the candidates
-    if (!candidateIndices.empty())
-    {
-        std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
-        size_t chosenIndex = candidateIndices[candidateDist(rng)];
-        connectRooms(m_reservedRooms[chosenIndex], newRoom);
-    }
+	// Calculate the center of the new room
+	Vector2i newCenter = getRoomCenter(newRoom);
+	
+	// List to hold indices of rooms with the minimum distance squared
+	std::vector<size_t> candidateIndices;
+	int minDistSq = std::numeric_limits<int>::max();
+	
+	// Traverse all reserved rooms to find those with the smallest distance
+	for (size_t i = 0; i < m_reservedRooms.size(); ++i)
+	{
+		Vector2i roomCenter = getRoomCenter(m_reservedRooms[i]);
+		int dx = newCenter.x - roomCenter.x;
+		int dy = newCenter.y - roomCenter.y;
+		int distSq = dx * dx + dy * dy;
+		
+		if (distSq < minDistSq)
+		{
+			minDistSq = distSq;
+			candidateIndices.clear();
+			candidateIndices.push_back(i);
+		}
+		else if (distSq == minDistSq)
+			candidateIndices.push_back(i);
+	}
+	
+	// Randomly select one candidate room from the candidates
+	if (!candidateIndices.empty())
+	{
+		std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
+		size_t chosenIndex = candidateIndices[candidateDist(rng)];
+		connectRooms(m_reservedRooms[chosenIndex], newRoom);
+	}
 }
 
 
@@ -161,15 +166,12 @@ void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
 
 void GameMap::updatePlayerChunk()
 {
-	m_playerChunk = getPlayerChunk();
-	addToQueue(m_playerChunk + Vector2i{0,1});
-	addToQueue(m_playerChunk + Vector2i{1,0});
-	addToQueue(m_playerChunk + Vector2i{1,1});
-	addToQueue(m_playerChunk - Vector2i{0,1});
-	addToQueue(m_playerChunk - Vector2i{1,0});
-	addToQueue(m_playerChunk - Vector2i{1,1});
-	addToQueue(m_playerChunk + Vector2i{1,0} - Vector2i{0,1});
-	addToQueue(m_playerChunk - Vector2i{1,0} + Vector2i{0,1});
+	Vector2i center = getPlayerChunk();
+	int radius = 3;
+
+	for (int x = -radius; x <= radius; ++x)
+		for (int y = -radius; y <= radius; ++y)
+			addToQueue(center + Vector2i{x, y});
 }
 
 void GameMap::collapseTile(const Vector2i& tileCoordinate)
