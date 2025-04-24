@@ -87,6 +87,16 @@ struct Vector2
 	// Output stream operator
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& v)
 	{ return os << "(" << v.x << ", " << v.y << ")";  }
+
+	constexpr T squaredNorm() const noexcept
+	{
+		return x * x + y * y; // Squared norm for comparison
+	}
+
+	constexpr auto operator<=>(const Vector2& other) const noexcept
+	{
+		return squaredNorm() <=> other.squaredNorm();
+	}
 };
 
 // Scalar * Vector multiplication

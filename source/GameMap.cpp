@@ -64,13 +64,13 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 	if (roomChance(rng) < 60) // 40% chance to create a room
 	{
 		Vector2i roomSize = {
-			2 + rng() % 4,
-			2 + rng() % 4
+			2 + static_cast<int>(rng() % 4),
+			2 + static_cast<int>(rng() % 4)
 		};
 
 		Vector2i roomCoord = {
-			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + (rng() % roomSize.x),
-			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + (rng() % roomSize.y)
+			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.x),
+			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.y)
 		};
 
 		Room newRoom{roomCoord, roomSize};
