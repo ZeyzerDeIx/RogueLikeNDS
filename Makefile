@@ -14,8 +14,9 @@ GAME_AUTHOR := Zeyzer
 SOURCEDIRS  := source
 INCLUDEDIRS := include
 GFXDIRS     := sprites
+NITROFSDIR  := nitrofs
 BINDIRS     :=
-AUDIODIRS   :=
+AUDIODIRS   := audio
 
 # Libraries
 LIBS        := -lmm9 -lnds9

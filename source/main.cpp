@@ -50,6 +50,15 @@ int main(void)
 	
 	player.move({1,1});
 
+	bool init_ok = nitroFSInit(NULL);
+    if (!init_ok) perror("nitroFSInit()");
+
+    // Load and play background music
+    mmInitDefault("nitro:/soundbank.bin");
+    mmLoad(MOD_CORRIDORSUIT);
+    soundEnable();
+    mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
+
 	while (1)
 	{
 		//Debug::get().clearConsole();

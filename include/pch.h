@@ -13,6 +13,9 @@ using ushort = unsigned short;
 #include <cstdlib>
 #include <ctime>
 #include <unordered_map>
+#include <maxmod9.h>
+#include <filesystem.h>
 #include "Constants.h"
 #include "NDSMath.h"
 #include "Debug.h"
+#include "soundbank.h"
