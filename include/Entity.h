@@ -35,9 +35,12 @@ private:
 	u8 m_directions;
 	Hitbox m_hitbox;
 	float m_speed;
+	short m_sfxPlayInterval; //in frames
+	short m_sfxElapsedFrames; //in frames
 
 	void updateHitboxPos();
 	void updateSpriteDirection();
+	void updateAudio();
 
 	friend class Debug;
 };

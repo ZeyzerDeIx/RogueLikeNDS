@@ -1,6 +1,6 @@
 #include "Entity.h"
 #include "Camera.h"
-
+#include "AudioManager.h"
 
 Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
 	m_sprite{sprite},
@@ -9,7 +9,9 @@ Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
 	m_context(context),
 	m_directions{DIRECTION::NONE},
 	m_hitbox{{0,0,0,0}},
-	m_speed(100.f)
+	m_speed(100.f),
+	m_sfxPlayInterval(30),
+	m_sfxElapsedFrames(0)
 {
 	updateHitboxPos();
 
@@ -41,6 +43,8 @@ void Entity::move(Vector2f delta)
 	}
 	
 	updateHitboxPos();
+
+	updateAudio();
 }
 
 void Entity::update(float delta)
@@ -116,4 +120,12 @@ void Entity::updateSpriteDirection()
 									  AnimDir::RIGHT_MOVING);
 	else if (Anim::isMovingState(m_sprite->getState()))
 		m_sprite->setState(m_sprite->getState() - Anim::MOVING_STATE_OFFSET);
+}
+
+void Entity::updateAudio()
+{
+	if(++m_sfxElapsedFrames != m_sfxPlayInterval) return;
+
+	m_sfxElapsedFrames = 0;
+	m_context.audioManager->playRandomFootstep();
 }

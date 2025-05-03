@@ -8,6 +8,7 @@
 #include "GameMap.h"
 #include "GameContext.h"
 #include "Camera.h"
+#include "AudioManager.h"
 
 
 int main(void)
@@ -40,9 +41,12 @@ int main(void)
 
 	GameMap gameMap(context);
 
+    AudioManager audioManager;
+
 	context.gameMap = &gameMap;
 	context.camera = &camera;
 	context.player = &player;
+	context.audioManager = &audioManager;
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
@@ -53,11 +57,6 @@ int main(void)
 	bool init_ok = nitroFSInit(NULL);
     if (!init_ok) perror("nitroFSInit()");
 
-    // Load and play background music
-    mmInitDefault("nitro:/soundbank.bin");
-    mmLoad(MOD_CORRIDORSUIT);
-    soundEnable();
-    mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
 
 	while (1)
 	{
