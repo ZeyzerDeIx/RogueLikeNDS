@@ -9,8 +9,8 @@ Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
 	m_context(context),
 	m_directions{DIRECTION::NONE},
 	m_hitbox{{0,0,0,0}},
-	m_speed(100.f),
-	m_sfxPlayInterval(30),
+	m_speed(50.f),
+	m_sfxPlayInterval(36),
 	m_sfxElapsedFrames(0)
 {
 	updateHitboxPos();
@@ -59,7 +59,7 @@ void Entity::update(float delta)
 	move(deltaPos);
 
 	updateSpriteDirection();
-	m_sprite->update();
+	m_sprite->update(deltaPos.y != 0 ? 2.f : 1.f);
 }
 
 void Entity::display(const Camera& camera)
@@ -124,7 +124,12 @@ void Entity::updateSpriteDirection()
 
 void Entity::updateAudio()
 {
-	if(++m_sfxElapsedFrames != m_sfxPlayInterval) return;
+	if(!isMoving())
+	{
+		m_sfxElapsedFrames = m_sfxPlayInterval;
+		return;
+	}
+	if(m_sfxElapsedFrames++ != m_sfxPlayInterval) return;
 
 	m_sfxElapsedFrames = 0;
 	m_context.audioManager->playRandomFootstep();

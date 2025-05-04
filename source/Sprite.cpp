@@ -33,10 +33,10 @@ Sprite::~Sprite()
 	oamFreeGfx(&oamMain, m_memoryLocation);
 }
 
-void Sprite::update()
+void Sprite::update(float speedFactor)
 {
 	if (m_animSpeed == 0) return;
-	if (++m_counter >= m_animSpeed)
+	if (++m_counter >= m_animSpeed * speedFactor)
 	{
 		skipFrame();
 		m_counter = 0;

@@ -11,9 +11,10 @@ AudioManager::AudioManager()
     mmLoadEffect(SFX_FOOTSTEP4);
     mmLoadEffect(SFX_FOOTSTEP5);
     mmLoadEffect(SFX_FOOTSTEP6);
-    mmSetEffectsVolume(1024);
     soundEnable();
     mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
+
+    mmSetEffectsVolume(700);
 }
 
 AudioManager::~AudioManager()

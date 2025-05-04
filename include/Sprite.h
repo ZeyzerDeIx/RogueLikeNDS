@@ -10,7 +10,7 @@ public:
 		   u16* memoryLocation, u16* data, Vector2i pixelSize = {32, 32});
 	~Sprite();
 
-	void update();
+	void update(float speedFactor = 1);
 	void display(Vector2i pos = {0,0}, bool zoomed = false);
 	void enableAnim(int frameCount = 1, int stateCount = 1, int animSpeed = 1);
 	void skipFrame(int num = 1);
