@@ -1,30 +1,16 @@
 #include "pch.h"
-#include "TileMap.h"
-#include "TileSet.h"
 #include "SpriteManager.h"
-#include "MainCharacterSprite.h"
 #include "NDSTime.h"
-#include "Entity.h"
 #include "GameMap.h"
 #include "GameContext.h"
 #include "Camera.h"
 #include "AudioManager.h"
+#include "GameManager.h"
 
 
 int main(void)
 {
-	std::srand(std::time({}));
-	videoSetMode(MODE_5_2D);
-
-	// Memory mapping
-	vramSetBankB(VRAM_B_MAIN_BG_0x06020000);
-	vramSetBankC(VRAM_C_SUB_BG_0x06200000);
-	vramSetBankD(VRAM_D_MAIN_BG_0x06060000);
-	//vramSetBankE(VRAM_E_MAIN_SPRITE);
-	//vramSetBankF(VRAM_F_MAIN_SPRITE_0x06410000);
-	//vramSetBankG(VRAM_G_MAIN_SPRITE_0x06414000);
-	
-	bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
+	GameManager::initAll();
 
 	//init debug console
 	Debug::get();
@@ -32,8 +18,7 @@ int main(void)
 	GameContext context;
 
 	SpriteManager spManager;
-	Sprite* mainCharacterSprite = CREATE_PARAMETRIZED_SPRITE(spManager, MainCharacterSprite, _16Color, 32, 64);
-	mainCharacterSprite->enableAnim(4,8,8);
+	Sprite* mainCharacterSprite = spManager.getPlayerSprite();
 
 	Entity player(mainCharacterSprite, {24, 34}, context);
 

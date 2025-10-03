@@ -8,6 +8,7 @@ class SpriteManager
 	public:
 		SpriteManager();
 		~SpriteManager();
+
 		Sprite* createSprite(
 			const void* tiles,
 			uint32 tilesLen,
@@ -18,7 +19,10 @@ class SpriteManager
 			int h = 32,
 			int w = 32
 		);
+
+		Sprite* getPlayerSprite();
 	private:
+		Sprite* m_playerSprite;
 		std::list<Sprite*> m_sprites;
 };
 

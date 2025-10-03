@@ -1,9 +1,11 @@
 #include "SpriteManager.h"
+#include "MainCharacterSprite.h"
 
 using namespace std;
 
-SpriteManager::SpriteManager()
+SpriteManager::SpriteManager(): m_playerSprite(nullptr)
 {
+	//alloc memory banks dedicated to sprites
 	vramSetBankE(VRAM_E_MAIN_SPRITE);
 	vramSetBankF(VRAM_F_MAIN_SPRITE_0x06410000);
 	vramSetBankG(VRAM_G_MAIN_SPRITE_0x06414000);
@@ -37,4 +39,15 @@ Sprite* SpriteManager::createSprite(
 	//add the sprite to the sprite list
 	m_sprites.push_back(newSprite);
 	return newSprite;
+}
+
+Sprite* SpriteManager::getPlayerSprite()
+{
+	if(!m_playerSprite)
+	{
+		m_playerSprite = CREATE_PARAMETRIZED_SPRITE((*this), MainCharacterSprite, _16Color, 32, 64);
+		m_playerSprite->enableAnim(4,8,8);
+	}
+
+	return m_playerSprite;
 }
