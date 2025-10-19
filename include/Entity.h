@@ -12,7 +12,7 @@ class Entity: public GameObject
 {
 public:
 	void move(Vector2f delta);
-	void update(float dt);
+	virtual void update(float dt);
 	void display();
 
 	void setDirection(u8 direction, bool enable);
