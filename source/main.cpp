@@ -16,18 +16,19 @@ int main(void)
 	Debug::get();
 
 	SpriteManager spManager;
-	Sprite* mainCharacterSprite = spManager.getPlayerSprite();
-
-	Entity player(mainCharacterSprite, {24, 34});
 
 	GameMap gameMap;
 
     AudioManager audioManager;
 
 	GameContext::get().gameMap = &gameMap;
-	GameContext::get().camera = GameObject::instantiateGO<Camera>("Camera");;
-	GameContext::get().player = &player;
 	GameContext::get().audioManager = &audioManager;
+	GameContext::get().camera = GameObject::instantiateGO<Camera>("Camera");
+	GameContext::get().player = GameObject::instantiateGO<Entity>("Player");
+	GameContext::get().player->setSprite(spManager.getPlayerSprite());
+	GameContext::get().player->setSize({24, 34});
+
+
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
@@ -42,6 +43,7 @@ int main(void)
 	while (1)
 	{
 		//Debug::get().clearConsole();
+		
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
@@ -63,21 +65,20 @@ int main(void)
 		else if (keys_held & KEY_RIGHT)
 			dir |= DIRECTION::RIGHT;
 
-		player.setAllDirections(dir);
+		GameContext::get().player->setAllDirections(dir);
 
 		if (keys_held & KEY_SELECT)
 			scale += 1 << 3;
 		else if (keys_held & KEY_START)
 			scale -= 1 << 3;
 
-		if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
-		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
+		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
+		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		player.update(NDSTime::get().getDeltaTime());
-		player.display();
 		//Debug::get().displayEntityInfo(player);
 
 		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
+		GameContext::get().player->display();
 
 		oamUpdate(&oamMain);
 

@@ -3,22 +3,22 @@
 #include "pch.h"
 #include "Sprite.h"
 #include "Hitbox.h"
+#include "GameObject.h"
 
 class Camera;
 class Debug;
 
-class Entity
+class Entity: public GameObject
 {
 public:
-	Entity(Sprite* sprite, Vector2i size);
-	~Entity();
-
 	void move(Vector2f delta);
 	void update(float dt);
 	void display();
 
 	void setDirection(u8 direction, bool enable);
 	void setAllDirections(u8 directions);
+	void setSprite(Sprite* sprite);
+	void setSize(Vector2i size);
 
 	bool getDirection(u8 direction);
 	const Vector2f& getPosition();
@@ -40,5 +40,8 @@ private:
 	void updateSpriteDirection();
 	void updateAudio();
 
+	Entity(std::string name);
+
 	friend class Debug;
+	friend class GameObject;
 };

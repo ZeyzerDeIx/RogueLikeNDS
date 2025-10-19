@@ -3,22 +3,7 @@
 #include "AudioManager.h"
 #include "GameContext.h"
 
-Entity::Entity(Sprite* sprite, Vector2i size):
-	m_sprite{sprite},
-	m_position{META_TILE::SIZE/2,META_TILE::SIZE/3},
-	m_size{size},
-	m_directions{DIRECTION::NONE},
-	m_hitbox{{0,0,0,0}},
-	m_speed(50.f),
-	m_sfxPlayInterval(36),
-	m_sfxElapsedFrames(0)
-{
-	updateHitboxPos();
-
-	m_hitbox.getBounds().w = m_size.x;
-	m_hitbox.getBounds().h = m_size.y/2;
-}
-
+using namespace std;
 
 void Entity::move(Vector2f delta)
 {
@@ -79,6 +64,22 @@ void Entity::setAllDirections(u8 directions)
 	m_directions = directions;
 }
 
+void Entity::setSprite(Sprite* sprite)
+{
+	m_sprite = sprite;
+}
+
+void Entity::setSize(Vector2i size)
+{
+	m_size = size;
+
+	updateHitboxPos();
+	m_hitbox.getBounds().w = m_size.x;
+	m_hitbox.getBounds().h = m_size.y/2;
+}
+
+
+
 bool Entity::getDirection(u8 direction)
 {
 	return m_directions & direction;
@@ -134,3 +135,18 @@ void Entity::updateAudio()
 	m_sfxElapsedFrames = 0;
 	GameContext::get().audioManager->playRandomFootstep();
 }
+
+
+
+
+Entity::Entity(string name):
+	GameObject(name),
+	m_sprite{nullptr},
+	m_position{META_TILE::SIZE/2,META_TILE::SIZE/3},
+	m_size{20,20}, //default size
+	m_directions{DIRECTION::NONE},
+	m_hitbox{{0,0,0,0}},
+	m_speed(50.f),
+	m_sfxPlayInterval(36),
+	m_sfxElapsedFrames(0)
+{}

@@ -7,8 +7,6 @@
 class Camera: public GameObject
 {
 public:
-	friend class GameObject;
-
 	virtual void update(float dt);
 
 	const Vector2i getDisplayPos(const Entity& entity) const;
@@ -19,4 +17,6 @@ private:
 	Vector2i m_offset;
 
 	Camera(std::string name);
+
+	friend class GameObject;
 };
