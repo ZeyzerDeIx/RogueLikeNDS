@@ -3,19 +3,13 @@
 #include "GameContext.h"
 #include <limits>
 
+using namespace std;
 
 // Alias for better readability
 namespace MT = META_TILE;
 
-GameMap::GameMap()
-{
-	createRoom({{-2,-2},{5,5}});
-	generateChunk({0,0});
-	updatePlayerChunk();
-}
 
-
-void GameMap::update()
+void GameMap::update(float dt)
 {
 	loadDisplayableTilesIntoTileMap();
 	m_tileMap.flush();
@@ -216,4 +210,13 @@ void GameMap::loadDisplayableTilesIntoTileMap()
 			m_tileMap[i][j].setType(getTile({offset.y+i, offset.x+j}));
 
 	m_tileMap.calculateConnections();
+}
+
+
+
+GameMap::GameMap(string name): GameObject(name)
+{
+	createRoom({{-2,-2},{5,5}});
+	generateChunk({0,0});
+	updatePlayerChunk();
 }

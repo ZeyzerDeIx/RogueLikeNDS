@@ -3,15 +3,13 @@
 #include "pch.h"
 #include "TileMap.h"
 #include "Room.h"
+#include "GameObject.h"
 
 
-class GameMap
+class GameMap: public GameObject
 {
 public:
-	GameMap();
-	~GameMap();
-
-	void update();
+	virtual void update(float dt);
 
 	META_TILE::Type getTile(const Vector2i& tileCoordinate) const;
 
@@ -36,4 +34,8 @@ private:
 	const Vector2i getPlayerChunk() const;
 	void loadDisplayableTilesIntoTileMap();
 	void connectNearestRoom(const Room& newRoom, std::mt19937& rng);
+
+	GameMap(std::string name);
+
+	friend class GameObject;
 };

@@ -17,13 +17,13 @@ int main(void)
 
 	SpriteManager spManager;
 
-	GameMap gameMap;
-
     AudioManager audioManager;
-
-	GameContext::get().gameMap = &gameMap;
 	GameContext::get().audioManager = &audioManager;
+
+	GameContext::get().gameMap = GameObject::instantiateGO<GameMap>("GameMap");
+
 	GameContext::get().camera = GameObject::instantiateGO<Camera>("Camera");
+
 	GameContext::get().player = GameObject::instantiateGO<Entity>("Player");
 	GameContext::get().player->setSprite(spManager.getPlayerSprite());
 	GameContext::get().player->setSize({24, 34});
@@ -43,12 +43,10 @@ int main(void)
 	while (1)
 	{
 		//Debug::get().clearConsole();
-		
+
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
 		bgUpdate();
-
-		gameMap.update();
 
 		scanKeys();
 

@@ -10,7 +10,6 @@ class TileMap
 public:
 	// size in tiles
 	TileMap();
-	~TileMap();
 
 	//flush the map into background VRAM
 	void flush();
