@@ -37,10 +37,10 @@ int main(void)
 
 	int scale = 1 << 8;
 	
-	player.move({1,1});
+	//player.move({1,1});
 
-	bool init_ok = nitroFSInit(NULL);
-    if (!init_ok) perror("nitroFSInit()");
+	//bool init_ok = nitroFSInit(NULL);
+    //if (!init_ok) perror("nitroFSInit()");
 
 
 	while (1)
