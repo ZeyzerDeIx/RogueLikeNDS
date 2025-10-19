@@ -62,9 +62,9 @@ void Entity::update(float delta)
 	m_sprite->update(deltaPos.y != 0 ? 2.f : 1.f);
 }
 
-void Entity::display(const Camera& camera)
+void Entity::display()
 {
-	m_sprite->display(camera.getDisplayPos(*this) - m_size/2);
+	m_sprite->display(GameContext::get().camera->getDisplayPos(*this) - m_size/2);
 }
 
 

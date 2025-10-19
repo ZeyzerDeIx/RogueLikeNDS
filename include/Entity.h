@@ -15,7 +15,7 @@ public:
 
 	void move(Vector2f delta);
 	void update(float dt);
-	void display(const Camera& camera);
+	void display();
 
 	void setDirection(u8 direction, bool enable);
 	void setAllDirections(u8 directions);

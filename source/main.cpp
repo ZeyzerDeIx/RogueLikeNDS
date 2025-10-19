@@ -74,7 +74,7 @@ int main(void)
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		player.update(NDSTime::get().getDeltaTime());
-		player.display(*GameContext::get().camera);
+		player.display();
 		//Debug::get().displayEntityInfo(player);
 
 		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
