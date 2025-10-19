@@ -15,16 +15,17 @@ public:
 	static T* instantiateGO(std::string name)
 	{
 		static_assert(std::is_base_of_v<GameObject, T>);
-		m_gameObjects.push_back(std::make_unique<T>(std::move(name)));
+		m_gameObjects.push_back(std::unique_ptr<T>(new T(std::move(name))));
 		return static_cast<T*>(m_gameObjects.back().get());
 	}
 
 	static void updateAllGameObjects(float dt);
 
-private:
+protected:
 	GameObject(std::string name);
 
 	std::string m_name;
 
+private:
 	static std::vector<std::unique_ptr<GameObject>> m_gameObjects;
 };

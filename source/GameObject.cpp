@@ -3,6 +3,8 @@
 
 using namespace std;
 
+vector<unique_ptr<GameObject>> GameObject::m_gameObjects;
+
 void GameObject::update(float dt) {}
 
 
