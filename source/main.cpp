@@ -17,8 +17,7 @@ int main(void)
 
 	SpriteManager spManager;
 
-    AudioManager audioManager;
-	GameContext::get().audioManager = &audioManager;
+	GameContext::get().audioManager = GameObject::instantiateGO<AudioManager>("AudioManager");
 
 	GameContext::get().gameMap = GameObject::instantiateGO<GameMap>("GameMap");
 

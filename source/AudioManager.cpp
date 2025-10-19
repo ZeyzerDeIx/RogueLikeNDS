@@ -1,21 +1,7 @@
 #include "pch.h"
 #include "AudioManager.h"
 
-AudioManager::AudioManager()
-{
-    mmInitDefaultMem((mm_addr)soundbank_bin);
-    mmLoad(MOD_CORRIDORSUIT);
-    mmLoadEffect(SFX_FOOTSTEP1);
-    mmLoadEffect(SFX_FOOTSTEP2);
-    mmLoadEffect(SFX_FOOTSTEP3);
-    mmLoadEffect(SFX_FOOTSTEP4);
-    mmLoadEffect(SFX_FOOTSTEP5);
-    mmLoadEffect(SFX_FOOTSTEP6);
-    soundEnable();
-    mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
-
-    mmSetEffectsVolume(700);
-}
+using namespace std;
 
 AudioManager::~AudioManager()
 {
@@ -36,4 +22,21 @@ void AudioManager::playRandomFootstep()
 		case 5: mmEffect(SFX_FOOTSTEP5); break;
 		case 6: mmEffect(SFX_FOOTSTEP6); break;
 	}
+}
+
+
+AudioManager::AudioManager(string name): GameObject(name)
+{
+    mmInitDefaultMem((mm_addr)soundbank_bin);
+    mmLoad(MOD_CORRIDORSUIT);
+    mmLoadEffect(SFX_FOOTSTEP1);
+    mmLoadEffect(SFX_FOOTSTEP2);
+    mmLoadEffect(SFX_FOOTSTEP3);
+    mmLoadEffect(SFX_FOOTSTEP4);
+    mmLoadEffect(SFX_FOOTSTEP5);
+    mmLoadEffect(SFX_FOOTSTEP6);
+    soundEnable();
+    mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
+
+    mmSetEffectsVolume(700);
 }
