@@ -3,7 +3,6 @@
 #include "pch.h"
 #include "Sprite.h"
 #include "Hitbox.h"
-#include "GameContext.h"
 
 class Camera;
 class Debug;
@@ -11,7 +10,7 @@ class Debug;
 class Entity
 {
 public:
-	Entity(Sprite* sprite, Vector2i size, GameContext& context);
+	Entity(Sprite* sprite, Vector2i size);
 	~Entity();
 
 	void move(Vector2f delta);
@@ -31,7 +30,6 @@ private:
 	// Center of the entity
 	Vector2f m_position;
 	Vector2i m_size;
-	GameContext& m_context;
 	u8 m_directions;
 	Hitbox m_hitbox;
 	float m_speed;

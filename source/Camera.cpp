@@ -1,13 +1,11 @@
 #include "Camera.h"
+#include "GameContext.h"
 
-Camera::Camera(GameContext& context):
-	m_offset{0,0},
-	m_context(context)
-{}
+Camera::Camera(): m_offset{0,0} {}
 
 void Camera::update()
 {
-	m_offset = static_cast<Vector2i>(m_context.player->getPosition())
+	m_offset = static_cast<Vector2i>(GameContext::get().player->getPosition())
 	- Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
 	bgSetScroll(BG::ID, 
 		BG::SIZE_W/2 + m_offset.x % META_TILE::SIZE,
@@ -16,7 +14,7 @@ void Camera::update()
 
 const Vector2i Camera::getDisplayPos(const Entity& entity) const
 {
-	if(&entity == m_context.player) return {SCREEN_SIZE_W/2,SCREEN_SIZE_H/2};
+	if(&entity == GameContext::get().player) return {SCREEN_SIZE_W/2,SCREEN_SIZE_H/2};
 
 	return {0,0};
 }

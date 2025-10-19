@@ -6,7 +6,7 @@
 class Camera
 {
 public:
-	Camera(GameContext& context);
+	Camera();
 	~Camera();
 
 	void update();
@@ -17,5 +17,4 @@ public:
 
 private:
 	Vector2i m_offset;
-	GameContext& m_context;
 };

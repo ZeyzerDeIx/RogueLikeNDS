@@ -1,13 +1,13 @@
 #include "GameMap.h"
 #include "Camera.h"
+#include "GameContext.h"
 #include <limits>
 
 
 // Alias for better readability
 namespace MT = META_TILE;
 
-GameMap::GameMap(GameContext& context):
-	m_context(context)
+GameMap::GameMap()
 {
 	createRoom({{-2,-2},{5,5}});
 	generateChunk({0,0});
@@ -198,14 +198,14 @@ void GameMap::addToQueue(const Vector2i& chunkCoordinate)
 
 const Vector2i GameMap::getPlayerChunk() const
 {
-	if(m_context.player == nullptr) return {0,0};
-	const Vector2i playerCoo = m_context.player->getCoordinates();
+	if(GameContext::get().player == nullptr) return {0,0};
+	const Vector2i playerCoo = GameContext::get().player->getCoordinates();
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 
 void GameMap::loadDisplayableTilesIntoTileMap()
 {
-	const Vector2i offset = m_context.camera->getMetaTileOffset();
+	const Vector2i offset = GameContext::get().camera->getMetaTileOffset();
 
 	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
 	int cols = MT::COUNT_H - WORD_BORDER_SIZE;

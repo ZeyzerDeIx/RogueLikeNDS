@@ -2,14 +2,13 @@
 
 #include "pch.h"
 #include "TileMap.h"
-#include "GameContext.h"
 #include "Room.h"
 
 
 class GameMap
 {
 public:
-	GameMap(GameContext& context);
+	GameMap();
 	~GameMap();
 
 	void update();
@@ -27,7 +26,6 @@ private:
 	std::unordered_map<Vector2i, bool, NDSMath::HashVector2i> m_generatedChunks;
 	std::queue<Vector2i> m_chunksToGenerate;
 	TileMap m_tileMap;
-	GameContext& m_context;
 	Vector2i m_playerChunk;
 	std::vector<Room> m_reservedRooms;
 

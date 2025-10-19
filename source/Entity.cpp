@@ -1,12 +1,12 @@
 #include "Entity.h"
 #include "Camera.h"
 #include "AudioManager.h"
+#include "GameContext.h"
 
-Entity::Entity(Sprite* sprite, Vector2i size, GameContext& context):
+Entity::Entity(Sprite* sprite, Vector2i size):
 	m_sprite{sprite},
 	m_position{META_TILE::SIZE/2,META_TILE::SIZE/3},
 	m_size{size},
-	m_context(context),
 	m_directions{DIRECTION::NONE},
 	m_hitbox{{0,0,0,0}},
 	m_speed(50.f),
@@ -28,7 +28,7 @@ void Entity::move(Vector2f delta)
 		Hitbox futureHitbox = m_hitbox;
 		futureHitbox.getBounds().x += NDSMath::roundAbsCeil(delta.x);
 
-		if (!futureHitbox.intersects(*m_context.gameMap))
+		if (!futureHitbox.intersects(*GameContext::get().gameMap))
 			m_position.x += delta.x;
 	}
 
@@ -38,7 +38,7 @@ void Entity::move(Vector2f delta)
 		Hitbox futureHitbox = m_hitbox;
 		futureHitbox.getBounds().y += NDSMath::roundAbsCeil(delta.y);
 
-		if (!futureHitbox.intersects(*m_context.gameMap))
+		if (!futureHitbox.intersects(*GameContext::get().gameMap))
 			m_position.y += delta.y;
 	}
 	
@@ -132,5 +132,5 @@ void Entity::updateAudio()
 	if(m_sfxElapsedFrames++ != m_sfxPlayInterval) return;
 
 	m_sfxElapsedFrames = 0;
-	m_context.audioManager->playRandomFootstep();
+	GameContext::get().audioManager->playRandomFootstep();
 }

@@ -15,23 +15,21 @@ int main(void)
 	//init debug console
 	Debug::get();
 
-	GameContext context;
-
 	SpriteManager spManager;
 	Sprite* mainCharacterSprite = spManager.getPlayerSprite();
 
-	Entity player(mainCharacterSprite, {24, 34}, context);
+	Entity player(mainCharacterSprite, {24, 34});
 
-	Camera camera(context);
+	Camera camera;
 
-	GameMap gameMap(context);
+	GameMap gameMap;
 
     AudioManager audioManager;
 
-	context.gameMap = &gameMap;
-	context.camera = &camera;
-	context.player = &player;
-	context.audioManager = &audioManager;
+	GameContext::get().gameMap = &gameMap;
+	GameContext::get().camera = &camera;
+	GameContext::get().player = &player;
+	GameContext::get().audioManager = &audioManager;
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
