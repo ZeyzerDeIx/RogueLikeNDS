@@ -2,14 +2,14 @@
 
 #include "pch.h"
 #include "Entity.h"
+#include "GameObject.h"
 
-class Camera
+class Camera: public GameObject
 {
 public:
-	Camera();
-	~Camera();
+	friend class GameObject;
 
-	void update();
+	virtual void update(float dt);
 
 	const Vector2i getDisplayPos(const Entity& entity) const;
 
@@ -17,4 +17,6 @@ public:
 
 private:
 	Vector2i m_offset;
+
+	Camera(std::string name);
 };

@@ -1,9 +1,9 @@
 #include "Camera.h"
 #include "GameContext.h"
 
-Camera::Camera(): m_offset{0,0} {}
+using namespace std;
 
-void Camera::update()
+void Camera::update(float dt)
 {
 	m_offset = static_cast<Vector2i>(GameContext::get().player->getPosition())
 	- Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
@@ -23,3 +23,6 @@ const Vector2i Camera::getMetaTileOffset() const
 {
 	return m_offset / META_TILE::SIZE;
 }
+
+
+Camera::Camera(string name): GameObject(name), m_offset{0,0} {}

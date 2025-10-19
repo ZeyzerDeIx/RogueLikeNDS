@@ -20,14 +20,12 @@ int main(void)
 
 	Entity player(mainCharacterSprite, {24, 34});
 
-	Camera camera;
-
 	GameMap gameMap;
 
     AudioManager audioManager;
 
 	GameContext::get().gameMap = &gameMap;
-	GameContext::get().camera = &camera;
+	GameContext::get().camera = GameObject::instantiateGO<Camera>("Camera");;
 	GameContext::get().player = &player;
 	GameContext::get().audioManager = &audioManager;
 	
@@ -76,10 +74,10 @@ int main(void)
 		if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		player.update(NDSTime::get().getDeltaTime());
-		player.display(camera);
+		player.display(*GameContext::get().camera);
 		//Debug::get().displayEntityInfo(player);
 
-		camera.update();
+		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
 
 		oamUpdate(&oamMain);
 
