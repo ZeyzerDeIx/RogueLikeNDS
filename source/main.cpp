@@ -7,6 +7,7 @@
 #include "AudioManager.h"
 #include "GameManager.h"
 
+#define G_CTXT GameContext::get()
 
 int main(void)
 {
@@ -17,15 +18,15 @@ int main(void)
 
 	SpriteManager spManager;
 
-	GameContext::get().audioManager = GameObject::instantiateGO<AudioManager>("AudioManager");
+	G_CTXT.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager");
 
-	GameContext::get().gameMap = GameObject::instantiateGO<GameMap>("GameMap");
+	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap");
 
-	GameContext::get().camera = GameObject::instantiateGO<Camera>("Camera");
+	G_CTXT.camera = GameObject::instantiateGO<Camera>("Camera");
 
-	GameContext::get().player = GameObject::instantiateGO<Entity>("Player");
-	GameContext::get().player->setSprite(spManager.getPlayerSprite());
-	GameContext::get().player->setSize({24, 34});
+	G_CTXT.player = GameObject::instantiateGO<Entity>("Player");
+	G_CTXT.player->setSprite(spManager.getPlayerSprite());
+	G_CTXT.player->setSize({24, 34});
 
 
 	
@@ -62,7 +63,7 @@ int main(void)
 		else if (keys_held & KEY_RIGHT)
 			dir |= DIRECTION::RIGHT;
 
-		GameContext::get().player->setAllDirections(dir);
+		G_CTXT.player->setAllDirections(dir);
 
 		if (keys_held & KEY_SELECT)
 			scale += 1 << 3;
@@ -75,7 +76,7 @@ int main(void)
 		//Debug::get().displayEntityInfo(player);
 
 		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
-		GameContext::get().player->display();
+		G_CTXT.player->display();
 
 		oamUpdate(&oamMain);
 
