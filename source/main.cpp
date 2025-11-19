@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "AudioManager.h"
 #include "GameManager.h"
+using namespace std::string_literals;
 
 #define G_CTXT GameContext::get()
 
@@ -18,13 +19,13 @@ int main(void)
 
 	SpriteManager spManager;
 
-	G_CTXT.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager");
+	G_CTXT.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager"s);
 
-	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap");
+	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap"s);
 
-	G_CTXT.camera = GameObject::instantiateGO<Camera>("Camera");
+	G_CTXT.camera = GameObject::instantiateGO<Camera>("Camera"s);
 
-	G_CTXT.player = GameObject::instantiateGO<Entity>("Player");
+	G_CTXT.player = GameObject::instantiateGO<Entity>("Player"s);
 	G_CTXT.player->setSprite(spManager.getPlayerSprite());
 	G_CTXT.player->setSize({24, 34});
 
