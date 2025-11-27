@@ -12,10 +12,11 @@ GAME_AUTHOR := Zeyzer
 
 # Source code paths
 SOURCEDIRS  := source
-INCLUDEDIRS := include
+INCLUDEDIRS := include assets
 GFXDIRS     := sprites
 BINDIRS     :=
 AUDIODIRS   := audio
+NITROFSDIR := nitrofs
 
 # Libraries
 LIBS        := -lmm9 -lnds9

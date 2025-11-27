@@ -21,4 +21,3 @@ using ushort = unsigned short;
 #include "NDSMath.h"
 #include "Debug.h"
 #include "soundbank.h"
-#include "soundbank_bin.h"

@@ -27,7 +27,7 @@ void AudioManager::playRandomFootstep()
 
 AudioManager::AudioManager(string name): GameObject(name)
 {
-    mmInitDefaultMem((mm_addr)soundbank_bin);
+    mmInitDefault("nitro:/soundbank.bin");
     mmLoad(MOD_CORRIDORSUIT);
     mmLoadEffect(SFX_FOOTSTEP1);
     mmLoadEffect(SFX_FOOTSTEP2);

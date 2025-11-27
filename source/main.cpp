@@ -12,10 +12,7 @@ using namespace std::string_literals;
 
 int main(void)
 {
-	GameManager::initAll();
-
-	//init debug console
-	Debug::get();
+	GameManager::initAll(true);
 
 	SpriteManager spManager;
 

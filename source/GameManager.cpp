@@ -3,7 +3,7 @@
 GameManager::GameManager() {}
 GameManager::~GameManager() {}
 
-void GameManager::initAll()
+void GameManager::initAll(bool debugMode)
 {
 	std::srand(std::time({}));
 	videoSetMode(MODE_5_2D);
@@ -14,4 +14,12 @@ void GameManager::initAll()
 	vramSetBankD(VRAM_D_MAIN_BG_0x06060000);
 	
 	bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
+
+	bool nitroFSInitSuccess = nitroFSInit(NULL);
+
+	if(!debugMode) return;
+
+	//init debug console
+	Debug::get();
+	std::cout << (nitroFSInitSuccess ? "nitroFSInit succeed" : "nitroFSInit failed") << std::endl;
 }
