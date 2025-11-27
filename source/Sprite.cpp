@@ -5,32 +5,34 @@ using namespace std;
 Sprite::Sprite(
 	SpriteManager* manager,
 	int id,
-	SpriteSize size, SpriteColorFormat format,
-	u16* memoryLocation,
+	SpriteSize spriteSize,
 	u16* data,
-	Vector2i pixelSize) :
+	Vector2i pixelSize,
+	int frameCount,
+	int stateCount,
+	int animSpeed) :
 
 	m_manager(manager),
-	m_id(id),
 	m_pixelSize(pixelSize),
-	m_size(size),
-	m_format(format),
-	m_memoryLocation(memoryLocation),
+	m_spriteSize(spriteSize),
 	m_data(data),
+	m_id(id),
 	
 	// Initialize animation-related members
 	m_currentFrame(0),
-	m_frameCount(1),
+	m_frameCount(frameCount),
 	m_currentState(0),
-	m_stateCount(1),
-	m_animSpeed(1),
-	m_counter(0)
+	m_stateCount(stateCount),
+	m_animSpeed(animSpeed),
+	m_counter(0),
+	m_frameMemoryOffset(pixelSize.x * pixelSize.y / 4)
 {
 }
 
 Sprite::~Sprite()
 {
-	oamFreeGfx(&oamMain, m_memoryLocation);
+	for (int i = 0 ; i < m_frameCount*m_stateCount ; i++)
+    	oamFreeGfx(&oamMain, m_data + i*m_frameMemoryOffset);
 }
 
 void Sprite::update(float speedFactor)
@@ -52,59 +54,36 @@ void Sprite::display(Vector2i pos, bool zoomed)
 		   pos.x, pos.y,
 		   0, //priority
 		   m_id, // palette_alpha
-		   m_size,
-		   m_format,
-		   m_memoryLocation,
+		   m_spriteSize,
+		   SpriteColorFormat_16Color, //systematic
+		   m_data + (m_currentFrame + m_currentState * m_frameCount) * m_frameMemoryOffset,
 		   0, //affine index
 		   zoomed, //sizeDouble
 		   false, false, false, false);
-}
-
-void Sprite::enableAnim(int frameCount, int stateCount, int animSpeed)
-{
-	m_frameCount = frameCount;
-	m_stateCount = stateCount;
-	m_animSpeed = animSpeed;
 }
 
 void Sprite::skipFrame(int num)
 {
 	// Modulo ensures that we do not set a non-existent frame
 	m_currentFrame = (m_currentFrame + num) % m_frameCount;
-	updateOffset();
+	//updateOffset();
 }
 
 void Sprite::setState(int state)
 {
 	// Modulo ensures that we do not set a non-existent state
 	m_currentState = state % m_stateCount;
-	updateOffset();
+	//updateOffset();
 }
 
 void Sprite::setFrame(int frame)
 {
 	// Ensure frame does not exceed allowed range
 	m_currentFrame = std::min(frame, m_frameCount - 1);
-	updateOffset();
+	//updateOffset();
 }
 
 int Sprite::getState() { return m_currentState; }
-
-void Sprite::updateOffset()
-{
-	// Raw pixel size of a single sprite frame
-	int rawPixelSize = m_pixelSize.x * m_pixelSize.y;
-
-	// Compute the offset of the frame to load
-	int offset = reinterpret_cast<int>(m_data) +
-		(m_currentFrame + m_currentState * m_frameCount) * (rawPixelSize >> 1);
-
-	// Load the desired sprite frame
-	swiFastCopy(reinterpret_cast<u16*>(offset), m_memoryLocation, rawPixelSize >> 3);
-
-	/* Note: The division by 2 (>>1) is essential, although its necessity is unclear.
-	*  Similarly, the int and u16* conversions are required for correct behavior. */
-}
 
 const Vector2i& Sprite::getPixelSize() const
 {

@@ -10,14 +10,14 @@ class SpriteManager
 		~SpriteManager();
 
 		Sprite* createSprite(
-			const void* tiles,
+			std::string const& name,
 			uint32 tilesLen,
-			const void* pal,
 			uint32 palLen,
-			SpriteSize size = SpriteSize_32x32,
-			SpriteColorFormat format = SpriteColorFormat_16Color,
-			int h = 32,
-			int w = 32
+			SpriteSize spriteSize = SpriteSize_32x32,
+			Vector2i pixelSize = {32, 32},
+			int frameCount = 1,
+			int stateCount = 1,
+			int animSpeed = 1
 		);
 
 		Sprite* getPlayerSprite();
@@ -29,17 +29,17 @@ class SpriteManager
 
 #define CREATE_SPRITE(spriteManager,spriteName)\
 spriteManager.createSprite(\
-spriteName ## Tiles,\
+#spriteName,\
 spriteName ## TilesLen,\
-spriteName ## Pal,\
 spriteName ## PalLen)
 
-#define CREATE_PARAMETRIZED_SPRITE(spriteManager,spriteName,format,sx,sy)\
+#define CREATE_PARAMETRIZED_SPRITE(spriteManager,spriteName,sx,sy,frameCount,stateCount,animSpeed)\
 spriteManager.createSprite(\
-spriteName ## Tiles,\
+#spriteName,\
 spriteName ## TilesLen,\
-spriteName ## Pal,\
-spriteName ## PalLen, SpriteSize_ ## sx ## x ## sy,\
-SpriteColorFormat ## format,\
-sx,\
-sy)
+spriteName ## PalLen,\
+SpriteSize_ ## sx ## x ## sy,\
+{sx,sy},\
+frameCount,\
+stateCount,\
+animSpeed)
