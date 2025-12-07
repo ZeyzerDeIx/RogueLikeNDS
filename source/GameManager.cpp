@@ -14,6 +14,7 @@ void GameManager::initAll(bool debugMode)
 	vramSetBankD(VRAM_D_MAIN_BG_0x06060000);
 	
 	bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
+	bgSetControlBits(BG::ID, BG_WRAP_ON);
 
 	bool nitroFSInitSuccess = nitroFSInit(NULL);
 

@@ -11,8 +11,11 @@ namespace MT = META_TILE;
 
 void GameMap::update(float dt)
 {
-	loadDisplayableTilesIntoTileMap();
-	m_tileMap.flush();
+	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset(); offset != m_lastOffset)
+	{
+		loadDisplayableTilesIntoTileMap(offset);
+		m_tileMap.flush();
+	}
 
 	if(m_playerChunk != getPlayerChunk())
 		updatePlayerChunk();
@@ -197,9 +200,9 @@ const Vector2i GameMap::getPlayerChunk() const
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 
-void GameMap::loadDisplayableTilesIntoTileMap()
+void GameMap::loadDisplayableTilesIntoTileMap(Vector2i const& offset)
 {
-	const Vector2i offset = GameContext::get().camera->getMetaTileOffset();
+	m_lastOffset = offset;
 
 	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
 	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
