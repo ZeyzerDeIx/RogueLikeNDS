@@ -17,6 +17,7 @@ public:
 	std::vector<MetaTile>& operator[](int key);
 private:
 	std::vector<std::vector<MetaTile>> m_tileMap;
+	std::span<u16[SUB_TILE::COUNT_H]> m_tileIndicesView;
 
 	//Convert m_tileMap into a background adapted tilemap
 	void convertMap();
