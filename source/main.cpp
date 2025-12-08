@@ -40,7 +40,8 @@ int main(void)
 
 	while (1)
 	{
-		//Debug::get().clearConsole();
+		Debug::get().clearConsole();
+		Debug::get().logProfile();
 
 		// Update registers during the vertical blanking period to prevent
 		// screen tearing.
@@ -71,7 +72,7 @@ int main(void)
 		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		//Debug::get().displayEntityInfo(player);
+		Debug::get().logEntityInfo(*G_CTXT.player);
 
 		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
 		G_CTXT.player->display();
@@ -82,7 +83,8 @@ int main(void)
 		bgSetScale(BG::ID, scale, scale);
 
 		NDSTime::get().newFrame();
-		//Debug::get().displayFps();
+		Debug::get().logFps();
+
 		
 		swiWaitForVBlank();
 	}

@@ -9,11 +9,17 @@ public:
 		return instance;
 	}
 	void clearConsole();
-	void displayFps();
-	void displayEntityInfo(Entity& entity);
+	void logFps();
+	void logEntityInfo(Entity& entity);
+	void beginProfile();
+	void endProfile();
+	void logProfile();
 private:
 	Debug();
 	~Debug(){};
+
+	u32 m_ticks;
+	u32 m_usec;
 	
 	Debug(const Debug&) = delete;
 	Debug& operator=(const Debug&) = delete;

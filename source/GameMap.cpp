@@ -11,7 +11,7 @@ namespace MT = META_TILE;
 
 void GameMap::update(float dt)
 {
-	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset(); offset != m_lastOffset)
+	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset();  offset != m_lastOffset)
 	{
 		loadDisplayableTilesIntoTileMap(offset);
 		m_tileMap.flush();

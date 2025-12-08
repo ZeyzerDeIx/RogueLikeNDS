@@ -2,44 +2,59 @@
 #include "NDSTime.h"
 #include "Entity.h"
 
-using namespace std;
-
 Debug::Debug()
 {
 	consoleDemoInit();
-	cout << fixed << setprecision(1);
 }
 
 void Debug::clearConsole()
 {
-	cout << "\x1b[2J\x1b[H";
+	printf("\x1b[2J\x1b[H");
 }
 
-void Debug::displayFps()
+void Debug::logFps()
 {
-	cout << "\x1b[23;23HFPS:" << setfill(' ') << setw(5) << NDSTime::get().getFps() << "\x1b[0;0H";
+	printf("\x1b[23;23HFPS:%5.2d\x1b[0;0H", NDSTime::get().getFps());
 }
 
-void Debug::displayEntityInfo(Entity& entity)
+void Debug::logEntityInfo(Entity& entity)
 {
-	cout << "\x1b[10;0HPosition: (" << entity.m_position.x << ", " << entity.m_position.y << ")";
+	// 1. Position
+	printf("\x1b[10;0HPosition: (%.2f, %.2f)", entity.m_position.x, entity.m_position.y);
 
-	cout << "\x1b[11;0HSize: (" << entity.m_size.x << ", " << entity.m_size.y << ")";
+	// 2. Size
+	printf("\x1b[11;0HSize: (%d, %d)", entity.m_size.x, entity.m_size.y);
 
-	cout << "\x1b[12;0HDirections: " 
-	 << ((entity.m_directions & DIRECTION::TOP) ? "TOP " : "")
-	 << ((entity.m_directions & DIRECTION::BOT) ? "BOT " : "")
-	 << ((entity.m_directions & DIRECTION::LEFT) ? "LEFT " : "")
-	 << ((entity.m_directions & DIRECTION::RIGHT) ? "RIGHT " : "")
-	 << ((entity.m_directions == DIRECTION::NONE) ? "NONE" : "");
+	// 3. Directions (Using string formatters with ternary operators)
+	printf("\x1b[12;0HDirections: %s%s%s%s%s",
+		(entity.m_directions & DIRECTION::TOP)   ? "TOP " : "",
+		(entity.m_directions & DIRECTION::BOT)   ? "BOT " : "",
+		(entity.m_directions & DIRECTION::LEFT)  ? "LEFT " : "",
+		(entity.m_directions & DIRECTION::RIGHT) ? "RIGHT " : "",
+		(entity.m_directions == DIRECTION::NONE) ? "NONE" : ""
+	);
 
+	// 4. Hitbox (Assuming integer bounds, use %f if float)
+	auto bounds = entity.m_hitbox.getBounds();
+	printf("\x1b[13;0HHitbox:(%d, %d, %d, %d)", 
+		bounds.x, bounds.y, bounds.w, bounds.h);
 
-	cout << "\x1b[13;0HHitbox:("
-	 << entity.m_hitbox.getBounds().x << ","
-	 << entity.m_hitbox.getBounds().y << ","
-	 << entity.m_hitbox.getBounds().w << ","
-	 << entity.m_hitbox.getBounds().h << ")";
+	// 5. Speed (Assuming int, use %.2f if float) and reset cursor
+	printf("\x1b[14;0HSpeed: %.2f\x1b[0;0H", entity.m_speed);
+}
 
-	cout << "\x1b[14;0HSpeed: " << entity.m_speed << "\x1b[0;0H";
+void Debug::beginProfile()
+{
+	cpuStartTiming(2);
+}
 
+void Debug::endProfile()
+{
+	m_ticks = cpuEndTiming();
+	m_usec = timerTicks2usec(m_ticks);
+}
+
+void Debug::logProfile()
+{
+	printf("Profile: %lu ticks (%lu us)\n", m_ticks, m_usec);
 }
