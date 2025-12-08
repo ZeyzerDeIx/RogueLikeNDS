@@ -17,8 +17,6 @@ public:
 	std::vector<MetaTile>& operator[](int key);
 private:
 	std::vector<std::vector<MetaTile>> m_tileMap;
-	// real background accurate tilemap based on sub tiles made by grit
-	static u16 m_bgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
 	//Convert m_tileMap into a background adapted tilemap
 	void convertMap();
