@@ -1,12 +1,18 @@
 #include "TileMap.h"
 #include "TileSet.h"
 
-TileMap::TileMap(): 
-	m_tileMap(META_TILE::COUNT_W, std::vector<MetaTile>(META_TILE::COUNT_H))
+TileMap::TileMap()
 {
 	// Load tiles data in memory
 	swiFastCopy(TileSetTiles, bgGetGfxPtr(BG::ID), TileSetTilesLen>>2);
 	swiFastCopy(TileSetPal, BG_PALETTE, TileSetPalLen>>2);
+
+	for (int i = 0; i < META_TILE::COUNT_W; ++i)
+	{
+		m_tileMap.push_back(CircularDeque<MetaTile, META_TILE::COUNT_H>());
+		for (int j = 0; j < META_TILE::COUNT_H; ++j)
+			m_tileMap[i].push_back(MetaTile());
+	}
 
 	calculateConnections();
     
@@ -20,7 +26,7 @@ void TileMap::flush()
 	convertMap();
 }
 
-std::vector<MetaTile>& TileMap::operator[](int key)
+CircularDeque<MetaTile, META_TILE::COUNT_H>& TileMap::operator[](int key)
 {
 	return m_tileMap[key];
 }
@@ -29,12 +35,12 @@ std::vector<MetaTile>& TileMap::operator[](int key)
 
 void TileMap::convertMap()
 {
-	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
-	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
+	int rows = META_TILE::COUNT_W;
+	int cols = META_TILE::COUNT_H;
 	
 
-	for (int i = WORD_BORDER_SIZE ; i < rows ; ++i)
-		for (int j = WORD_BORDER_SIZE ; j < cols ; ++j)
+	for (int i = 0 ; i < rows ; ++i)
+		for (int j = 0 ; j < cols ; ++j)
 			m_tileMap[i][j].flush(m_tileIndicesView, {i, j});
 }
 
@@ -44,12 +50,12 @@ void TileMap::calculateConnections()
 	using namespace META_TILE;
 	using namespace DIRECTION;
 
-	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
-	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
+	int rows = COUNT_H;
+	int cols = COUNT_W;
 
-	for (int y = WORD_BORDER_SIZE; y < rows; ++y)
+	for (int y = 0; y < rows; ++y)
 	{
-		for (int x = WORD_BORDER_SIZE; x < cols; ++x)
+		for (int x = 0; x < cols; ++x)
 		{
 			MetaTile& tile = m_tileMap[y][x];
 			const Type& type = tile.getType();

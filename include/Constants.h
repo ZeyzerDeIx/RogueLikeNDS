@@ -4,7 +4,7 @@
 constexpr int SCREEN_SIZE_W = 256;
 constexpr int SCREEN_SIZE_H = 192;
 
-constexpr int WORD_BORDER_SIZE = 2;
+constexpr int WORD_BORDER_SIZE = 0;
 
 
 namespace BG

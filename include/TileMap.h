@@ -2,6 +2,7 @@
 
 #include "pch.h"
 #include "MetaTile.h"
+#include "CircularDeque.h"
 
 class GameMap;
 
@@ -14,9 +15,9 @@ public:
 	//flush the map into background VRAM
 	void flush();
 
-	std::vector<MetaTile>& operator[](int key);
+	CircularDeque<MetaTile, META_TILE::COUNT_H>& operator[](int key);
 private:
-	std::vector<std::vector<MetaTile>> m_tileMap;
+	CircularDeque<CircularDeque<MetaTile, META_TILE::COUNT_H>, META_TILE::COUNT_W> m_tileMap;
 	std::span<u16[SUB_TILE::COUNT_H]> m_tileIndicesView;
 
 	//Convert m_tileMap into a background adapted tilemap
