@@ -10,6 +10,7 @@ TileMap::TileMap():
 
 	calculateConnections();
     
+    // Reinterpret bgGetMapPtr into m_tileIndicesView to allow simple access using [][]
     auto ptr2D = reinterpret_cast<u16(*)[SUB_TILE::COUNT_H]>(bgGetMapPtr(BG::ID));
     m_tileIndicesView = std::span<u16[SUB_TILE::COUNT_H]>(ptr2D, SUB_TILE::COUNT_W);
 }
@@ -28,7 +29,6 @@ std::vector<MetaTile>& TileMap::operator[](int key)
 
 void TileMap::convertMap()
 {
-	Debug::get().beginProfile();
 	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
 	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
 	
@@ -36,7 +36,6 @@ void TileMap::convertMap()
 	for (int i = WORD_BORDER_SIZE ; i < rows ; ++i)
 		for (int j = WORD_BORDER_SIZE ; j < cols ; ++j)
 			m_tileMap[i][j].flush(m_tileIndicesView, {i, j});
-	Debug::get().endProfile();
 }
 
 
