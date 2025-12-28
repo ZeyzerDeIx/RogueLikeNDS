@@ -8,12 +8,28 @@ using namespace std;
 // Alias for better readability
 namespace MT = META_TILE;
 
+static u8 determineDirections(Vector2i const& lastOffset, Vector2i const& newOffset)
+{
+	return 
+	    ((lastOffset.x > newOffset.x) ? DIRECTION::LEFT : 0) |
+	    ((lastOffset.x < newOffset.x) ? DIRECTION::RIGHT : 0) |
+	    ((lastOffset.y > newOffset.y) ? DIRECTION::TOP : 0) |
+	    ((lastOffset.y < newOffset.y) ? DIRECTION::BOT : 0);
+}
+
 
 void GameMap::update(float dt)
 {
-	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset();  offset != m_lastOffset)
+	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset();  offset != m_offset)
 	{
-		loadDisplayableTilesIntoTileMap(offset);
+		u8 directions = determineDirections(m_offset,offset);
+		m_offset = offset;
+		if(directions & DIRECTION::LEFT) left();
+		else if(directions & DIRECTION::RIGHT) right();
+		if(directions & DIRECTION::TOP) top();
+		else if(directions & DIRECTION::BOT) bottom();
+		//loadDisplayableTilesIntoTileMap();
+		//m_tileMap.calculateConnections();
 		m_tileMap.flush();
 	}
 
@@ -95,6 +111,7 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 	}
 		
 	m_generatedChunks[chunkCoordinate] = true;
+	loadDisplayableTilesIntoTileMap();
 }
 
 // Function to compute the center of a room
@@ -200,19 +217,32 @@ const Vector2i GameMap::getPlayerChunk() const
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 
-void GameMap::loadDisplayableTilesIntoTileMap(Vector2i const& offset)
+void GameMap::loadDisplayableTilesIntoTileMap()
 {
-	m_lastOffset = offset;
-
 	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
 	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
 
 	// 2 represent how many tiles are out of camera fov
 	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
 		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
-			m_tileMap[i][j].setType(getTile({offset.y+i, offset.x+j}));
+			m_tileMap[i][j].setType(getTile({m_offset.x+j, m_offset.y+i}));
+}
 
-	m_tileMap.calculateConnections();
+void GameMap::left()
+{
+	m_tileMap.left(*this, m_offset);
+}
+void GameMap::right()
+{
+	m_tileMap.right(*this, m_offset);
+}
+void GameMap::top()
+{
+	m_tileMap.top(*this, m_offset);
+}
+void GameMap::bottom()
+{
+	m_tileMap.bottom(*this, m_offset);
 }
 
 

@@ -24,6 +24,10 @@ private:
 	void convertMap();
 
 	void calculateConnections();
+	void left(GameMap const& gameMap, Vector2i const& offset);
+	void right(GameMap const& gameMap, Vector2i const& offset);
+	void top(GameMap const& gameMap, Vector2i const& offset);
+	void bottom(GameMap const& gameMap, Vector2i const& offset);
 
 	friend class GameMap;
 };

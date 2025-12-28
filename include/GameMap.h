@@ -27,15 +27,20 @@ private:
 	Vector2i m_playerChunk;
 	std::vector<Room> m_reservedRooms;
 
-	Vector2i m_lastOffset = {0,0};
+	Vector2i m_offset = {0,0};
 
 	void updatePlayerChunk();
 	void collapseTile(const Vector2i& tileCoordinate);
 	void createRoom(const Room& room);
 	void addToQueue(const Vector2i& chunkCoordinate);
 	const Vector2i getPlayerChunk() const;
-	void loadDisplayableTilesIntoTileMap(Vector2i const& offset);
+	void loadDisplayableTilesIntoTileMap();
 	void connectNearestRoom(const Room& newRoom, std::mt19937& rng);
+
+	void left();
+	void right();
+	void top();
+	void bottom();
 
 	GameMap(std::string name);
 

@@ -5,11 +5,10 @@ using namespace std;
 
 void Camera::update(float dt)
 {
-	m_offset = static_cast<Vector2i>(GameContext::get().player->getPosition())
-	- Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
+	m_offset = static_cast<Vector2i>(GameContext::get().player->getPosition());
 	bgSetScroll(BG::ID, 
-		/*BG::SIZE_W/2 + */m_offset.x/* % META_TILE::SIZE*/,
-		/*BG::SIZE_H/2 + */m_offset.y/* % META_TILE::SIZE*/);
+		META_TILE::SIZE*6+ m_offset.x,
+		META_TILE::SIZE*6+ m_offset.y);
 }
 
 const Vector2i Camera::getDisplayPos(const Entity& entity) const
@@ -21,7 +20,7 @@ const Vector2i Camera::getDisplayPos(const Entity& entity) const
 
 const Vector2i Camera::getMetaTileOffset() const
 {
-	return m_offset / META_TILE::SIZE;
+	return (m_offset - Vector2i{BG::SIZE_W/2,BG::SIZE_H/2}) / META_TILE::SIZE;
 }
 
 

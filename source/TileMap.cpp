@@ -1,5 +1,6 @@
 #include "TileMap.h"
 #include "TileSet.h"
+#include "GameMap.h"
 
 TileMap::TileMap()
 {
@@ -9,9 +10,9 @@ TileMap::TileMap()
 
 	for (int i = 0; i < META_TILE::COUNT_W; ++i)
 	{
-		m_tileMap.push_back(CircularDeque<MetaTile, META_TILE::COUNT_H>());
+		m_tileMap.pushFront(CircularDeque<MetaTile, META_TILE::COUNT_H>());
 		for (int j = 0; j < META_TILE::COUNT_H; ++j)
-			m_tileMap[i].push_back(MetaTile());
+			m_tileMap.front().pushFront(MetaTile());
 	}
 
 	calculateConnections();
@@ -41,7 +42,7 @@ void TileMap::convertMap()
 
 	for (int i = 0 ; i < rows ; ++i)
 		for (int j = 0 ; j < cols ; ++j)
-			m_tileMap[i][j].flush(m_tileIndicesView, {i, j});
+			m_tileMap.at(i).at(j).flush(m_tileIndicesView, {i, j});
 }
 
 
@@ -82,4 +83,37 @@ void TileMap::calculateConnections()
 			tile.setConnections(con);
 		}
 	}
+}
+
+
+void TileMap::left(GameMap const& gameMap, Vector2i const& offset)
+{
+	for (int i = 0; i < META_TILE::COUNT_H; ++i)
+	{
+		m_tileMap[i].pushBackNoRealloc();
+		m_tileMap[i].back().setType(gameMap.getTile({offset.x + 1, offset.y+i}));
+	}
+}
+void TileMap::right(GameMap const& gameMap, Vector2i const& offset)
+{
+	for (int i = 0; i < META_TILE::COUNT_H; ++i)
+	{
+		m_tileMap[i].front().setType(gameMap.getTile({offset.x + META_TILE::COUNT_W-1, offset.y+i}));
+		m_tileMap[i].pushFrontNoRealloc();
+		m_tileMap[i].front().setType(gameMap.getTile({offset.x + META_TILE::COUNT_W, offset.y+i}));
+	}
+}
+void TileMap::top(GameMap const& gameMap, Vector2i const& offset)
+{
+	m_tileMap.pushBackNoRealloc();
+	for (int i = 0; i < META_TILE::COUNT_W; ++i)
+		m_tileMap.back()[i].setType(gameMap.getTile({offset.x+i, offset.y + 1}));
+}
+void TileMap::bottom(GameMap const& gameMap, Vector2i const& offset)
+{
+	for (int i = 0; i < META_TILE::COUNT_W; ++i)
+		m_tileMap.front()[i].setType(gameMap.getTile({offset.x+i, offset.y + META_TILE::COUNT_H-1}));
+	m_tileMap.pushFrontNoRealloc();
+	for (int i = 0; i < META_TILE::COUNT_W; ++i)
+		m_tileMap.front()[i].setType(gameMap.getTile({offset.x+i, offset.y + META_TILE::COUNT_H}));
 }
