@@ -2,6 +2,8 @@
 
 #include "pch.h"
 
+using TileIndicesView = std::span<u16[SUB_TILE::COUNT_H]>;
+
 class Tile
 {
 public:
@@ -9,7 +11,7 @@ public:
 	
 	void setConnections(u8 connections);
 
-	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos);
+	void flush(TileIndicesView tileIndicesView, META_TILE::Type type, Vector2i pos);
 private:
 	u16 m_connections    : 7;
 	u16 m_metaTileColumn : 7;

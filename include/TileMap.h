@@ -7,7 +7,6 @@
 class GameMap;
 
 using TileMapData = CircularDeque<CircularDeque<MetaTile, META_TILE::COUNT_H>, META_TILE::COUNT_W>;
-using TileIndicesView = std::span<u16[SUB_TILE::COUNT_H]>;
 
 class TileMap
 {

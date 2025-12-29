@@ -13,7 +13,7 @@ void Tile::setConnections(u8 connections)
 	m_metaTileColumn = connections % TILESET::COUNT_W;
 }
 
-void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos)
+void Tile::flush(TileIndicesView tileIndicesView, META_TILE::Type type, Vector2i pos)
 {
 	// Layout constants
 	constexpr int SUBTILES_PER_AXIS = (TILE::SIZE / SUB_TILE::SIZE);
@@ -55,8 +55,8 @@ void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type ty
 	const int mapY = pos.y * SUBTILES_PER_AXIS;
 
 	// Note: Mapping assumes specific target layout (TR mapped to Y+1)
-	bgTileMap[mapX][mapY]         = subTileTL | hwAttributes;
-	bgTileMap[mapX][mapY + 1]     = subTileTR | hwAttributes;
-	bgTileMap[mapX + 1][mapY]     = subTileBL | hwAttributes;
-	bgTileMap[mapX + 1][mapY + 1] = subTileBR | hwAttributes;
+	tileIndicesView[mapX][mapY]         = subTileTL | hwAttributes;
+	tileIndicesView[mapX][mapY + 1]     = subTileTR | hwAttributes;
+	tileIndicesView[mapX + 1][mapY]     = subTileBL | hwAttributes;
+	tileIndicesView[mapX + 1][mapY + 1] = subTileBR | hwAttributes;
 }

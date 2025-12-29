@@ -8,7 +8,7 @@ class MetaTile
 public:
 	MetaTile(META_TILE::Type type = META_TILE::Type::Path);
 
-	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
+	void flush(TileIndicesView tileIndicesView, Vector2i pos);
 
 	const META_TILE::Type& getType() const;
 	
