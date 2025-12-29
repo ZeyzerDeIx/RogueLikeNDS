@@ -6,6 +6,9 @@
 
 class GameMap;
 
+using TileMapData = CircularDeque<CircularDeque<MetaTile, META_TILE::COUNT_H>, META_TILE::COUNT_W>;
+using TileIndicesView = std::span<u16[SUB_TILE::COUNT_H]>;
+
 class TileMap
 {
 public:
@@ -17,11 +20,8 @@ public:
 
 	CircularDeque<MetaTile, META_TILE::COUNT_H>& operator[](int key);
 private:
-	CircularDeque<CircularDeque<MetaTile, META_TILE::COUNT_H>, META_TILE::COUNT_W> m_tileMap;
-	std::span<u16[SUB_TILE::COUNT_H]> m_tileIndicesView;
-
-	//Convert m_tileMap into a background adapted tilemap
-	void convertMap();
+	TileMapData m_tileMap;
+	TileIndicesView m_tileIndicesView;
 
 	void calculateConnections();
 	void left(GameMap const& gameMap, Vector2i const& offset);

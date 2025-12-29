@@ -50,8 +50,8 @@ void Debug::beginProfile()
 
 void Debug::endProfile()
 {
-	m_ticks = cpuEndTiming();
-	m_usec = timerTicks2usec(m_ticks);
+	Debug::get().m_ticks = cpuEndTiming();
+	Debug::get().m_usec = timerTicks2usec(Debug::get().m_ticks);
 }
 
 void Debug::logProfile()

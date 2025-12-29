@@ -14,8 +14,6 @@ TileMap::TileMap()
 		for (int j = 0; j < META_TILE::COUNT_H; ++j)
 			m_tileMap.front().pushFront(MetaTile());
 	}
-
-	calculateConnections();
     
     // Reinterpret bgGetMapPtr into m_tileIndicesView to allow simple access using [][]
     auto ptr2D = reinterpret_cast<u16(*)[SUB_TILE::COUNT_H]>(bgGetMapPtr(BG::ID));
@@ -24,18 +22,6 @@ TileMap::TileMap()
 
 void TileMap::flush()
 {
-	convertMap();
-}
-
-CircularDeque<MetaTile, META_TILE::COUNT_H>& TileMap::operator[](int key)
-{
-	return m_tileMap[key];
-}
-
-
-
-void TileMap::convertMap()
-{
 	int rows = META_TILE::COUNT_W;
 	int cols = META_TILE::COUNT_H;
 	
@@ -43,6 +29,11 @@ void TileMap::convertMap()
 	for (int i = 0 ; i < rows ; ++i)
 		for (int j = 0 ; j < cols ; ++j)
 			m_tileMap.at(i).at(j).flush(m_tileIndicesView, {i, j});
+}
+
+CircularDeque<MetaTile, META_TILE::COUNT_H>& TileMap::operator[](int key)
+{
+	return m_tileMap[key];
 }
 
 
@@ -91,29 +82,29 @@ void TileMap::left(GameMap const& gameMap, Vector2i const& offset)
 	for (int i = 0; i < META_TILE::COUNT_H; ++i)
 	{
 		m_tileMap[i].pushBackNoRealloc();
-		m_tileMap[i].back().setType(gameMap.getTile({offset.x + 1, offset.y+i}));
+		m_tileMap[i].back().setType(gameMap.getTile(offset + Vector2i{1,i}));
 	}
 }
 void TileMap::right(GameMap const& gameMap, Vector2i const& offset)
 {
 	for (int i = 0; i < META_TILE::COUNT_H; ++i)
 	{
-		m_tileMap[i].front().setType(gameMap.getTile({offset.x + META_TILE::COUNT_W-1, offset.y+i}));
+		m_tileMap[i].front().setType(gameMap.getTile(offset + Vector2i{META_TILE::COUNT_W-1,i}));
 		m_tileMap[i].pushFrontNoRealloc();
-		m_tileMap[i].front().setType(gameMap.getTile({offset.x + META_TILE::COUNT_W, offset.y+i}));
+		m_tileMap[i].front().setType(gameMap.getTile(offset + Vector2i{META_TILE::COUNT_W,i}));
 	}
 }
 void TileMap::top(GameMap const& gameMap, Vector2i const& offset)
 {
 	m_tileMap.pushBackNoRealloc();
 	for (int i = 0; i < META_TILE::COUNT_W; ++i)
-		m_tileMap.back()[i].setType(gameMap.getTile({offset.x+i, offset.y + 1}));
+		m_tileMap.back()[i].setType(gameMap.getTile(offset + Vector2i{i,1}));
 }
 void TileMap::bottom(GameMap const& gameMap, Vector2i const& offset)
 {
 	for (int i = 0; i < META_TILE::COUNT_W; ++i)
-		m_tileMap.front()[i].setType(gameMap.getTile({offset.x+i, offset.y + META_TILE::COUNT_H-1}));
+		m_tileMap.front()[i].setType(gameMap.getTile(offset + Vector2i{i,META_TILE::COUNT_H-1}));
 	m_tileMap.pushFrontNoRealloc();
 	for (int i = 0; i < META_TILE::COUNT_W; ++i)
-		m_tileMap.front()[i].setType(gameMap.getTile({offset.x+i, offset.y + META_TILE::COUNT_H}));
+		m_tileMap.front()[i].setType(gameMap.getTile(offset + Vector2i{i,META_TILE::COUNT_H}));
 }

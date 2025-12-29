@@ -15,8 +15,8 @@ public:
 	void clearConsole();
 	void logFps();
 	void logEntityInfo(Entity& entity);
-	void beginProfile();
-	void endProfile();
+	static void beginProfile();
+	static void endProfile();
 	void logProfile();
 	static void nocashLog(const char* logTxt) { nocashMessage(logTxt); }
 	static void nocashLogF(const char* format, ...)

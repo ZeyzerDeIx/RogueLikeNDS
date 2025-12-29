@@ -18,13 +18,13 @@ int main(void)
 
 	G_CTXT.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager"s);
 
-	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap"s);
-
 	G_CTXT.camera = GameObject::instantiateGO<Camera>("Camera"s);
 
 	G_CTXT.player = GameObject::instantiateGO<Entity>("Player"s);
 	G_CTXT.player->setSprite(spManager.getPlayerSprite());
 	G_CTXT.player->setSize({24, 34});
+
+	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap"s);
 
 
 	

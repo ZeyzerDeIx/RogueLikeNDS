@@ -11,6 +11,10 @@ struct Vector2
 {
 	T x, y;
 
+	constexpr Vector2() noexcept : x(0), y(0) {}
+
+    constexpr Vector2(T x, T y) noexcept : x(x), y(y) {}
+
 	template <typename U>
 	constexpr explicit operator Vector2<U>() const noexcept
 	{
@@ -21,7 +25,9 @@ struct Vector2
 
 	// Addition
 	constexpr Vector2 operator+(const Vector2& other) const noexcept
-	{ return {x + other.x, y + other.y}; }
+	{ 
+		return {x + other.x, y + other.y};
+	}
 
 	constexpr Vector2& operator+=(const Vector2& other) noexcept
 	{
