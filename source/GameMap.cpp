@@ -28,7 +28,7 @@ void GameMap::update(float dt)
 		else if(directions & DIRECTION::RIGHT) right();
 		if(directions & DIRECTION::TOP) top();
 		else if(directions & DIRECTION::BOT) bottom();
-		m_tileMap.calculateConnections();
+		m_tileMap.updateTileConnections();
 		m_tileMap.flush();
 	}
 
@@ -217,7 +217,7 @@ const Vector2i GameMap::getPlayerChunk() const
 
 void GameMap::loadDisplayableTilesIntoTileMap()
 {
-	m_tileMap.calculateConnections();
+	m_tileMap.updateTileConnections();
 	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
 	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
 
@@ -262,6 +262,6 @@ GameMap::GameMap(string name): GameObject(name)
 		m_chunksToGenerate.pop();
 	}
 	loadDisplayableTilesIntoTileMap();
-	m_tileMap.calculateConnections();
+	m_tileMap.updateTileConnections();
 	m_tileMap.flush();
 }

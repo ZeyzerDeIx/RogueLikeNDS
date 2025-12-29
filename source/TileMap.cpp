@@ -37,7 +37,7 @@ CircularDeque<MetaTile, META_TILE::COUNT_H>& TileMap::operator[](int key)
 }
 
 
-void TileMap::calculateConnections()
+void TileMap::updateTileConnections()
 {
 	int rows = META_TILE::COUNT_H;
 	int cols = META_TILE::COUNT_W;

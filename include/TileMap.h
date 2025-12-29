@@ -22,7 +22,7 @@ private:
 	TileMapData m_tileMap;
 	TileIndicesView m_tileIndicesView;
 
-	void calculateConnections();
+	void updateTileConnections();
 	uint32_t evaluateTileConnections(int x, int y);
 	void left(GameMap const& gameMap, Vector2i const& offset);
 	void right(GameMap const& gameMap, Vector2i const& offset);
