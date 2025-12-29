@@ -16,6 +16,5 @@ public:
 	void setConnections(u8 connections);
 private:
 	Tile m_tiles[4];
-	u8 m_connections;
 	META_TILE::Type m_type;
 };

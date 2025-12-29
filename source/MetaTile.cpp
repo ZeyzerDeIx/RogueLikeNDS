@@ -43,8 +43,6 @@ constexpr u8 cornerFilter(u8 source)
 }
 void MetaTile::setConnections(u8 connections)
 {
-    m_connections = connections;
-
     // Alias for DIRECTION and CORNER
     namespace Dir = DIRECTION;
     namespace Cor = CORNER;
