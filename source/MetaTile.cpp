@@ -6,8 +6,8 @@ MetaTile::MetaTile(META_TILE::Type type):
 	m_tiles
 	{
 		Tile(CORNER::TOP_LEFT),
-		Tile(CORNER::TOP_RIGHT),
 		Tile(CORNER::BOT_LEFT),
+		Tile(CORNER::TOP_RIGHT),
 		Tile(CORNER::BOT_RIGHT)
 	},
 	m_type(type)
@@ -17,8 +17,8 @@ void MetaTile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
 	pos *= 2;
 	m_tiles[CORNER::TOP_LEFT ].flush(bgTileMap, m_type, pos);
-	m_tiles[CORNER::TOP_RIGHT].flush(bgTileMap, m_type, {pos.x  , pos.y+1});
-	m_tiles[CORNER::BOT_LEFT ].flush(bgTileMap, m_type, {pos.x+1, pos.y  });
+	m_tiles[CORNER::TOP_RIGHT].flush(bgTileMap, m_type, {pos.x+1, pos.y  });
+	m_tiles[CORNER::BOT_LEFT ].flush(bgTileMap, m_type, {pos.x  , pos.y+1});
 	m_tiles[CORNER::BOT_RIGHT].flush(bgTileMap, m_type, {pos.x+1, pos.y+1});
 }
 
@@ -60,8 +60,8 @@ void MetaTile::setConnections(u8 connections)
     };
 
     // Apply the lambda to all corners
-    setCorCon(Cor::TOP_LEFT,  Dir::TOP, Dir::LEFT,  Dir::TOP_LEFT);
-    setCorCon(Cor::TOP_RIGHT, Dir::TOP, Dir::RIGHT, Dir::TOP_RIGHT);
-    setCorCon(Cor::BOT_LEFT,  Dir::BOT, Dir::LEFT,  Dir::BOT_LEFT);
-    setCorCon(Cor::BOT_RIGHT, Dir::BOT, Dir::RIGHT, Dir::BOT_RIGHT);
+    setCorCon(Cor::TOP_LEFT,  Dir::LEFT, Dir::TOP,  Dir::TOP_LEFT);
+    setCorCon(Cor::BOT_LEFT, Dir::LEFT, Dir::BOT, Dir::BOT_LEFT);
+    setCorCon(Cor::TOP_RIGHT,  Dir::RIGHT, Dir::TOP,  Dir::TOP_RIGHT);
+    setCorCon(Cor::BOT_RIGHT, Dir::RIGHT, Dir::BOT, Dir::BOT_RIGHT);
 }

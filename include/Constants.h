@@ -116,19 +116,19 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 
 	enum class Type { Path, Wall, Debug, Last };
-	namespace CORNER {enum { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };}
+	namespace CORNER {enum { TOP_LEFT, BOT_LEFT, TOP_RIGHT, BOT_RIGHT };}
 }
 
 namespace DIRECTION
 {
 	constexpr u8 NONE      = 0b0000'0000;
-	constexpr u8 TOP       = 0b0000'0001;
-	constexpr u8 BOT       = 0b0000'0010;
-	constexpr u8 LEFT      = 0b0000'0100;
-	constexpr u8 RIGHT     = 0b0000'1000;
+	constexpr u8 TOP       = 0b0000'0100;
+	constexpr u8 BOT       = 0b0000'1000;
+	constexpr u8 LEFT      = 0b0000'0001;
+	constexpr u8 RIGHT     = 0b0000'0010;
 	constexpr u8 TOP_LEFT  = 0b0001'0000;
-	constexpr u8 TOP_RIGHT = 0b0010'0000;
-	constexpr u8 BOT_LEFT  = 0b0100'0000;
+	constexpr u8 TOP_RIGHT = 0b0100'0000;
+	constexpr u8 BOT_LEFT  = 0b0010'0000;
 	constexpr u8 BOT_RIGHT = 0b1000'0000;
 }
 

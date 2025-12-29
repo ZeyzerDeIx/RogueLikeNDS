@@ -39,41 +39,43 @@ CircularDeque<MetaTile, META_TILE::COUNT_H>& TileMap::operator[](int key)
 
 void TileMap::calculateConnections()
 {
-	using namespace META_TILE;
+	int rows = META_TILE::COUNT_H;
+	int cols = META_TILE::COUNT_W;
+
+	for (int x = 0; x < rows; ++x)
+		for (int y = 0; y < cols; ++y)
+			m_tileMap[x][y].setConnections(evaluateTileConnections(x,y));
+}
+
+uint32_t TileMap::evaluateTileConnections(int const x, int const y)
+{
+	constexpr int height = META_TILE::COUNT_H;
+	constexpr int width = META_TILE::COUNT_W;
+
+	META_TILE::Type const& type = m_tileMap[x][y].getType();
+	uint32_t mask = 0;
+
+	// This lambda is here to compress the code, it check if the tile type is the same as the one of the wanted other tile
+	auto isSameAs = [&](int X, int Y){ return m_tileMap[X][Y].getType() == type; };
+
+	// Precompute boundaries to avoid redundant checks
+	bool hasLeft = x > 0, hasRight = x < width-1, hasTop = y > 0, hasBot = y < height-1;
+
 	using namespace DIRECTION;
 
-	int rows = COUNT_H;
-	int cols = COUNT_W;
+	// Cardinal directions
+	if (hasTop   && isSameAs( x , y-1)) mask |= TOP;
+	if (hasBot   && isSameAs( x , y+1)) mask |= BOT;
+	if (hasLeft  && isSameAs(x-1,  y )) mask |= LEFT;
+	if (hasRight && isSameAs(x+1,  y )) mask |= RIGHT;
 
-	for (int y = 0; y < rows; ++y)
-	{
-		for (int x = 0; x < cols; ++x)
-		{
-			MetaTile& tile = m_tileMap[y][x];
-			const Type& type = tile.getType();
-			int con = 0;
+	// Diagonal directions
+	if (hasTop && hasLeft  && isSameAs(x-1, y-1)) mask |= TOP_LEFT;
+	if (hasTop && hasRight && isSameAs(x+1, y-1)) mask |= TOP_RIGHT;
+	if (hasBot && hasLeft  && isSameAs(x-1, y+1)) mask |= BOT_LEFT;
+	if (hasBot && hasRight && isSameAs(x+1, y+1)) mask |= BOT_RIGHT;
 
-			// This lambda is here to compress the code, it check if the tile type is the same as the one of the wanted other tile
-			auto t = [&](int X, int Y){ return m_tileMap[X][Y].getType() == type; };
-
-			// Precompute boundaries to avoid redundant checks
-			bool top = y > 0, bot = y < rows-1, left = x > 0, right = x < cols-1;
-
-			// Cardinal directions
-			if (top   && t(y-1, x)) con |= TOP;
-			if (bot   && t(y+1, x)) con |= BOT;
-			if (left  && t(y, x-1)) con |= LEFT;
-			if (right && t(y, x+1)) con |= RIGHT;
-
-			// Diagonal directions
-			if (top && left  && t(y-1, x-1)) con |= TOP_LEFT;
-			if (top && right && t(y-1, x+1)) con |= TOP_RIGHT;
-			if (bot && left  && t(y+1, x-1)) con |= BOT_LEFT;
-			if (bot && right && t(y+1, x+1)) con |= BOT_RIGHT;
-
-			tile.setConnections(con);
-		}
-	}
+	return mask;
 }
 
 
