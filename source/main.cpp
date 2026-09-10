@@ -10,6 +10,8 @@ using namespace std::string_literals;
 
 int main()
 {
+	static_assert(__cplusplus > 202302L, "Not using C++26!");
+
 	GameManager::initAll(true);
 
 	SpriteManager spManager;

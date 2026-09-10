@@ -25,3 +25,5 @@ LIBDIRS     := $(BLOCKSDS)/libs/maxmod \
                $(BLOCKSDS)/libs/libnds
 
 include $(BLOCKSDS)/sys/default_makefiles/rom_arm9/Makefile
+
+CXXFLAGS += -std=c++26
