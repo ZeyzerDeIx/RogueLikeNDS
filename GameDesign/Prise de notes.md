@@ -29,16 +29,22 @@
 
 
 
-* mécaniques dans les pièces 
+* mécaniques dans les pièces
 
-  * 
+  * ah force à moi pour trouver des idées hein
+  * levier / bouton à activer ou désactiver
+  * curseurs à positionner
+  * objets à déplacer (ex : le prendre sur une étagère et le mettre sur une table) (ça risque d'être chaud selon le scope qu'on vise) (mais ça peut pousser à faire des allers retours donc être fun pour les galères de nombre pas)
+  * texte à lire / image à voir qui donnent des conseils ou des indices sur le fonctionnement du labyrinthe et le lore
+  * objet à consommer ; possibles effets : - influence sur le nombre de pas / - permet au joueureuse de voir des trucs qu'iel pouvait pas voir avant
+  * téléportation
 
 
 
 * 3 scopes :
 
   * gros scope : les strates, plus de pièces, des trucs qui bougent
-  * moyens scope : 
+  * moyens scope :
   * petit scope : pas de strates, 10 pièces, toutes les pièces fixes et les couloirs régus
 
 
@@ -48,8 +54,27 @@
   * Audrey :
 
     * règles de génération des pièces
+    * mécaniques de jeux (comme pour les règles de génération je mets chez moi mais on peut faire à 2 stv !!!)
   * Lucas :
 
     * programmation
     * tool pour les règles des pièces
+
+
+
+* Concrètement ça ressemble à quoi sur les écrans ? (ma prise de note est atroce j'me parle à moi même pitié juge pas je mettrai au propre dans le GD Doc, c'est pour garder une trace de ma réflexion)
+
+  * ##### &#x20;1
+
+    * écran du haut : le labyrinthe et le personnage qui évolue dedans ; commandes du personnage avec la croix directionnelle
+    * écran du bas : interaction tactile avec les mécaniques de jeu
+    * utilisation des boutons L, R et ABXY ? franchement on peut abandonner L et R ;)))
+  * ##### &#x20;**2**
+
+    * écran du bas : personnage dans le labyrinthe, déplacement tactile ou via la croix directionnelle + interaction avec certaines des mécaniques (genre appuyer sur A quand ton perso est collé à un objet pour
+    * écran du haut : interaction avec les mécaniques de jeux via la croix directionnelle ou ABXY (jcrois je boycott L et R parce que ces boutons se cassaient tjrs sur nos ds quand on était enfant donc je les déteste, donc en vrai est ce qu'on a vraiment besoin de leur trouver une utilité ?)
+
+*voir les images dans RogueLikeNDS\\GameDesign\\Schémas*
+
+*faut que je trouve plus de refs mais ça arrive fort, là je est trop fatiguée pour les trouver*
 
