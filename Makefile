@@ -2,7 +2,8 @@
 #
 # SPDX-FileContributor: Antonio Niño Díaz, 2024
 
-BLOCKSDS    ?= /opt/blocksds/core
+BLOCKSDS	?= /opt/wonderful/thirdparty/blocksds/core
+BLOCKSDSEXT	?= /opt/wonderful/thirdparty/blocksds/external
 
 # User config
 NAME        := RogueLikeNDS
