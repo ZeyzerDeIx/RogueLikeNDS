@@ -1,60 +1,61 @@
 #include "pch.h"
+#include "Debug.h"
 #include "NDSTime.h"
 #include "Entity.h"
 
-Debug::Debug()
+namespace
 {
-	consoleDemoInit();
+	// Internal profiling state
+	u32 s_ticks = 0;
+	u32 s_usec = 0;
 }
 
-void Debug::clearConsole()
+namespace Debug
 {
-	printf("\x1b[2J\x1b[H");
-}
+	void init()
+	{
+		consoleDemoInit();
+	}
 
-void Debug::logFps()
-{
-	printf("\x1b[23;23HFPS:%5.2d\x1b[0;0H", NDSTime::get().getFps());
-}
+	void clearConsole()
+	{
+		printf("\x1b[2J\x1b[H");
+	}
 
-void Debug::logEntityInfo(Entity& entity)
-{
-	// 1. Position
-	printf("\x1b[10;0HPosition: (%.2f, %.2f)", entity.m_position.x, entity.m_position.y);
+	void logFps()
+	{
+		printf("\x1b[23;23HFPS:%5.2d\x1b[0;0H", NDSTime::get().getFps());
+	}
 
-	// 2. Size
-	printf("\x1b[11;0HSize: (%d, %d)", entity.m_size.x, entity.m_size.y);
+	void logEntityInfo(Entity& entity)
+	{
+		printf("\x1b[10;0HPosition: (%.2f, %.2f)", entity.getPosition().x, entity.getPosition().y);
+		printf("\x1b[11;0HSize: (%d, %d)", entity.getSize().x, entity.getSize().y);
+		printf("\x1b[12;0HDirections: %s%s%s%s%s",
+			entity.getDirection(DIRECTION::TOP)   ? "TOP "   : "",
+			entity.getDirection(DIRECTION::BOT)   ? "BOT "   : "",
+			entity.getDirection(DIRECTION::LEFT)  ? "LEFT "  : "",
+			entity.getDirection(DIRECTION::RIGHT) ? "RIGHT " : "",
+			!entity.getDirection(DIRECTION::ALL)  ? "NONE"   : ""
+		);
+		auto bounds = entity.getHitbox().getBounds();
+		printf("\x1b[13;0HHitbox:(%d, %d, %d, %d)", bounds.x, bounds.y, bounds.w, bounds.h);
+		printf("\x1b[14;0HSpeed: %.2f\x1b[0;0H", entity.getSpeed());
+	}
 
-	// 3. Directions (Using string formatters with ternary operators)
-	printf("\x1b[12;0HDirections: %s%s%s%s%s",
-		(entity.m_directions & DIRECTION::TOP)   ? "TOP " : "",
-		(entity.m_directions & DIRECTION::BOT)   ? "BOT " : "",
-		(entity.m_directions & DIRECTION::LEFT)  ? "LEFT " : "",
-		(entity.m_directions & DIRECTION::RIGHT) ? "RIGHT " : "",
-		(entity.m_directions == DIRECTION::NONE) ? "NONE" : ""
-	);
+	void beginProfile()
+	{
+		cpuStartTiming(2);
+	}
 
-	// 4. Hitbox (Assuming integer bounds, use %f if float)
-	auto bounds = entity.m_hitbox.getBounds();
-	printf("\x1b[13;0HHitbox:(%d, %d, %d, %d)", 
-		bounds.x, bounds.y, bounds.w, bounds.h);
+	void endProfile()
+	{
+		s_ticks = cpuEndTiming();
+		s_usec = timerTicks2usec(s_ticks);
+	}
 
-	// 5. Speed (Assuming int, use %.2f if float) and reset cursor
-	printf("\x1b[14;0HSpeed: %.2f\x1b[0;0H", entity.m_speed);
-}
-
-void Debug::beginProfile()
-{
-	cpuStartTiming(2);
-}
-
-void Debug::endProfile()
-{
-	m_ticks = cpuEndTiming();
-	m_usec = timerTicks2usec(m_ticks);
-}
-
-void Debug::logProfile()
-{
-	printf("Profile: %lu ticks (%lu us)\n", m_ticks, m_usec);
+	void logProfile()
+	{
+		printf("Profile: %lu ticks (%lu us)\n", s_ticks, s_usec);
+	}
 }

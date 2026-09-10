@@ -11,7 +11,7 @@ void Entity::move(Vector2f delta)
 	if (delta.x != 0)
 	{
 		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.getBounds().x += NDSMath::roundAbsCeil(delta.x);
+		futureHitbox.setX(futureHitbox.getBounds().x + NDSMath::roundAbsCeil(delta.x));
 
 		if (!futureHitbox.intersects(*GameContext::get().gameMap))
 			m_position.x += delta.x;
@@ -21,7 +21,7 @@ void Entity::move(Vector2f delta)
 	if (delta.y != 0)
 	{
 		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.getBounds().y += NDSMath::roundAbsCeil(delta.y);
+		futureHitbox.setY(futureHitbox.getBounds().y + NDSMath::roundAbsCeil(delta.y));
 
 		if (!futureHitbox.intersects(*GameContext::get().gameMap))
 			m_position.y += delta.y;
@@ -74,8 +74,8 @@ void Entity::setSize(Vector2i size)
 	m_size = size;
 
 	updateHitboxPos();
-	m_hitbox.getBounds().w = m_size.x;
-	m_hitbox.getBounds().h = m_size.y/2;
+	m_hitbox.setWidth(m_size.x);
+	m_hitbox.setHeight(m_size.y/2);
 }
 
 
@@ -95,6 +95,21 @@ const Vector2i Entity::getCoordinates()
 	return static_cast<Vector2i>(m_position/META_TILE::SIZE) - Vector2i{m_position.x < 0, m_position.y < 0};
 }
 
+const Vector2i& Entity::getSize()
+{
+	return m_size;
+}
+
+float Entity::getSpeed() const
+{
+	return m_speed;
+}
+
+const Hitbox& Entity::getHitbox()
+{
+	return m_hitbox;
+}
+
 bool Entity::isMoving()
 {
 	return m_directions != DIRECTION::NONE;
@@ -103,8 +118,7 @@ bool Entity::isMoving()
 
 void Entity::updateHitboxPos()
 {
-	m_hitbox.getBounds().x = m_position.x - m_size.x/2;
-	m_hitbox.getBounds().y = m_position.y;
+	m_hitbox.setPos(m_position.x - m_size.x/2,m_position.y);
 }
 
 void Entity::updateSpriteDirection()

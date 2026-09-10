@@ -6,7 +6,6 @@
 #include "GameObject.h"
 
 class Camera;
-class Debug;
 
 class Entity: public GameObject
 {
@@ -23,6 +22,9 @@ public:
 	bool getDirection(u8 direction);
 	const Vector2f& getPosition();
 	const Vector2i getCoordinates();
+	const Vector2i& getSize();
+	[[nodiscard]] float getSpeed() const;
+	const Hitbox& getHitbox();
 	bool isMoving();
 	
 private:
@@ -42,6 +44,5 @@ private:
 
 	Entity(std::string name);
 
-	friend class Debug;
 	friend class GameObject;
 };

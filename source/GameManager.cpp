@@ -21,6 +21,6 @@ void GameManager::initAll(bool debugMode)
 	if(!debugMode) return;
 
 	//init debug console
-	Debug::get();
+	Debug::init();
 	std::cout << (nitroFSInitSuccess ? "nitroFSInit succeed" : "nitroFSInit failed") << std::endl;
 }

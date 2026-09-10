@@ -8,43 +8,34 @@
 #include "GameManager.h"
 using namespace std::string_literals;
 
-#define G_CTXT GameContext::get()
-
-int main(void)
+int main()
 {
 	GameManager::initAll(true);
 
 	SpriteManager spManager;
 
-	G_CTXT.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager"s);
+	GameContext& GameCtxt = GameContext::get();
 
-	G_CTXT.gameMap = GameObject::instantiateGO<GameMap>("GameMap"s);
+	GameCtxt.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager"s);
+	GameCtxt.gameMap      = GameObject::instantiateGO<GameMap>("GameMap"s);
+	GameCtxt.camera       = GameObject::instantiateGO<Camera>("Camera"s);
+	GameCtxt.player       = GameObject::instantiateGO<Entity>("Player"s);
 
-	G_CTXT.camera = GameObject::instantiateGO<Camera>("Camera"s);
-
-	G_CTXT.player = GameObject::instantiateGO<Entity>("Player"s);
-	G_CTXT.player->setSprite(spManager.getPlayerSprite());
-	G_CTXT.player->setSize({24, 34});
+	GameCtxt.player->setSprite(spManager.getPlayerSprite());
+	GameCtxt.player->setSize({24, 34});
 
 
 	
 	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
 
 	int scale = 1 << 8;
-	
-	//player.move({1,1});
-
-	//bool init_ok = nitroFSInit(NULL);
-    //if (!init_ok) perror("nitroFSInit()");
 
 
-	while (1)
+	while (true)
 	{
-		Debug::get().clearConsole();
-		Debug::get().logProfile();
+		Debug::clearConsole();
+		Debug::logProfile();
 
-		// Update registers during the vertical blanking period to prevent
-		// screen tearing.
 		bgUpdate();
 
 		scanKeys();
@@ -62,7 +53,7 @@ int main(void)
 		else if (keys_held & KEY_RIGHT)
 			dir |= DIRECTION::RIGHT;
 
-		G_CTXT.player->setAllDirections(dir);
+		GameCtxt.player->setAllDirections(dir);
 
 		if (keys_held & KEY_SELECT)
 			scale += 1 << 3;
@@ -72,10 +63,10 @@ int main(void)
 		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		Debug::get().logEntityInfo(*G_CTXT.player);
+		Debug::logEntityInfo(*GameCtxt.player);
 
 		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
-		G_CTXT.player->display();
+		GameCtxt.player->display();
 
 		oamUpdate(&oamMain);
 
@@ -83,7 +74,7 @@ int main(void)
 		bgSetScale(BG::ID, scale, scale);
 
 		NDSTime::get().newFrame();
-		Debug::get().logFps();
+		Debug::logFps();
 
 		
 		swiWaitForVBlank();

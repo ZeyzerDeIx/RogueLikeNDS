@@ -130,6 +130,7 @@ namespace DIRECTION
 	constexpr u8 TOP_RIGHT = 0b0010'0000;
 	constexpr u8 BOT_LEFT  = 0b0100'0000;
 	constexpr u8 BOT_RIGHT = 0b1000'0000;
+	constexpr u8 ALL       = 0b1111'1111;
 }
 
 namespace ENTITY

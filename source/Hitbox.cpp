@@ -41,4 +41,15 @@ bool Hitbox::intersects(const GameMap& gameMap) const
 }
 
 
-Rect<int>& Hitbox::getBounds() { return m_bounds; }
+const Rect<int>& Hitbox::getBounds() const { return m_bounds; }
+
+void Hitbox::setPos(int x, int y)
+{
+	m_bounds.x = x;
+	m_bounds.y = y;
+}
+
+void Hitbox::setX(int x) { m_bounds.x = x; }
+void Hitbox::setY(int y) { m_bounds.y = y; }
+void Hitbox::setWidth(int width) { m_bounds.w = width; }
+void Hitbox::setHeight(int height) { m_bounds.h = height; }
