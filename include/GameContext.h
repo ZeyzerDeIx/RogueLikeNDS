@@ -18,11 +18,10 @@ struct GameContext
 	Entity* player = nullptr;
 	AudioManager* audioManager = nullptr;
 
-
-private:
-	GameContext(){};
-	~GameContext(){};
-	
 	GameContext(const GameContext&) = delete;
 	GameContext& operator=(const GameContext&) = delete;
+
+private:
+	GameContext() = default;
+	~GameContext() = default;
 };
