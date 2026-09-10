@@ -76,5 +76,7 @@
 
 *voir les images dans RogueLikeNDS\\GameDesign\\Schémas*
 
+*les photos sont nulles parce que mon tel fait une mise à jour du coup j'ai du piquer celui de Léo déso*
+
 *faut que je trouve plus de refs mais ça arrive fort, là je est trop fatiguée pour les trouver*
 
