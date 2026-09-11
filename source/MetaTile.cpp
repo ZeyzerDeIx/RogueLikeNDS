@@ -17,8 +17,8 @@ void MetaTile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
 	pos *= 2;
 	m_Tiles[CORNER::TOP_LEFT ].Flush(bgTileMap, m_Type, pos);
-	m_Tiles[CORNER::TOP_RIGHT].Flush(bgTileMap, m_Type, {pos.x  , pos.y+1});
-	m_Tiles[CORNER::BOT_LEFT ].Flush(bgTileMap, m_Type, {pos.x+1, pos.y  });
+	m_Tiles[CORNER::TOP_RIGHT].Flush(bgTileMap, m_Type, {pos.x+1, pos.y  });
+	m_Tiles[CORNER::BOT_LEFT ].Flush(bgTileMap, m_Type, {pos.x  , pos.y+1});
 	m_Tiles[CORNER::BOT_RIGHT].Flush(bgTileMap, m_Type, {pos.x+1, pos.y+1});
 }
 

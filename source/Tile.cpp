@@ -55,9 +55,9 @@ void Tile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type ty
 	const int mapX = pos.x * SUBTILES_PER_AXIS;
 	const int mapY = pos.y * SUBTILES_PER_AXIS;
 
-	// Note: Mapping assumes specific target layout (TR mapped to Y+1)
-	bgTileMap[mapX][mapY]         = subTileTL | hwAttributes;
-	bgTileMap[mapX][mapY + 1]     = subTileTR | hwAttributes;
-	bgTileMap[mapX + 1][mapY]     = subTileBL | hwAttributes;
-	bgTileMap[mapX + 1][mapY + 1] = subTileBR | hwAttributes;
+	// Row-Major to match hardware
+	bgTileMap[mapY][mapX]         = subTileTL | hwAttributes;
+	bgTileMap[mapY][mapX + 1]     = subTileTR | hwAttributes;
+	bgTileMap[mapY + 1][mapX]     = subTileBL | hwAttributes;
+	bgTileMap[mapY + 1][mapX + 1] = subTileBR | hwAttributes;
 }

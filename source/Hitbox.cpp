@@ -34,7 +34,7 @@ bool Hitbox::Intersects(const GameMap& gameMap) const
 
 	for (int x = startX; x <= endX; ++x) 
 		for (int y = startY; y <= endY; ++y) 
-			if (!gameMap.IsCrossable({y,x})) 
+			if (!gameMap.IsCrossable({x,y}))
 				return true;
 
 	return false;
