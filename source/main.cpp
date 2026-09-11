@@ -35,51 +35,39 @@ int main()
 
 	while (true)
 	{
-		Debug::ClearConsole();
-		Debug::LogProfile();
-
-		bgUpdate();
-
 		scanKeys();
-
 		u16 keys_held = keysHeld();
-
 		u8 dir = DIRECTION::NONE;
 
-		if (keys_held & KEY_UP)
-			dir |= DIRECTION::TOP;
-		else if (keys_held & KEY_DOWN)
-			dir |= DIRECTION::BOT;
-		if (keys_held & KEY_LEFT)
-			dir |= DIRECTION::LEFT;
-		else if (keys_held & KEY_RIGHT)
-			dir |= DIRECTION::RIGHT;
+		if (keys_held & KEY_UP)    dir |= DIRECTION::TOP;
+		else if (keys_held & KEY_DOWN) dir |= DIRECTION::BOT;
+		if (keys_held & KEY_LEFT)  dir |= DIRECTION::LEFT;
+		else if (keys_held & KEY_RIGHT)dir |= DIRECTION::RIGHT;
+
+		if (keys_held & KEY_SELECT) scale += 1 << 3;
+		else if (keys_held & KEY_START) scale -= 1 << 3;
 
 		GameCtxt.m_Player->SetAllDirections(dir);
 
-		if (keys_held & KEY_SELECT)
-			scale += 1 << 3;
-		else if (keys_held & KEY_START)
-			scale -= 1 << 3;
-
-		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
-		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
-
-		Debug::LogEntityInfo(*GameCtxt.m_Player);
-
 		GameObject::UpdateAllGameObjects(NDSTime::Get().GetDeltaTime());
-		GameCtxt.m_Player->Display();
 
-		oamUpdate(&oamMain);
+		GameCtxt.m_Player->Display();
 
 		bgSetCenter(BG::ID, cx, cy);
 		bgSetScale(BG::ID, scale, scale);
 
 		NDSTime::Get().NewFrame();
-		Debug::LogFps();
 
-		
 		swiWaitForVBlank();
+
+		bgUpdate();
+		oamUpdate(&oamMain);
+		GameCtxt.m_GameMap->Display();
+
+		Debug::ClearConsole();
+		Debug::LogProfile();
+		Debug::LogEntityInfo(*GameCtxt.m_Player);
+		Debug::LogFps();
 	}
 	
 	return 0;

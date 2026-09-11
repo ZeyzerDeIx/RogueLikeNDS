@@ -9,21 +9,101 @@ using namespace std;
 namespace MT = META_TILE;
 
 
+// Petit helper pour gérer le modulo négatif en C++
+inline int WrapPos(int val, int max) {
+	int res = val % max;
+	return res < 0 ? res + max : res;
+}
+
+// Calcule et écrit UNE SEULE tuile directement dans le buffer VRAM
+void GameMap::UpdateSingleMetaTile(int worldX, int worldY)
+{
+	// 1. On interroge ton dictionnaire en {Y, X} comme le fait ton moteur de collision
+	META_TILE::Type type = GetTile({worldY, worldX});
+	u8 con = 0;
+
+	// 2. La lambda s'adapte aussi à l'inversion
+	auto t = [&](int x, int y){ return GetTile({y, x}) == type; };
+
+	if (t(worldX, worldY-1)) con |= DIRECTION::TOP;
+	if (t(worldX, worldY+1)) con |= DIRECTION::BOT;
+	if (t(worldX-1, worldY)) con |= DIRECTION::LEFT;
+	if (t(worldX+1, worldY)) con |= DIRECTION::RIGHT;
+	if (t(worldX-1, worldY-1)) con |= DIRECTION::TOP_LEFT;
+	if (t(worldX+1, worldY-1)) con |= DIRECTION::TOP_RIGHT;
+	if (t(worldX-1, worldY+1)) con |= DIRECTION::BOT_LEFT;
+	if (t(worldX+1, worldY+1)) con |= DIRECTION::BOT_RIGHT; 
+
+	MetaTile metaTile(type);
+	metaTile.SetConnections(con);
+
+	int vramX = WrapPos(worldX, 16);
+	int vramY = WrapPos(worldY, 16);
+
+	// 3. CRUCIAL : MetaTile::Flush attend historiquement {Ligne, Colonne}, donc {Y, X} !
+	metaTile.Flush(TileMap::m_BgTileMap, {vramY, vramX});
+}
+
+// Charge un carré 16x16 (utile au lancement ou lors d'une téléportation)
+void GameMap::LoadFullRingBuffer(Vector2i const& windowPos)
+{
+	for(int y = 0; y < 16; ++y)
+		for(int x = 0; x < 16; ++x)
+			UpdateSingleMetaTile(windowPos.x + x, windowPos.y + y);
+}
+
 void GameMap::Update(float dt)
 {
-	if(Vector2i const& offset = GameContext::get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
+	// On définit notre fenêtre 16x16. On recule de 4 tuiles pour que la caméra soit au centre du buffer.
+	Vector2i currentWindowPos = GameContext::get().m_Camera->GetMetaTileOffset() - Vector2i{4, 4};
+
+	if(currentWindowPos != m_LastOffset)
 	{
-		LoadDisplayableTilesIntoTileMap(offset);
-		m_TileMap.Flush();
+		Vector2i delta = currentWindowPos - m_LastOffset;
+
+		// Si on va trop vite ou si c'est le début du jeu, on recharge tout
+		if (std::abs(delta.x) > 1 || std::abs(delta.y) > 1)
+		{
+			LoadFullRingBuffer(currentWindowPos);
+		}
+		else
+		{
+			// Mouvement horizontal : On charge la colonne qui apparaît
+			if (delta.x > 0) // Mouvement vers la droite
+				for (int y = 0; y < 16; ++y) UpdateSingleMetaTile(currentWindowPos.x + 15, currentWindowPos.y + y);
+			else if (delta.x < 0) // Mouvement vers la gauche
+				for (int y = 0; y < 16; ++y) UpdateSingleMetaTile(currentWindowPos.x, currentWindowPos.y + y);
+
+			// Mouvement vertical : On charge la ligne qui apparaît
+			if (delta.y > 0) // Mouvement vers le bas
+				for (int x = 0; x < 16; ++x) UpdateSingleMetaTile(currentWindowPos.x + x, currentWindowPos.y + 15);
+			else if (delta.y < 0) // Mouvement vers le haut
+				for (int x = 0; x < 16; ++x) UpdateSingleMetaTile(currentWindowPos.x + x, currentWindowPos.y);
+		}
+
+		m_LastOffset = currentWindowPos;
+		m_NeedsFlush = true; // Déclenchera le Display() dans le main.cpp
 	}
 
-	if(m_PlayerChunk != GetPlayerChunk())
-		UpdatePlayerChunk();
+	// --- Reste de ton code pour les chunks ---
+	if(m_PlayerChunk != GetPlayerChunk()) UpdatePlayerChunk();
 
 	if(!m_ChunksToGenerate.empty())
 	{
 		GenerateChunk(m_ChunksToGenerate.front());
 		m_ChunksToGenerate.pop();
+
+		LoadFullRingBuffer(m_LastOffset);
+		m_NeedsFlush = true;
+	}
+}
+
+void GameMap::Display()
+{
+	if (m_NeedsFlush)
+	{
+		m_NeedsFlush = false;
+		m_TileMap.Flush();
 	}
 }
 
@@ -198,21 +278,6 @@ const Vector2i GameMap::GetPlayerChunk() const
 	if(GameContext::get().m_Player == nullptr) return {0,0};
 	const Vector2i playerCoo = GameContext::get().m_Player->GetCoordinates();
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
-}
-
-void GameMap::LoadDisplayableTilesIntoTileMap(Vector2i const& offset)
-{
-	m_LastOffset = offset;
-
-	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
-	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
-
-	// 2 represent how many tiles are out of camera fov
-	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
-		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
-			m_TileMap[i][j].SetType(GetTile({offset.y+i, offset.x+j}));
-
-	m_TileMap.CalculateConnections();
 }
 
 

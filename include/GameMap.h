@@ -10,6 +10,7 @@ class GameMap: public GameObject
 {
 public:
 	void Update(float dt) override;
+	void Display();
 
 	META_TILE::Type GetTile(const Vector2i& tileCoordinate) const;
 
@@ -26,6 +27,7 @@ private:
 	TileMap m_TileMap;
 	Vector2i m_PlayerChunk;
 	std::vector<Room> m_ReservedRooms;
+	bool m_NeedsFlush;
 
 	Vector2i m_LastOffset = {0,0};
 
@@ -34,8 +36,9 @@ private:
 	void CreateRoom(const Room& room);
 	void AddToQueue(const Vector2i& chunkCoordinate);
 	const Vector2i GetPlayerChunk() const;
-	void LoadDisplayableTilesIntoTileMap(Vector2i const& offset);
 	void ConnectNearestRoom(const Room& newRoom, std::mt19937& rng);
+	void UpdateSingleMetaTile(int worldX, int worldY);
+	void LoadFullRingBuffer(Vector2i const& windowPos);
 
 	GameMap(std::string name);
 
