@@ -17,42 +17,42 @@ public:
 	);
 	~Sprite();
 
-	void update(float speedFactor = 1);
-	void display(Vector2i pos = {0,0}, bool zoomed = false);
-	void skipFrame(int num = 1);
-	void setState(int state);
-	void setFrame(int frame);
+	void Update(float speedFactor = 1);
+	void Display(Vector2i pos = {0,0}, bool zoomed = false);
+	void SkipFrame(int num = 1);
+	void SetState(int state);
+	void SetFrame(int frame);
 
-	int getState();
+	int GetState();
 
-	const Vector2i& getPixelSize() const;
+	[[nodiscard]] const Vector2i& getPixelSize() const;
 
 private:
-	SpriteManager* m_manager;
-	Vector2i m_pixelSize;
-	SpriteSize m_spriteSize;
-	u16* m_data;
-	short m_id;
+	SpriteManager* m_Manager;
+	Vector2i m_PixelSize;
+	SpriteSize m_SpriteSize;
+	u16* m_Data;
+	short m_Id;
 
 	// Animation-related members
 
 	// Currently displayed frame (x)
-	short m_currentFrame;
+	short m_CurrentFrame;
 	// Total number of animation frames
-	short const m_frameCount;
+	short const m_FrameCount;
 	// Currently displayed state (y)
-	short m_currentState;
+	short m_CurrentState;
 	// Total number of animation states
-	short const m_stateCount;
+	short const m_StateCount;
 	// Number of updates before switching frames
-	short m_animSpeed;
+	short m_AnimSpeed;
 	// Counts updates
-	short m_counter;
+	short m_Counter;
 	/** @brief Memory offset to jump to the next frame using u16* pointer arithmetic.
 	 *  
 	 * Calculation: (Width * Height) / 4.
 	 * - Division by 2 converts pixels to bytes (4bpp mode: 1 pixel = 0.5 byte).
 	 * - Division by 2 accounts for u16* pointer arithmetic (incrementing by 1 jumps 2 bytes).
 	 */
-	short const m_frameMemoryOffset;
+	short const m_FrameMemoryOffset;
 };

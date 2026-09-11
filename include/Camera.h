@@ -7,14 +7,13 @@
 class Camera: public GameObject
 {
 public:
-	virtual void update(float dt);
+	void Update(float dt) override;
 
-	const Vector2i getDisplayPos(const Entity& entity) const;
-
-	const Vector2i getMetaTileOffset() const;
+	[[nodiscard]] const Vector2i GetDisplayPos(const Entity& entity) const;
+	[[nodiscard]] const Vector2i GetMetaTileOffset() const;
 
 private:
-	Vector2i m_offset;
+	Vector2i m_Offset;
 
 	Camera(std::string name);
 

@@ -9,7 +9,7 @@ class SpriteManager
 		SpriteManager();
 		~SpriteManager();
 
-		Sprite* createSprite(
+		Sprite* CreateSprite(
 			std::string const& name,
 			uint32 tilesLen,
 			uint32 palLen,
@@ -20,21 +20,21 @@ class SpriteManager
 			int animSpeed = 1
 		);
 
-		Sprite* getPlayerSprite();
+		Sprite* GetPlayerSprite();
 	private:
-		Sprite* m_playerSprite;
-		std::list<Sprite*> m_sprites;
+		Sprite* m_PlayerSprite;
+		std::list<Sprite*> m_Sprites;
 };
 
 
 #define CREATE_SPRITE(spriteManager,spriteName)\
-spriteManager.createSprite(\
+spriteManager.CreateSprite(\
 #spriteName,\
 spriteName ## TilesLen,\
 spriteName ## PalLen)
 
 #define CREATE_PARAMETRIZED_SPRITE(spriteManager,spriteName,sx,sy,frameCount,stateCount,animSpeed)\
-spriteManager.createSprite(\
+spriteManager.CreateSprite(\
 #spriteName,\
 spriteName ## TilesLen,\
 spriteName ## PalLen,\

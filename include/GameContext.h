@@ -9,14 +9,14 @@ struct GameContext
 {
 	static GameContext& get()
 	{
-		static GameContext instance;
-		return instance;
+		static GameContext s_Instance;
+		return s_Instance;
 	}
 
-	GameMap* gameMap = nullptr;
-	Camera* camera = nullptr;
-	Entity* player = nullptr;
-	AudioManager* audioManager = nullptr;
+	GameMap* m_GameMap = nullptr;
+	Camera* m_Camera = nullptr;
+	Entity* m_Player = nullptr;
+	AudioManager* m_AudioManager = nullptr;
 
 	GameContext(const GameContext&) = delete;
 	GameContext& operator=(const GameContext&) = delete;

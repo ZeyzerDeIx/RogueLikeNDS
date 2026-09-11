@@ -3,33 +3,33 @@
 using namespace META_TILE;
 
 MetaTile::MetaTile(META_TILE::Type type):
-	m_tiles
+	m_Tiles
 	{
 		Tile(CORNER::TOP_LEFT),
 		Tile(CORNER::TOP_RIGHT),
 		Tile(CORNER::BOT_LEFT),
 		Tile(CORNER::BOT_RIGHT)
 	},
-	m_type(type)
+	m_Type(type)
 {}
 
-void MetaTile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
+void MetaTile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
 {
 	pos *= 2;
-	m_tiles[CORNER::TOP_LEFT ].flush(bgTileMap, m_type, pos);
-	m_tiles[CORNER::TOP_RIGHT].flush(bgTileMap, m_type, {pos.x  , pos.y+1});
-	m_tiles[CORNER::BOT_LEFT ].flush(bgTileMap, m_type, {pos.x+1, pos.y  });
-	m_tiles[CORNER::BOT_RIGHT].flush(bgTileMap, m_type, {pos.x+1, pos.y+1});
+	m_Tiles[CORNER::TOP_LEFT ].Flush(bgTileMap, m_Type, pos);
+	m_Tiles[CORNER::TOP_RIGHT].Flush(bgTileMap, m_Type, {pos.x  , pos.y+1});
+	m_Tiles[CORNER::BOT_LEFT ].Flush(bgTileMap, m_Type, {pos.x+1, pos.y  });
+	m_Tiles[CORNER::BOT_RIGHT].Flush(bgTileMap, m_Type, {pos.x+1, pos.y+1});
 }
 
-const Type& MetaTile::getType() const
+const Type& MetaTile::GetType() const
 {
-	return m_type;
+	return m_Type;
 }
 
-void MetaTile::setType(const META_TILE::Type& type)
+void MetaTile::SetType(const META_TILE::Type& type)
 {
-	m_type = type;
+	m_Type = type;
 }
 
 constexpr u8 bitCheck(u8 source, u8 filter, u8 offset)
@@ -41,9 +41,9 @@ constexpr u8 cornerFilter(u8 source)
 	if(source == 0b0000'0111) return 0b0000'0100;
 	return source & 0b0000'0011;
 }
-void MetaTile::setConnections(u8 connections)
+void MetaTile::SetConnections(u8 connections)
 {
-    m_connections = connections;
+    m_Connections = connections;
 
     // Alias for DIRECTION and CORNER
     namespace Dir = DIRECTION;
@@ -56,7 +56,7 @@ void MetaTile::setConnections(u8 connections)
             bitCheck(connections, dir1, 0) | 
             bitCheck(connections, dir2, 1) | 
             bitCheck(connections, dir3, 2);
-        m_tiles[corner].setConnections(cornerFilter(cornerValue));
+        m_Tiles[corner].SetConnections(cornerFilter(cornerValue));
     };
 
     // Apply the lambda to all corners

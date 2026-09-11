@@ -24,7 +24,7 @@ namespace BG
 	// True → Rotation background (not extended)
 	constexpr bool ROTATION_MODE = true;
 
-	constexpr BgSize getSize(int width, int height, bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16)
+	constexpr BgSize GetSize(int width, int height, bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16)
 	{
 		if (ext_rotation)
 		{ // Extended Rotation backgrounds
@@ -69,7 +69,7 @@ namespace BG
 		return static_cast<BgSize>(-1); // Invalid size
 	}
 
-	constexpr BgType getType(bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16, bool text_mode)
+	constexpr BgType GetType(bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16, bool text_mode)
 	{
 		if (bitmap_mode)
 			return bitdepth_16 ? BgType_Bmp16 : BgType_Bmp8;
@@ -82,9 +82,9 @@ namespace BG
 		return static_cast<BgType>(-1); // Invalid value
 	}
 
-	constexpr BgSize SIZE = getSize(SIZE_W, SIZE_W, EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16);
+	constexpr BgSize SIZE = GetSize(SIZE_W, SIZE_W, EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16);
 
-	constexpr BgType TYPE = getType(EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16, TEXT_MODE);
+	constexpr BgType TYPE = GetType(EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16, TEXT_MODE);
 }
 
 namespace TILESET
@@ -133,29 +133,28 @@ namespace DIRECTION
 	constexpr u8 ALL       = 0b1111'1111;
 }
 
-namespace ENTITY
+
+namespace ENTITY::ANIMATION
 {
-	namespace ANIMATION
+	enum DIRECTION
 	{
-		enum DIRECTION
-		{
-			TOP,
-			BOT,
-			LEFT,
-			RIGHT,
-			TOP_MOVING,
-			BOT_MOVING,
-			LEFT_MOVING,
-			RIGHT_MOVING
-		};
-		// Offset between moving states and idle states.
-		constexpr int MOVING_STATE_OFFSET = 4;
-		constexpr bool isMovingState(int state)
-		{
-			return state > DIRECTION::RIGHT;
-		}
+		TOP,
+		BOT,
+		LEFT,
+		RIGHT,
+		TOP_MOVING,
+		BOT_MOVING,
+		LEFT_MOVING,
+		RIGHT_MOVING
+	};
+	// Offset between moving states and idle states.
+	constexpr int MOVING_STATE_OFFSET = 4;
+	constexpr bool IsMovingState(int state)
+	{
+		return state > RIGHT;
 	}
 }
+
 
 namespace GAME_MAP
 {

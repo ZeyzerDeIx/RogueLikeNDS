@@ -3,15 +3,15 @@
 
 using namespace std;
 
-vector<unique_ptr<GameObject>> GameObject::m_gameObjects;
+vector<unique_ptr<GameObject>> GameObject::s_GameObjects;
 
-void GameObject::update(float dt) {}
+void GameObject::Update(float dt) {}
 
 
-void GameObject::updateAllGameObjects(float dt)
+void GameObject::UpdateAllGameObjects(float dt)
 {
-	for(unique_ptr<GameObject>& go : m_gameObjects)
-		go->update(dt);
+	for(unique_ptr<GameObject>& go : s_GameObjects)
+		go->Update(dt);
 }
 
-GameObject::GameObject(string name): m_name(name) {}
+GameObject::GameObject(string name): m_Name(name) {}

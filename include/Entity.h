@@ -10,37 +10,37 @@ class Camera;
 class Entity: public GameObject
 {
 public:
-	void move(Vector2f delta);
-	virtual void update(float dt);
-	void display();
+	void Move(Vector2f delta);
+	void Update(float dt) override;
+	void Display();
 
-	void setDirection(u8 direction, bool enable);
-	void setAllDirections(u8 directions);
-	void setSprite(Sprite* sprite);
-	void setSize(Vector2i size);
+	void SetDirection(u8 direction, bool enable);
+	void SetAllDirections(u8 directions);
+	void SetSprite(Sprite* sprite);
+	void SetSize(Vector2i size);
 
-	bool getDirection(u8 direction);
-	const Vector2f& getPosition();
-	const Vector2i getCoordinates();
-	const Vector2i& getSize();
-	[[nodiscard]] float getSpeed() const;
-	const Hitbox& getHitbox();
-	bool isMoving();
+	bool GetDirection(u8 direction);
+	const Vector2f& GetPosition();
+	const Vector2i GetCoordinates();
+	const Vector2i& GetSize();
+	[[nodiscard]] float GetSpeed() const;
+	const Hitbox& GetHitbox();
+	bool IsMoving();
 	
 private:
-	Sprite* m_sprite;
+	Sprite* m_Sprite;
 	// Center of the entity
-	Vector2f m_position;
-	Vector2i m_size;
-	u8 m_directions;
-	Hitbox m_hitbox;
-	float m_speed;
-	short m_sfxPlayInterval; //in frames
-	short m_sfxElapsedFrames; //in frames
+	Vector2f m_Position;
+	Vector2i m_Size;
+	u8 m_Directions;
+	Hitbox m_Hitbox;
+	float m_Speed;
+	short m_SfxPlayInterval; //in frames
+	short m_SfxElapsedFrames; //in frames
 
-	void updateHitboxPos();
-	void updateSpriteDirection();
-	void updateAudio();
+	void UpdateHitboxPos();
+	void UpdateSpriteDirection();
+	void UpdateAudio();
 
 	Entity(std::string name);
 

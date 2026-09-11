@@ -12,19 +12,19 @@ int main()
 {
 	static_assert(__cplusplus > 202302L, "Not using C++26!");
 
-	GameManager::initAll(true);
+	GameManager::InitAll(true);
 
 	SpriteManager spManager;
 
 	GameContext& GameCtxt = GameContext::get();
 
-	GameCtxt.audioManager = GameObject::instantiateGO<AudioManager>("AudioManager"s);
-	GameCtxt.gameMap      = GameObject::instantiateGO<GameMap>("GameMap"s);
-	GameCtxt.camera       = GameObject::instantiateGO<Camera>("Camera"s);
-	GameCtxt.player       = GameObject::instantiateGO<Entity>("Player"s);
+	GameCtxt.m_AudioManager = GameObject::InstantiateGO<AudioManager>("AudioManager"s);
+	GameCtxt.m_GameMap      = GameObject::InstantiateGO<GameMap>("GameMap"s);
+	GameCtxt.m_Camera       = GameObject::InstantiateGO<Camera>("Camera"s);
+	GameCtxt.m_Player       = GameObject::InstantiateGO<Entity>("Player"s);
 
-	GameCtxt.player->setSprite(spManager.getPlayerSprite());
-	GameCtxt.player->setSize({24, 34});
+	GameCtxt.m_Player->SetSprite(spManager.GetPlayerSprite());
+	GameCtxt.m_Player->SetSize({24, 34});
 
 
 	
@@ -35,8 +35,8 @@ int main()
 
 	while (true)
 	{
-		Debug::clearConsole();
-		Debug::logProfile();
+		Debug::ClearConsole();
+		Debug::LogProfile();
 
 		bgUpdate();
 
@@ -55,7 +55,7 @@ int main()
 		else if (keys_held & KEY_RIGHT)
 			dir |= DIRECTION::RIGHT;
 
-		GameCtxt.player->setAllDirections(dir);
+		GameCtxt.m_Player->SetAllDirections(dir);
 
 		if (keys_held & KEY_SELECT)
 			scale += 1 << 3;
@@ -65,18 +65,18 @@ int main()
 		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
-		Debug::logEntityInfo(*GameCtxt.player);
+		Debug::LogEntityInfo(*GameCtxt.m_Player);
 
-		GameObject::updateAllGameObjects(NDSTime::get().getDeltaTime());
-		GameCtxt.player->display();
+		GameObject::UpdateAllGameObjects(NDSTime::Get().GetDeltaTime());
+		GameCtxt.m_Player->Display();
 
 		oamUpdate(&oamMain);
 
 		bgSetCenter(BG::ID, cx, cy);
 		bgSetScale(BG::ID, scale, scale);
 
-		NDSTime::get().newFrame();
-		Debug::logFps();
+		NDSTime::Get().NewFrame();
+		Debug::LogFps();
 
 		
 		swiWaitForVBlank();

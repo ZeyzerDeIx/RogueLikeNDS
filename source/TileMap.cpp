@@ -1,60 +1,60 @@
 #include "TileMap.h"
 #include "TileSet.h"
 
-u16 TileMap::m_bgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
+u16 TileMap::m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
 TileMap::TileMap(): 
-	m_tileMap(META_TILE::COUNT_W, std::vector<MetaTile>(META_TILE::COUNT_H))
+	m_TileMap(META_TILE::COUNT_W, std::vector<MetaTile>(META_TILE::COUNT_H))
 {
 	// Load tiles data in memory
 	swiFastCopy(TileSetTiles, bgGetGfxPtr(BG::ID), TileSetTilesLen>>2);
 	swiFastCopy(TileSetPal, BG_PALETTE, TileSetPalLen>>2);
 
-	calculateConnections();
+	CalculateConnections();
 }
 
-void TileMap::flush()
+void TileMap::Flush()
 {
-	convertMap();
-	dmaCopyAsynch(m_bgTileMap, bgGetMapPtr(BG::ID), sizeof(m_bgTileMap));
+	ConvertMap();
+	dmaCopyAsynch(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
 }
 
 std::vector<MetaTile>& TileMap::operator[](int key)
 {
-	return m_tileMap[key];
+	return m_TileMap[key];
 }
 
 
 
-void TileMap::convertMap()
+void TileMap::ConvertMap()
 {
-	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
-	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
+	int rows = m_TileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_TileMap[0].size() - WORD_BORDER_SIZE;
 
 	for (int i = WORD_BORDER_SIZE ; i < rows ; ++i)
 		for (int j = WORD_BORDER_SIZE ; j < cols ; ++j)
-			m_tileMap[i][j].flush(m_bgTileMap, {i, j});
+			m_TileMap[i][j].Flush(m_BgTileMap, {i, j});
 }
 
 
-void TileMap::calculateConnections()
+void TileMap::CalculateConnections()
 {
 	using namespace META_TILE;
 	using namespace DIRECTION;
 
-	int rows = m_tileMap.size() - WORD_BORDER_SIZE;
-	int cols = m_tileMap[0].size() - WORD_BORDER_SIZE;
+	int rows = m_TileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_TileMap[0].size() - WORD_BORDER_SIZE;
 
 	for (int y = WORD_BORDER_SIZE; y < rows; ++y)
 	{
 		for (int x = WORD_BORDER_SIZE; x < cols; ++x)
 		{
-			MetaTile& tile = m_tileMap[y][x];
-			const Type& type = tile.getType();
+			MetaTile& tile = m_TileMap[y][x];
+			const Type& type = tile.GetType();
 			int con = 0;
 
 			// This lambda is here to compress the code, it check if the tile type is the same as the one of the wanted other tile
-			auto t = [&](int X, int Y){ return m_tileMap[X][Y].getType() == type; };
+			auto t = [&](int X, int Y){ return m_TileMap[X][Y].GetType() == type; };
 
 			// Precompute boundaries to avoid redundant checks
 			bool top = y > 0, bot = y < rows-1, left = x > 0, right = x < cols-1;
@@ -71,7 +71,7 @@ void TileMap::calculateConnections()
 			if (bot && left  && t(y+1, x-1)) con |= BOT_LEFT;
 			if (bot && right && t(y+1, x+1)) con |= BOT_RIGHT;
 
-			tile.setConnections(con);
+			tile.SetConnections(con);
 		}
 	}
 }

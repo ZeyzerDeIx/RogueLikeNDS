@@ -8,6 +8,6 @@ public:
 	GameManager();
 	~GameManager();
 
-	static void initAll(bool debugMode);
+	static void InitAll(bool debugMode);
 	
 };

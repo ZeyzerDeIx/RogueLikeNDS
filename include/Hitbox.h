@@ -10,14 +10,14 @@ public:
 	Hitbox(Rect<int> bounds = {0,0,0,0});
 	~Hitbox();
 
-	const Rect<int>& getBounds() const;
-	void setPos(int x, int y);
-	void setX(int x);
-	void setY(int y);
-	void setWidth(int width);
-	void setHeight(int height);
-	bool intersects(const Hitbox& other) const;
-	bool intersects(const GameMap& gameMap) const;
+	[[nodiscard]] const Rect<int>& GetBounds() const;
+	void SetPos(int x, int y);
+	void SetX(int x);
+	void SetY(int y);
+	void SetWidth(int width);
+	void SetHeight(int height);
+	[[nodiscard]] bool Intersects(const Hitbox& other) const;
+	[[nodiscard]] bool Intersects(const GameMap& gameMap) const;
 private:
 	Rect<int> m_bounds;
 };

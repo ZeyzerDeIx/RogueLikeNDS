@@ -4,7 +4,7 @@
 
 using namespace std;
 
-SpriteManager::SpriteManager(): m_playerSprite(nullptr)
+SpriteManager::SpriteManager(): m_PlayerSprite(nullptr)
 {
 	//alloc memory banks dedicated to sprites
 	vramSetBankE(VRAM_E_MAIN_SPRITE);
@@ -14,12 +14,12 @@ SpriteManager::SpriteManager(): m_playerSprite(nullptr)
 }
 SpriteManager::~SpriteManager()
 {
-	for (auto i = m_sprites.begin(); i != m_sprites.end(); ++i)
+	for (auto i = m_Sprites.begin(); i != m_Sprites.end(); ++i)
 		delete *i;
 }
 
 
-Sprite* SpriteManager::createSprite(
+Sprite* SpriteManager::CreateSprite(
 	string const& name,
 	uint32 tilesLen,
 	uint32 palLen,
@@ -39,21 +39,21 @@ Sprite* SpriteManager::createSprite(
     }
 
     //binary files loading
-	AssetManager::loadBin(name + ".img.bin"s, spriteData, tilesLen);
-	AssetManager::loadBin(name + ".pal.bin"s, SPRITE_PALETTE + m_sprites.size()*PALETTE_SIZE, palLen);
+	AssetManager::LoadBin(name + ".img.bin"s, spriteData, tilesLen);
+	AssetManager::LoadBin(name + ".pal.bin"s, SPRITE_PALETTE + m_Sprites.size()*PALETTE_SIZE, palLen);
 
 	//sprite creation
-	Sprite* newSprite = new Sprite(this,m_sprites.size(),spriteSize,spriteData,pixelSize, frameCount, stateCount, animSpeed);
+	Sprite* newSprite = new Sprite(this,m_Sprites.size(),spriteSize,spriteData,pixelSize, frameCount, stateCount, animSpeed);
 
 	//add the sprite to the sprite list
-	m_sprites.push_back(newSprite);
+	m_Sprites.push_back(newSprite);
 	return newSprite;
 }
 
-Sprite* SpriteManager::getPlayerSprite()
+Sprite* SpriteManager::GetPlayerSprite()
 {
-	if(!m_playerSprite)
-		m_playerSprite = CREATE_PARAMETRIZED_SPRITE((*this), MainCharacterSprite, 32, 64, 4, 8, 8);
+	if(!m_PlayerSprite)
+		m_PlayerSprite = CREATE_PARAMETRIZED_SPRITE((*this), MainCharacterSprite, 32, 64, 4, 8, 8);
 
-	return m_playerSprite;
+	return m_PlayerSprite;
 }

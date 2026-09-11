@@ -88,14 +88,14 @@ struct Vector2
 	friend std::ostream& operator<<(std::ostream& os, const Vector2& v)
 	{ return os << "(" << v.x << ", " << v.y << ")";  }
 
-	constexpr T squaredNorm() const noexcept
+	[[nodiscard]] constexpr T SquaredNorm() const noexcept
 	{
 		return x * x + y * y; // Squared norm for comparison
 	}
 
 	constexpr auto operator<=>(const Vector2& other) const noexcept
 	{
-		return squaredNorm() <=> other.squaredNorm();
+		return SquaredNorm() <=> other.SquaredNorm();
 	}
 };
 
@@ -115,8 +115,8 @@ struct Rect { T x, y, w, h; };
 namespace NDSMath
 {
 	// Return ceil of the abs value while conserving sign
-	int roundAbsCeil(float x);
-	Vector2i roundAbsCeil(Vector2f vec);
+	int RoundAbsCeil(float x);
+	Vector2i RoundAbsCeil(Vector2f vec);
 
 	// A hash function used to hash a Vector2i
 	struct HashVector2i

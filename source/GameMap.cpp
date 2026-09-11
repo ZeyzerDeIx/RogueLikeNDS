@@ -9,45 +9,45 @@ using namespace std;
 namespace MT = META_TILE;
 
 
-void GameMap::update(float dt)
+void GameMap::Update(float dt)
 {
-	if(Vector2i const& offset = GameContext::get().camera->getMetaTileOffset();  offset != m_lastOffset)
+	if(Vector2i const& offset = GameContext::get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{
-		loadDisplayableTilesIntoTileMap(offset);
-		m_tileMap.flush();
+		LoadDisplayableTilesIntoTileMap(offset);
+		m_TileMap.Flush();
 	}
 
-	if(m_playerChunk != getPlayerChunk())
-		updatePlayerChunk();
+	if(m_PlayerChunk != GetPlayerChunk())
+		UpdatePlayerChunk();
 
-	if(!m_chunksToGenerate.empty())
+	if(!m_ChunksToGenerate.empty())
 	{
-		generateChunk(m_chunksToGenerate.front());
-		m_chunksToGenerate.pop();
+		GenerateChunk(m_ChunksToGenerate.front());
+		m_ChunksToGenerate.pop();
 	}
 }
 
-MT::Type GameMap::getTile(const Vector2i& tileCoordinate) const
+MT::Type GameMap::GetTile(const Vector2i& tileCoordinate) const
 {
-	auto pair = m_map.find(tileCoordinate);
+	auto pair = m_Map.find(tileCoordinate);
 
-	if (pair == m_map.end())
+	if (pair == m_Map.end())
 		return MT::Type::Wall;
 	
 	return pair->second;
 }
 
-bool GameMap::isCrossable(const Vector2i& tileCoordinate) const
+bool GameMap::IsCrossable(const Vector2i& tileCoordinate) const
 {
-	return getTile(tileCoordinate) != MT::Type::Wall;
+	return GetTile(tileCoordinate) != MT::Type::Wall;
 }
 
-bool GameMap::isChunkGenerated(const Vector2i& chunkCoordinate) const
+bool GameMap::IsChunkGenerated(const Vector2i& chunkCoordinate) const
 {	
-	return m_generatedChunks.find(chunkCoordinate) != m_generatedChunks.end();
+	return m_GeneratedChunks.find(chunkCoordinate) != m_GeneratedChunks.end();
 }
 
-void GameMap::generateChunk(const Vector2i& chunkCoordinate)
+void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
 {
 	//temporary
 	unsigned int globalSeed = time(0);
@@ -74,13 +74,13 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 
 		// Check for overlap with existing rooms
 		bool overlaps = false;
-		for (const auto& room : m_reservedRooms)
+		for (const auto& room : m_ReservedRooms)
 		{
-			Room o = room.oversized(1);
-			if (roomCoord.x < o.coordinate.x + o.size.x &&
-				roomCoord.x + roomSize.x > o.coordinate.x &&
-				roomCoord.y < o.coordinate.y + o.size.y &&
-				roomCoord.y + roomSize.y > o.coordinate.y)
+			Room o = room.Oversized(1);
+			if (roomCoord.x < o.Coordinate.x + o.Size.x &&
+				roomCoord.x + roomSize.x > o.Coordinate.x &&
+				roomCoord.y < o.Coordinate.y + o.Size.y &&
+				roomCoord.y + roomSize.y > o.Coordinate.y)
 			{
 				overlaps = true;
 				break;
@@ -89,39 +89,39 @@ void GameMap::generateChunk(const Vector2i& chunkCoordinate)
 
 		if (!overlaps)
 		{
-			connectNearestRoom(newRoom, rng);
-			createRoom(newRoom);
+			ConnectNearestRoom(newRoom, rng);
+			CreateRoom(newRoom);
 		}
 	}
 		
-	m_generatedChunks[chunkCoordinate] = true;
+	m_GeneratedChunks[chunkCoordinate] = true;
 }
 
 // Function to compute the center of a room
 Vector2i getRoomCenter(const Room& room) {
-	return { room.coordinate.x + room.size.x / 2, room.coordinate.y + room.size.y / 2 };
+	return { room.Coordinate.x + room.Size.x / 2, room.Coordinate.y + room.Size.y / 2 };
 }
 
 // Function to connect the new room to one of the nearest reserved rooms
 // newRoom: the room to connect (not yet in m_reservedRooms)
 // rng: a random number generator passed from the caller
-void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
+void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
 {
 	auto connectRooms = [&](const Room& a, const Room& b)
 	{
-		Vector2i centerA = {a.coordinate.x + a.size.x / 2, a.coordinate.y + a.size.y / 2};
-		Vector2i centerB = {b.coordinate.x + b.size.x / 2, b.coordinate.y + b.size.y / 2};
+		Vector2i centerA = {a.Coordinate.x + a.Size.x / 2, a.Coordinate.y + a.Size.y / 2};
+		Vector2i centerB = {b.Coordinate.x + b.Size.x / 2, b.Coordinate.y + b.Size.y / 2};
 
 		// Corridor horizontal then vertical
 		for (int x = std::min(centerA.x, centerB.x); x <= std::max(centerA.x, centerB.x); ++x)
-			collapseTile({x, centerA.y});
+			CollapseTile({x, centerA.y});
 
 		for (int y = std::min(centerA.y, centerB.y); y <= std::max(centerA.y, centerB.y); ++y)
-			collapseTile({centerB.x, y});
+			CollapseTile({centerB.x, y});
 	};
 
 
-	if (m_reservedRooms.empty())
+	if (m_ReservedRooms.empty())
 		return; // Nothing to connect to
 
 	// Calculate the center of the new room
@@ -132,9 +132,9 @@ void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
 	int minDistSq = std::numeric_limits<int>::max();
 	
 	// Traverse all reserved rooms to find those with the smallest distance
-	for (size_t i = 0; i < m_reservedRooms.size(); ++i)
+	for (size_t i = 0; i < m_ReservedRooms.size(); ++i)
 	{
-		Vector2i roomCenter = getRoomCenter(m_reservedRooms[i]);
+		Vector2i roomCenter = getRoomCenter(m_ReservedRooms[i]);
 		int dx = newCenter.x - roomCenter.x;
 		int dy = newCenter.y - roomCenter.y;
 		int distSq = dx * dx + dy * dy;
@@ -154,55 +154,55 @@ void GameMap::connectNearestRoom(const Room& newRoom, std::mt19937& rng)
 	{
 		std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
 		size_t chosenIndex = candidateIndices[candidateDist(rng)];
-		connectRooms(m_reservedRooms[chosenIndex], newRoom);
+		connectRooms(m_ReservedRooms[chosenIndex], newRoom);
 	}
 }
 
 
 
 
-void GameMap::updatePlayerChunk()
+void GameMap::UpdatePlayerChunk()
 {
-	Vector2i center = getPlayerChunk();
+	Vector2i center = GetPlayerChunk();
 	int radius = 3;
 
 	for (int x = -radius; x <= radius; ++x)
 		for (int y = -radius; y <= radius; ++y)
-			addToQueue(center + Vector2i{x, y});
+			AddToQueue(center + Vector2i{x, y});
 }
 
-void GameMap::collapseTile(const Vector2i& tileCoordinate)
+void GameMap::CollapseTile(const Vector2i& tileCoordinate)
 {
-	m_map[tileCoordinate] = MT::Type::Path;
+	m_Map[tileCoordinate] = MT::Type::Path;
 }
 
-void GameMap::createRoom(const Room& room)
+void GameMap::CreateRoom(const Room& room)
 {
-	m_reservedRooms.push_back(room);
+	m_ReservedRooms.push_back(room);
 
-	for (int dx = 0; dx < room.size.x; ++dx)
-		for (int dy = 0; dy < room.size.y; ++dy)
-			collapseTile({room.coordinate.x + dx, room.coordinate.y + dy});
+	for (int dx = 0; dx < room.Size.x; ++dx)
+		for (int dy = 0; dy < room.Size.y; ++dy)
+			CollapseTile({room.Coordinate.x + dx, room.Coordinate.y + dy});
 }
 
-void GameMap::addToQueue(const Vector2i& chunkCoordinate)
+void GameMap::AddToQueue(const Vector2i& chunkCoordinate)
 {
-	if(isChunkGenerated(chunkCoordinate)) return;
+	if(IsChunkGenerated(chunkCoordinate)) return;
 
-	m_chunksToGenerate.push(chunkCoordinate);
-	m_generatedChunks[chunkCoordinate] = true;
+	m_ChunksToGenerate.push(chunkCoordinate);
+	m_GeneratedChunks[chunkCoordinate] = true;
 }
 
-const Vector2i GameMap::getPlayerChunk() const
+const Vector2i GameMap::GetPlayerChunk() const
 {
-	if(GameContext::get().player == nullptr) return {0,0};
-	const Vector2i playerCoo = GameContext::get().player->getCoordinates();
+	if(GameContext::get().m_Player == nullptr) return {0,0};
+	const Vector2i playerCoo = GameContext::get().m_Player->GetCoordinates();
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 
-void GameMap::loadDisplayableTilesIntoTileMap(Vector2i const& offset)
+void GameMap::LoadDisplayableTilesIntoTileMap(Vector2i const& offset)
 {
-	m_lastOffset = offset;
+	m_LastOffset = offset;
 
 	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
 	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
@@ -210,16 +210,16 @@ void GameMap::loadDisplayableTilesIntoTileMap(Vector2i const& offset)
 	// 2 represent how many tiles are out of camera fov
 	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
 		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
-			m_tileMap[i][j].setType(getTile({offset.y+i, offset.x+j}));
+			m_TileMap[i][j].SetType(GetTile({offset.y+i, offset.x+j}));
 
-	m_tileMap.calculateConnections();
+	m_TileMap.CalculateConnections();
 }
 
 
 
 GameMap::GameMap(string name): GameObject(name)
 {
-	createRoom({{-2,-2},{5,5}});
-	generateChunk({0,0});
-	updatePlayerChunk();
+	CreateRoom({{-2,-2},{5,5}});
+	GenerateChunk({0,0});
+	UpdatePlayerChunk();
 }

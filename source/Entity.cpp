@@ -5,149 +5,149 @@
 
 using namespace std;
 
-void Entity::move(Vector2f delta)
+void Entity::Move(Vector2f delta)
 {
 	// X axe
 	if (delta.x != 0)
 	{
-		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.setX(futureHitbox.getBounds().x + NDSMath::roundAbsCeil(delta.x));
+		Hitbox futureHitbox = m_Hitbox;
+		futureHitbox.SetX(futureHitbox.GetBounds().x + NDSMath::RoundAbsCeil(delta.x));
 
-		if (!futureHitbox.intersects(*GameContext::get().gameMap))
-			m_position.x += delta.x;
+		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+			m_Position.x += delta.x;
 	}
 
 	// Y axe
 	if (delta.y != 0)
 	{
-		Hitbox futureHitbox = m_hitbox;
-		futureHitbox.setY(futureHitbox.getBounds().y + NDSMath::roundAbsCeil(delta.y));
+		Hitbox futureHitbox = m_Hitbox;
+		futureHitbox.SetY(futureHitbox.GetBounds().y + NDSMath::RoundAbsCeil(delta.y));
 
-		if (!futureHitbox.intersects(*GameContext::get().gameMap))
-			m_position.y += delta.y;
+		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+			m_Position.y += delta.y;
 	}
 	
-	updateHitboxPos();
+	UpdateHitboxPos();
 
-	updateAudio();
+	UpdateAudio();
 }
 
-void Entity::update(float delta)
+void Entity::Update(float delta)
 {
 	using namespace DIRECTION;
-	Vector2f deltaPos = m_speed * delta * Vector2f
+	Vector2f deltaPos = m_Speed * delta * Vector2f
 	{
-		static_cast<float>(getDirection(RIGHT) - getDirection(LEFT)),
-		static_cast<float>(getDirection(BOT)   - getDirection(TOP))
+		static_cast<float>(GetDirection(RIGHT) - GetDirection(LEFT)),
+		static_cast<float>(GetDirection(BOT)   - GetDirection(TOP))
 	};
 
-	move(deltaPos);
+	Move(deltaPos);
 
-	updateSpriteDirection();
-	m_sprite->update(deltaPos.y != 0 ? 2.f : 1.f);
+	UpdateSpriteDirection();
+	m_Sprite->Update(deltaPos.y != 0 ? 2.f : 1.f);
 }
 
-void Entity::display()
+void Entity::Display()
 {
-	m_sprite->display(GameContext::get().camera->getDisplayPos(*this) - m_size/2);
+	m_Sprite->Display(GameContext::get().m_Camera->GetDisplayPos(*this) - m_Size/2);
 }
 
 
 
-void Entity::setDirection(u8 direction, bool enable)
+void Entity::SetDirection(u8 direction, bool enable)
 {
-	enable ? m_directions |= direction : m_directions &= ~direction;
+	enable ? m_Directions |= direction : m_Directions &= ~direction;
 }
 
-void Entity::setAllDirections(u8 directions)
+void Entity::SetAllDirections(u8 directions)
 {
-	m_directions = directions;
+	m_Directions = directions;
 }
 
-void Entity::setSprite(Sprite* sprite)
+void Entity::SetSprite(Sprite* sprite)
 {
-	m_sprite = sprite;
+	m_Sprite = sprite;
 }
 
-void Entity::setSize(Vector2i size)
+void Entity::SetSize(Vector2i size)
 {
-	m_size = size;
+	m_Size = size;
 
-	updateHitboxPos();
-	m_hitbox.setWidth(m_size.x);
-	m_hitbox.setHeight(m_size.y/2);
+	UpdateHitboxPos();
+	m_Hitbox.SetWidth(m_Size.x);
+	m_Hitbox.SetHeight(m_Size.y/2);
 }
 
 
 
-bool Entity::getDirection(u8 direction)
+bool Entity::GetDirection(u8 direction)
 {
-	return m_directions & direction;
+	return m_Directions & direction;
 }
 
-const Vector2f& Entity::getPosition()
+const Vector2f& Entity::GetPosition()
 {
-	return m_position;
+	return m_Position;
 }
 
-const Vector2i Entity::getCoordinates()
+const Vector2i Entity::GetCoordinates()
 {
-	return static_cast<Vector2i>(m_position/META_TILE::SIZE) - Vector2i{m_position.x < 0, m_position.y < 0};
+	return static_cast<Vector2i>(m_Position/META_TILE::SIZE) - Vector2i{m_Position.x < 0, m_Position.y < 0};
 }
 
-const Vector2i& Entity::getSize()
+const Vector2i& Entity::GetSize()
 {
-	return m_size;
+	return m_Size;
 }
 
-float Entity::getSpeed() const
+float Entity::GetSpeed() const
 {
-	return m_speed;
+	return m_Speed;
 }
 
-const Hitbox& Entity::getHitbox()
+const Hitbox& Entity::GetHitbox()
 {
-	return m_hitbox;
+	return m_Hitbox;
 }
 
-bool Entity::isMoving()
+bool Entity::IsMoving()
 {
-	return m_directions != DIRECTION::NONE;
+	return m_Directions != DIRECTION::NONE;
 }
 
 
-void Entity::updateHitboxPos()
+void Entity::UpdateHitboxPos()
 {
-	m_hitbox.setPos(m_position.x - m_size.x/2,m_position.y);
+	m_Hitbox.SetPos(m_Position.x - m_Size.x/2,m_Position.y);
 }
 
-void Entity::updateSpriteDirection()
+void Entity::UpdateSpriteDirection()
 {
 	namespace Anim = ENTITY::ANIMATION;
 	using AnimDir = Anim::DIRECTION;
 	namespace Dir = DIRECTION;
 
-	if (isMoving())
-		m_sprite->setState(
-			getDirection(Dir::TOP)  ? AnimDir::TOP_MOVING  :
-			getDirection(Dir::BOT)  ? AnimDir::BOT_MOVING  :
-			getDirection(Dir::LEFT) ? AnimDir::LEFT_MOVING :
+	if (IsMoving())
+		m_Sprite->SetState(
+			GetDirection(Dir::TOP)  ? AnimDir::TOP_MOVING  :
+			GetDirection(Dir::BOT)  ? AnimDir::BOT_MOVING  :
+			GetDirection(Dir::LEFT) ? AnimDir::LEFT_MOVING :
 									  AnimDir::RIGHT_MOVING);
-	else if (Anim::isMovingState(m_sprite->getState()))
-		m_sprite->setState(m_sprite->getState() - Anim::MOVING_STATE_OFFSET);
+	else if (Anim::IsMovingState(m_Sprite->GetState()))
+		m_Sprite->SetState(m_Sprite->GetState() - Anim::MOVING_STATE_OFFSET);
 }
 
-void Entity::updateAudio()
+void Entity::UpdateAudio()
 {
-	if(!isMoving())
+	if(!IsMoving())
 	{
-		m_sfxElapsedFrames = m_sfxPlayInterval;
+		m_SfxElapsedFrames = m_SfxPlayInterval;
 		return;
 	}
-	if(m_sfxElapsedFrames++ != m_sfxPlayInterval) return;
+	if(m_SfxElapsedFrames++ != m_SfxPlayInterval) return;
 
-	m_sfxElapsedFrames = 0;
-	GameContext::get().audioManager->playRandomFootstep();
+	m_SfxElapsedFrames = 0;
+	GameContext::get().m_AudioManager->PlayRandomFootstep();
 }
 
 
@@ -155,12 +155,12 @@ void Entity::updateAudio()
 
 Entity::Entity(string name):
 	GameObject(name),
-	m_sprite{nullptr},
-	m_position{META_TILE::SIZE/2,META_TILE::SIZE/3},
-	m_size{20,20}, //default size
-	m_directions{DIRECTION::NONE},
-	m_hitbox{{0,0,0,0}},
-	m_speed(50.f),
-	m_sfxPlayInterval(36),
-	m_sfxElapsedFrames(0)
+	m_Sprite{nullptr},
+	m_Position{META_TILE::SIZE/2,META_TILE::SIZE/3},
+	m_Size{20,20}, //default size
+	m_Directions{DIRECTION::NONE},
+	m_Hitbox{{0,0,0,0}},
+	m_Speed(50.f),
+	m_SfxPlayInterval(36),
+	m_SfxElapsedFrames(0)
 {}

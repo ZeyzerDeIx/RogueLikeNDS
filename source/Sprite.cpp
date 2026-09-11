@@ -12,80 +12,80 @@ Sprite::Sprite(
 	int stateCount,
 	int animSpeed) :
 
-	m_manager(manager),
-	m_pixelSize(pixelSize),
-	m_spriteSize(spriteSize),
-	m_data(data),
-	m_id(id),
+	m_Manager(manager),
+	m_PixelSize(pixelSize),
+	m_SpriteSize(spriteSize),
+	m_Data(data),
+	m_Id(id),
 	
 	// Initialize animation-related members
-	m_currentFrame(0),
-	m_frameCount(frameCount),
-	m_currentState(0),
-	m_stateCount(stateCount),
-	m_animSpeed(animSpeed),
-	m_counter(0),
-	m_frameMemoryOffset(pixelSize.x * pixelSize.y / 4)
+	m_CurrentFrame(0),
+	m_FrameCount(frameCount),
+	m_CurrentState(0),
+	m_StateCount(stateCount),
+	m_AnimSpeed(animSpeed),
+	m_Counter(0),
+	m_FrameMemoryOffset(pixelSize.x * pixelSize.y / 4)
 {
 }
 
 Sprite::~Sprite()
 {
-	for (int i = 0 ; i < m_frameCount*m_stateCount ; i++)
-    	oamFreeGfx(&oamMain, m_data + i*m_frameMemoryOffset);
+	for (int i = 0 ; i < m_FrameCount*m_StateCount ; i++)
+    	oamFreeGfx(&oamMain, m_Data + i*m_FrameMemoryOffset);
 }
 
-void Sprite::update(float speedFactor)
+void Sprite::Update(float speedFactor)
 {
-	if (m_animSpeed == 0) return;
-	if (++m_counter >= m_animSpeed * speedFactor)
+	if (m_AnimSpeed == 0) return;
+	if (++m_Counter >= m_AnimSpeed * speedFactor)
 	{
-		skipFrame();
-		m_counter = 0;
+		SkipFrame();
+		m_Counter = 0;
 	}
 }
 
-void Sprite::display(Vector2i pos, bool zoomed)
+void Sprite::Display(Vector2i pos, bool zoomed)
 {
 	float scale = zoomed ? 0.5f : 1.f;
-	oamRotateScale(&oamMain, m_id, 0, 256.f * scale, 256.f * scale);
+	oamRotateScale(&oamMain, m_Id, 0, 256.f * scale, 256.f * scale);
 	oamSet(&oamMain,
-		   m_id,
+		   m_Id,
 		   pos.x, pos.y,
 		   0, //priority
-		   m_id, // palette_alpha
-		   m_spriteSize,
+		   m_Id, // palette_alpha
+		   m_SpriteSize,
 		   SpriteColorFormat_16Color, //systematic
-		   m_data + (m_currentFrame + m_currentState * m_frameCount) * m_frameMemoryOffset,
+		   m_Data + (m_CurrentFrame + m_CurrentState * m_FrameCount) * m_FrameMemoryOffset,
 		   0, //affine index
 		   zoomed, //sizeDouble
 		   false, false, false, false);
 }
 
-void Sprite::skipFrame(int num)
+void Sprite::SkipFrame(int num)
 {
 	// Modulo ensures that we do not set a non-existent frame
-	m_currentFrame = (m_currentFrame + num) % m_frameCount;
+	m_CurrentFrame = (m_CurrentFrame + num) % m_FrameCount;
 	//updateOffset();
 }
 
-void Sprite::setState(int state)
+void Sprite::SetState(int state)
 {
 	// Modulo ensures that we do not set a non-existent state
-	m_currentState = state % m_stateCount;
+	m_CurrentState = state % m_StateCount;
 	//updateOffset();
 }
 
-void Sprite::setFrame(int frame)
+void Sprite::SetFrame(int frame)
 {
 	// Ensure frame does not exceed allowed range
-	m_currentFrame = std::min(frame, m_frameCount - 1);
+	m_CurrentFrame = std::min(frame, m_FrameCount - 1);
 	//updateOffset();
 }
 
-int Sprite::getState() { return m_currentState; }
+int Sprite::GetState() { return m_CurrentState; }
 
 const Vector2i& Sprite::getPixelSize() const
 {
-	return m_pixelSize;
+	return m_PixelSize;
 }

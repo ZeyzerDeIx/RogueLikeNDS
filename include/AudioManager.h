@@ -5,9 +5,9 @@
 class AudioManager: public GameObject
 {
 public:
-	~AudioManager();
+	~AudioManager() override;
 	
-	void playRandomFootstep();
+	void PlayRandomFootstep();
 
 private:
 	AudioManager(std::string name);
