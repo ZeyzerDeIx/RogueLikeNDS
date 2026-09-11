@@ -9,21 +9,20 @@ class TileMap
 {
 public:
 	// size in tiles
-	TileMap();
+	TileMap(GameMap* map);
 
 	//flush the map into background VRAM
-	void Flush();
+	void Flush(Vector2i const& offset);
 
-	std::vector<MetaTile>& operator[](int key);
+	u16* operator[](int key);
+
 private:
-	std::vector<std::vector<MetaTile>> m_TileMap;
+	GameMap* m_GameMap;
+
 	// real background accurate tilemap based on sub tiles made by grit
 	static u16 m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
-	//Convert m_tileMap into a background adapted tilemap
-	void ConvertMap();
-
-	void CalculateConnections();
+	void CalculateConnections(Vector2i const& offset);
 
 	friend class GameMap;
 };

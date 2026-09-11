@@ -13,8 +13,7 @@ void GameMap::Update(float dt)
 {
 	if(Vector2i const& offset = GameContext::get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{
-		LoadDisplayableTilesIntoTileMap(offset);
-		m_TileMap.Flush();
+		m_TileMap.Flush(offset);
 	}
 
 	if(m_PlayerChunk != GetPlayerChunk())
@@ -200,24 +199,9 @@ const Vector2i GameMap::GetPlayerChunk() const
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 
-void GameMap::LoadDisplayableTilesIntoTileMap(Vector2i const& offset)
-{
-	m_LastOffset = offset;
-
-	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
-	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
-
-	// 2 represent how many tiles are out of camera fov
-	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
-		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
-			m_TileMap[i][j].SetType(GetTile({offset.y+i, offset.x+j}));
-
-	m_TileMap.CalculateConnections();
-}
 
 
-
-GameMap::GameMap(string name): GameObject(name)
+GameMap::GameMap(string name): GameObject(name), m_TileMap(this)
 {
 	CreateRoom({{-2,-2},{5,5}});
 	GenerateChunk({0,0});

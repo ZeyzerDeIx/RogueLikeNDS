@@ -34,7 +34,6 @@ private:
 	void CreateRoom(const Room& room);
 	void AddToQueue(const Vector2i& chunkCoordinate);
 	const Vector2i GetPlayerChunk() const;
-	void LoadDisplayableTilesIntoTileMap(Vector2i const& offset);
 	void ConnectNearestRoom(const Room& newRoom, std::mt19937& rng);
 
 	GameMap(std::string name);
