@@ -3,7 +3,7 @@
 
 using namespace std;
 
-bool AssetManager::loadBin(string const& assetPath, void* dest, size_t size)
+bool AssetManager::LoadBin(string const& assetPath, void* dest, size_t size)
 {
 	FILE* file = fopen(assetPath.c_str(), "rb");
 	if(!file)

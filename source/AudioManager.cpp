@@ -8,7 +8,7 @@ AudioManager::~AudioManager()
     soundDisable();
 }
 
-void AudioManager::playRandomFootstep()
+void AudioManager::PlayRandomFootstep()
 {
 	std::mt19937 rng(time(0));
 	std::uniform_int_distribution<> footstep(1, 6);

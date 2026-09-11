@@ -2,29 +2,29 @@
 #include <cmath>
 
 NDSTime::NDSTime(int updatesPerSeconds)
-	: m_fps(0), m_updatesPerSeconds(updatesPerSeconds), m_deltaTime(0.016667f)
+	: m_Fps(0), m_UpdatesPerSeconds(updatesPerSeconds), m_DeltaTime(0.016667f)
 {
-	timerStart(0, ClockDivider_1024, TIMER_FREQ_1024(m_updatesPerSeconds), [](){get().newTickCallback();});
+	timerStart(0, ClockDivider_1024, TIMER_FREQ_1024(m_UpdatesPerSeconds), [](){Get().NewTickCallback();});
 }
 
-void NDSTime::newFrame()
+void NDSTime::NewFrame()
 {
-	m_fps = std::ceil(1.f / m_deltaTime);
+	m_Fps = std::ceil(1.f / m_DeltaTime);
 
-	m_deltaTime = 0.f;
+	m_DeltaTime = 0.f;
 }
 
-void NDSTime::newTickCallback()
+void NDSTime::NewTickCallback()
 {
-	m_deltaTime += 1.f / static_cast<float>(m_updatesPerSeconds);
+	m_DeltaTime += 1.f / static_cast<float>(m_UpdatesPerSeconds);
 }
 
-int NDSTime::getFps()
+int NDSTime::GetFps()
 {
-	return m_fps;
+	return m_Fps;
 }
 
-float NDSTime::getDeltaTime()
+float NDSTime::GetDeltaTime()
 {
-	return m_deltaTime;
+	return m_DeltaTime;
 }

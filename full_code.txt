@@ -1,0 +1,2061 @@
+
+// ========================================
+// FICHIER : include/AssetManager.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+class AssetManager
+{
+public:
+	static bool LoadBin(std::string const& assetPath, void* dest, std::size_t size);
+	
+};
+// ========================================
+// FICHIER : include/AudioManager.h
+// ========================================
+
+#pragma once
+
+#include "GameObject.h"
+
+class AudioManager: public GameObject
+{
+public:
+	~AudioManager() override;
+	
+	void PlayRandomFootstep();
+
+private:
+	AudioManager(std::string name);
+
+	friend class GameObject;
+};
+// ========================================
+// FICHIER : include/Camera.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "Entity.h"
+#include "GameObject.h"
+
+class Camera: public GameObject
+{
+public:
+	void Update(float dt) override;
+
+	[[nodiscard]] const Vector2i GetDisplayPos(const Entity& entity) const;
+	[[nodiscard]] const Vector2i GetMetaTileOffset() const;
+
+private:
+	Vector2i m_Offset;
+
+	Camera(std::string name);
+
+	friend class GameObject;
+};
+// ========================================
+// FICHIER : include/Constants.h
+// ========================================
+
+#pragma once
+
+// All of those are in pixel
+constexpr int SCREEN_SIZE_W = 256;
+constexpr int SCREEN_SIZE_H = 192;
+
+constexpr int WORD_BORDER_SIZE = 2;
+
+
+namespace BG
+{
+	constexpr int SIZE_W = 512;
+	constexpr int SIZE_H = 512;
+	constexpr int ID = 2;
+
+	// True → Use extended rotation mode (ER)
+	constexpr bool EXT_ROTATION = false;
+	// True → Use bitmap mode (B8/B16), False → Tile mode (T)
+	constexpr bool BITMAP_MODE = false;
+	// True → 16-bit bitmap mode, False → 8-bit bitmap mode
+	constexpr bool BITDEPTH_16 = false;
+	// True → Use Text mode (BgType_Text4bpp or BgType_Text8bpp)
+	constexpr bool TEXT_MODE = false;
+	// True → Rotation background (not extended)
+	constexpr bool ROTATION_MODE = true;
+
+	constexpr BgSize GetSize(int width, int height, bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16)
+	{
+		if (ext_rotation)
+		{ // Extended Rotation backgrounds
+			if (width == 128 && height == 128)   return BgSize_ER_128x128;
+			if (width == 256 && height == 256)   return BgSize_ER_256x256;
+			if (width == 512 && height == 512)   return BgSize_ER_512x512;
+			if (width == 1024 && height == 1024) return BgSize_ER_1024x1024;
+		}
+		else if (rotation_mode)
+		{ // Classic Rotation backgrounds
+			if (width == 128 && height == 128)   return BgSize_R_128x128;
+			if (width == 256 && height == 256)   return BgSize_R_256x256;
+			if (width == 512 && height == 512)   return BgSize_R_512x512;
+			if (width == 1024 && height == 1024) return BgSize_R_1024x1024;
+		}
+		else if (bitmap_mode)
+		{ // Bitmap backgrounds (8-bit and 16-bit)
+			if (bitdepth_16)
+			{
+				if (width == 128 && height == 128) return BgSize_B16_128x128;
+				if (width == 256 && height == 256) return BgSize_B16_256x256;
+				if (width == 512 && height == 256) return BgSize_B16_512x256;
+				if (width == 512 && height == 512) return BgSize_B16_512x512;
+			}
+			else
+			{
+				if (width == 128 && height == 128)  return BgSize_B8_128x128;
+				if (width == 256 && height == 256)  return BgSize_B8_256x256;
+				if (width == 512 && height == 256)  return BgSize_B8_512x256;
+				if (width == 512 && height == 512)  return BgSize_B8_512x512;
+				if (width == 1024 && height == 512) return BgSize_B8_1024x512;
+				if (width == 512 && height == 1024) return BgSize_B8_512x1024;
+			}
+		}
+		else
+		{ // Normal tile-based backgrounds
+			if (width == 256 && height == 256) return BgSize_T_256x256;
+			if (width == 512 && height == 256) return BgSize_T_512x256;
+			if (width == 256 && height == 512) return BgSize_T_256x512;
+			if (width == 512 && height == 512) return BgSize_T_512x512;
+		}
+		return static_cast<BgSize>(-1); // Invalid size
+	}
+
+	constexpr BgType GetType(bool ext_rotation, bool rotation_mode, bool bitmap_mode, bool bitdepth_16, bool text_mode)
+	{
+		if (bitmap_mode)
+			return bitdepth_16 ? BgType_Bmp16 : BgType_Bmp8;
+		if (ext_rotation)
+			return BgType_ExRotation;
+		if (rotation_mode)
+			return BgType_Rotation;
+		if (text_mode)
+			return bitdepth_16 ? BgType_Text8bpp : BgType_Text4bpp;
+		return static_cast<BgType>(-1); // Invalid value
+	}
+
+	constexpr BgSize SIZE = GetSize(SIZE_W, SIZE_W, EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16);
+
+	constexpr BgType TYPE = GetType(EXT_ROTATION, ROTATION_MODE, BITMAP_MODE, BITDEPTH_16, TEXT_MODE);
+}
+
+namespace TILESET
+{
+	constexpr int COUNT_W = 5;
+	constexpr int COUNT_H = 4;
+}
+namespace TILE // Tiles like visible on the tileset sprite
+{
+	constexpr int SIZE = 16;
+
+	constexpr int COUNT_W = BG::SIZE_W / SIZE;
+	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+
+	constexpr int FLIP_H = 10;
+	constexpr int FLIP_V = 11;
+}
+namespace SUB_TILE // Tiles like considered by the NDS
+{
+	constexpr int SIZE = 8;
+	constexpr int COUNT_W = BG::SIZE_W / SIZE;
+	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+}
+namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
+{
+	constexpr int SIZE = 2 * TILE::SIZE;
+
+	constexpr int COUNT_W = BG::SIZE_W / SIZE;
+	constexpr int COUNT_H = BG::SIZE_H / SIZE;
+
+	enum class Type { Path, Wall, Debug, Last };
+	namespace CORNER {enum { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };}
+}
+
+namespace DIRECTION
+{
+	constexpr u8 NONE      = 0b0000'0000;
+	constexpr u8 TOP       = 0b0000'0001;
+	constexpr u8 BOT       = 0b0000'0010;
+	constexpr u8 LEFT      = 0b0000'0100;
+	constexpr u8 RIGHT     = 0b0000'1000;
+	constexpr u8 TOP_LEFT  = 0b0001'0000;
+	constexpr u8 TOP_RIGHT = 0b0010'0000;
+	constexpr u8 BOT_LEFT  = 0b0100'0000;
+	constexpr u8 BOT_RIGHT = 0b1000'0000;
+	constexpr u8 ALL       = 0b1111'1111;
+}
+
+
+namespace ENTITY::ANIMATION
+{
+	enum DIRECTION
+	{
+		TOP,
+		BOT,
+		LEFT,
+		RIGHT,
+		TOP_MOVING,
+		BOT_MOVING,
+		LEFT_MOVING,
+		RIGHT_MOVING
+	};
+	// Offset between moving states and idle states.
+	constexpr int MOVING_STATE_OFFSET = 4;
+	constexpr bool IsMovingState(int state)
+	{
+		return state > RIGHT;
+	}
+}
+
+
+namespace GAME_MAP
+{
+	constexpr int SIZE_W = 200;
+	constexpr int SIZE_H = 200;
+	constexpr int CHUNK_SIZE = 6;
+}
+
+#define PALETTE_SIZE 16
+// ========================================
+// FICHIER : include/Debug.h
+// ========================================
+
+#pragma once
+class Entity;
+
+namespace Debug
+{
+    void Init();
+    void ClearConsole();
+    void LogFps();
+    void LogEntityInfo(Entity& entity);
+    void BeginProfile();
+    void EndProfile();
+    void LogProfile();
+}
+// ========================================
+// FICHIER : include/Entity.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "Sprite.h"
+#include "Hitbox.h"
+#include "GameObject.h"
+
+class Camera;
+
+class Entity: public GameObject
+{
+public:
+	void Move(Vector2f delta);
+	void Update(float dt) override;
+	void Display();
+
+	void SetDirection(u8 direction, bool enable);
+	void SetAllDirections(u8 directions);
+	void SetSprite(Sprite* sprite);
+	void SetSize(Vector2i size);
+
+	bool GetDirection(u8 direction);
+	const Vector2f& GetPosition();
+	const Vector2i GetCoordinates();
+	const Vector2i& GetSize();
+	[[nodiscard]] float GetSpeed() const;
+	const Hitbox& GetHitbox();
+	bool IsMoving();
+	
+private:
+	Sprite* m_Sprite;
+	// Center of the entity
+	Vector2f m_Position;
+	Vector2i m_Size;
+	u8 m_Directions;
+	Hitbox m_Hitbox;
+	float m_Speed;
+	short m_SfxPlayInterval; //in frames
+	short m_SfxElapsedFrames; //in frames
+
+	void UpdateHitboxPos();
+	void UpdateSpriteDirection();
+	void UpdateAudio();
+
+	Entity(std::string name);
+
+	friend class GameObject;
+};
+// ========================================
+// FICHIER : include/GameContext.h
+// ========================================
+
+#pragma once
+
+class GameMap;
+class Camera;
+class Entity;
+class AudioManager;
+
+struct GameContext
+{
+	static GameContext& get()
+	{
+		static GameContext s_Instance;
+		return s_Instance;
+	}
+
+	GameMap* m_GameMap = nullptr;
+	Camera* m_Camera = nullptr;
+	Entity* m_Player = nullptr;
+	AudioManager* m_AudioManager = nullptr;
+
+	GameContext(const GameContext&) = delete;
+	GameContext& operator=(const GameContext&) = delete;
+
+private:
+	GameContext() = default;
+	~GameContext() = default;
+};
+// ========================================
+// FICHIER : include/GameManager.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+class GameManager
+{
+public:
+	GameManager();
+	~GameManager();
+
+	static void InitAll(bool debugMode);
+	
+};
+// ========================================
+// FICHIER : include/GameMap.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "TileMap.h"
+#include "Room.h"
+#include "GameObject.h"
+
+
+class GameMap: public GameObject
+{
+public:
+	void Update(float dt) override;
+
+	META_TILE::Type GetTile(const Vector2i& tileCoordinate) const;
+
+	bool IsCrossable(const Vector2i& tileCoordinate) const;
+	bool IsChunkGenerated(const Vector2i& chunkCoordinate) const;
+
+	void GenerateChunk(const Vector2i& chunkCoordinate);
+
+private:
+	// Speed to expand but also to access + do not store useless data
+	std::unordered_map<Vector2i, META_TILE::Type, NDSMath::HashVector2i> m_Map;
+	std::unordered_map<Vector2i, bool, NDSMath::HashVector2i> m_GeneratedChunks;
+	std::queue<Vector2i> m_ChunksToGenerate;
+	TileMap m_TileMap;
+	Vector2i m_PlayerChunk;
+	std::vector<Room> m_ReservedRooms;
+
+	Vector2i m_LastOffset = {0,0};
+
+	void UpdatePlayerChunk();
+	void CollapseTile(const Vector2i& tileCoordinate);
+	void CreateRoom(const Room& room);
+	void AddToQueue(const Vector2i& chunkCoordinate);
+	const Vector2i GetPlayerChunk() const;
+	void LoadDisplayableTilesIntoTileMap(Vector2i const& offset);
+	void ConnectNearestRoom(const Room& newRoom, std::mt19937& rng);
+
+	GameMap(std::string name);
+
+	friend class GameObject;
+};
+// ========================================
+// FICHIER : include/GameObject.h
+// ========================================
+
+#pragma once
+
+#include <vector>
+#include <memory>
+#include <string>
+
+class GameObject
+{
+public:
+	virtual ~GameObject() = default;
+	
+	virtual void Update(float dt);
+
+	template <class T>
+	static T* InstantiateGO(std::string name)
+	{
+		static_assert(std::is_base_of_v<GameObject, T>);
+		s_GameObjects.push_back(std::unique_ptr<T>(new T(std::move(name))));
+		return static_cast<T*>(s_GameObjects.back().get());
+	}
+
+	static void UpdateAllGameObjects(float dt);
+
+protected:
+	GameObject(std::string name);
+
+	std::string m_Name;
+
+private:
+	static std::vector<std::unique_ptr<GameObject>> s_GameObjects;
+};
+// ========================================
+// FICHIER : include/Hitbox.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+class GameMap;
+
+class Hitbox
+{
+public:
+	Hitbox(Rect<int> bounds = {0,0,0,0});
+	~Hitbox();
+
+	[[nodiscard]] const Rect<int>& GetBounds() const;
+	void SetPos(int x, int y);
+	void SetX(int x);
+	void SetY(int y);
+	void SetWidth(int width);
+	void SetHeight(int height);
+	[[nodiscard]] bool Intersects(const Hitbox& other) const;
+	[[nodiscard]] bool Intersects(const GameMap& gameMap) const;
+private:
+	Rect<int> m_bounds;
+};
+// ========================================
+// FICHIER : include/MetaTile.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "Tile.h"
+
+class MetaTile
+{
+public:
+	MetaTile(META_TILE::Type type = META_TILE::Type::Path);
+
+	void Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
+
+	[[nodiscard]] const META_TILE::Type& GetType() const;
+	
+	void SetType(const META_TILE::Type& type);
+	void SetConnections(u8 connections);
+private:
+	Tile m_Tiles[4];
+	u8 m_Connections;
+	META_TILE::Type m_Type;
+};
+// ========================================
+// FICHIER : include/NDSMath.h
+// ========================================
+
+#pragma once
+
+#include <iostream>
+
+#include <concepts>
+#include <cmath>
+#include <compare>
+
+template <typename T>
+struct Vector2
+{
+	T x, y;
+
+	template <typename U>
+	constexpr explicit operator Vector2<U>() const noexcept
+	{
+		return Vector2<U>{static_cast<U>(x), static_cast<U>(y)};
+	}
+
+
+
+	// Addition
+	constexpr Vector2 operator+(const Vector2& other) const noexcept
+	{ return {x + other.x, y + other.y}; }
+
+	constexpr Vector2& operator+=(const Vector2& other) noexcept
+	{
+		x += other.x; y += other.y;
+		return *this;
+	}
+
+	// Addition with scalar (Vector2 + T)
+	constexpr Vector2 operator+(const T other) const noexcept {
+		return {x + other, y + other};
+	}
+	constexpr Vector2& operator+=(const T other) noexcept {
+		x += other; y += other;
+		return *this;
+	}
+
+
+	// Subtraction
+	constexpr Vector2 operator-(const Vector2& other) const noexcept
+	{ return {x - other.x, y - other.y}; }
+
+	constexpr Vector2& operator-=(const Vector2& other) noexcept
+	{
+		x -= other.x; y -= other.y;
+		return *this;
+	}
+	// Subtraction with scalar (Vector2 - T)
+	constexpr Vector2 operator-(const T other) const noexcept {
+		return {x - other, y - other};
+	}
+	constexpr Vector2& operator-=(const T other) noexcept {
+		x -= other; y -= other;
+		return *this;
+	}
+
+	// Scalar multiplication
+	constexpr Vector2 operator*(T scalar) const noexcept
+	{ return {x * scalar, y * scalar}; }
+
+	constexpr Vector2& operator*=(T scalar) noexcept
+	{
+		x *= scalar; y *= scalar;
+		return *this;
+	}
+
+	// Scalar division (only for floating-point types)
+	constexpr Vector2 operator/(T scalar) const noexcept
+	{ return {x / scalar, y / scalar}; }
+
+	constexpr Vector2& operator/=(T scalar)
+	{
+		x /= scalar; y /= scalar;
+		return *this;
+	}
+
+	// Equality comparison
+	constexpr bool operator==(const Vector2& other) const noexcept
+	{ return x == other.x && y == other.y; }
+
+	constexpr bool operator!=(const Vector2& other) const noexcept
+	{ return !(*this == other); }
+
+	// Output stream operator
+	friend std::ostream& operator<<(std::ostream& os, const Vector2& v)
+	{ return os << "(" << v.x << ", " << v.y << ")";  }
+
+	[[nodiscard]] constexpr T SquaredNorm() const noexcept
+	{
+		return x * x + y * y; // Squared norm for comparison
+	}
+
+	constexpr auto operator<=>(const Vector2& other) const noexcept
+	{
+		return SquaredNorm() <=> other.SquaredNorm();
+	}
+};
+
+// Scalar * Vector multiplication
+template <typename T>
+constexpr Vector2<T> operator*(T scalar, const Vector2<T>& v) noexcept
+{ return {scalar * v.x, scalar * v.y}; }
+
+
+using Vector2b = Vector2<bool>;
+using Vector2f = Vector2<float>;
+using Vector2i = Vector2<int>;
+
+template <typename T>
+struct Rect { T x, y, w, h; };
+
+namespace NDSMath
+{
+	// Return ceil of the abs value while conserving sign
+	int RoundAbsCeil(float x);
+	Vector2i RoundAbsCeil(Vector2f vec);
+
+	// A hash function used to hash a Vector2i
+	struct HashVector2i
+	{
+		size_t operator()(const Vector2i& vec) const
+		{
+			// Hash the first element
+			size_t hash1 = std::hash<int>{}(vec.x);
+			// Hash the second element
+			size_t hash2 = std::hash<int>{}(vec.y);
+			// Combine the two hash values
+			return hash1
+				   ^ (hash2 + 0x9e3779b9 + (hash1 << 6)
+					  + (hash1 >> 2));
+		}
+	};
+}
+// ========================================
+// FICHIER : include/NDSTime.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+class NDSTime
+{
+public:
+	void NewFrame();
+	void NewTickCallback();
+	int GetFps();
+	float GetDeltaTime();
+	static NDSTime& Get()
+	{
+		static NDSTime s_Instance(120);
+		return s_Instance;
+	}
+
+	NDSTime() = delete;
+
+private:
+	int m_Fps;
+	int m_UpdatesPerSeconds;
+	float m_DeltaTime;
+
+	NDSTime(int updatesPerSeconds);
+};
+// ========================================
+// FICHIER : include/pch.h
+// ========================================
+
+#pragma once
+
+using uint = unsigned int;
+using ushort = unsigned short;
+
+#include <nds.h>
+#include <vector>
+#include <list>
+#include <span>
+#include <cstdlib>
+#include <ctime>
+#include <unordered_map>
+#include <maxmod9.h>
+#include <filesystem.h>
+#include <queue>
+#include <random>
+#include "Constants.h"
+#include "NDSMath.h"
+#include "Debug.h"
+#include "soundbank.h"
+// ========================================
+// FICHIER : include/Room.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+struct Room
+{
+	Vector2i Coordinate;
+	Vector2i Size;
+	[[nodiscard]] Room Oversized(int oversize) const noexcept
+	{
+		return {Coordinate - oversize, Size + oversize*2};
+	}
+};
+// ========================================
+// FICHIER : include/Sprite.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+class SpriteManager;
+
+class Sprite
+{
+public:
+	Sprite(SpriteManager* manager,
+		int id,
+		SpriteSize spriteSize,
+		u16* data,
+		Vector2i pixelSize = {32, 32},
+		int frameCount = 1,
+		int stateCount = 1,
+		int animSpeed = 1
+	);
+	~Sprite();
+
+	void Update(float speedFactor = 1);
+	void Display(Vector2i pos = {0,0}, bool zoomed = false);
+	void SkipFrame(int num = 1);
+	void SetState(int state);
+	void SetFrame(int frame);
+
+	int GetState();
+
+	[[nodiscard]] const Vector2i& getPixelSize() const;
+
+private:
+	SpriteManager* m_Manager;
+	Vector2i m_PixelSize;
+	SpriteSize m_SpriteSize;
+	u16* m_Data;
+	short m_Id;
+
+	// Animation-related members
+
+	// Currently displayed frame (x)
+	short m_CurrentFrame;
+	// Total number of animation frames
+	short const m_FrameCount;
+	// Currently displayed state (y)
+	short m_CurrentState;
+	// Total number of animation states
+	short const m_StateCount;
+	// Number of updates before switching frames
+	short m_AnimSpeed;
+	// Counts updates
+	short m_Counter;
+	/** @brief Memory offset to jump to the next frame using u16* pointer arithmetic.
+	 *  
+	 * Calculation: (Width * Height) / 4.
+	 * - Division by 2 converts pixels to bytes (4bpp mode: 1 pixel = 0.5 byte).
+	 * - Division by 2 accounts for u16* pointer arithmetic (incrementing by 1 jumps 2 bytes).
+	 */
+	short const m_FrameMemoryOffset;
+};
+// ========================================
+// FICHIER : include/SpriteManager.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "Sprite.h"
+
+class SpriteManager
+{
+	public:
+		SpriteManager();
+		~SpriteManager();
+
+		Sprite* CreateSprite(
+			std::string const& name,
+			uint32 tilesLen,
+			uint32 palLen,
+			SpriteSize spriteSize = SpriteSize_32x32,
+			Vector2i pixelSize = {32, 32},
+			int frameCount = 1,
+			int stateCount = 1,
+			int animSpeed = 1
+		);
+
+		Sprite* GetPlayerSprite();
+	private:
+		Sprite* m_PlayerSprite;
+		std::list<Sprite*> m_Sprites;
+};
+
+
+#define CREATE_SPRITE(spriteManager,spriteName)\
+spriteManager.CreateSprite(\
+#spriteName,\
+spriteName ## TilesLen,\
+spriteName ## PalLen)
+
+#define CREATE_PARAMETRIZED_SPRITE(spriteManager,spriteName,sx,sy,frameCount,stateCount,animSpeed)\
+spriteManager.CreateSprite(\
+#spriteName,\
+spriteName ## TilesLen,\
+spriteName ## PalLen,\
+SpriteSize_ ## sx ## x ## sy,\
+{sx,sy},\
+frameCount,\
+stateCount,\
+animSpeed)
+
+// ========================================
+// FICHIER : include/Tile.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+
+class Tile
+{
+public:
+	Tile(u8 corner);
+	
+	void SetConnections(u8 connections);
+
+	void Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos);
+private:
+	u8 m_Connections;
+	Vector2b m_Flips;
+};
+// ========================================
+// FICHIER : include/TileMap.h
+// ========================================
+
+#pragma once
+
+#include "pch.h"
+#include "MetaTile.h"
+
+class GameMap;
+
+class TileMap
+{
+public:
+	// size in tiles
+	TileMap();
+
+	//flush the map into background VRAM
+	void Flush();
+
+	std::vector<MetaTile>& operator[](int key);
+private:
+	std::vector<std::vector<MetaTile>> m_TileMap;
+	// real background accurate tilemap based on sub tiles made by grit
+	static u16 m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
+
+	//Convert m_tileMap into a background adapted tilemap
+	void ConvertMap();
+
+	void CalculateConnections();
+
+	friend class GameMap;
+};
+// ========================================
+// FICHIER : source/AssetManager.cpp
+// ========================================
+
+#include "AssetManager.h"
+#include <filesystem.h>
+
+using namespace std;
+
+bool AssetManager::LoadBin(string const& assetPath, void* dest, size_t size)
+{
+	FILE* file = fopen(assetPath.c_str(), "rb");
+	if(!file)
+	{
+		cout << "File load failed: " << assetPath << endl;
+		return false;
+	}
+
+	fseek(file, 0, SEEK_END);
+	long fileSize = ftell(file);
+	rewind(file);
+
+	if(fileSize < static_cast<long>(size))
+		cout << "Warning: File is smaller than buffer size!" << endl;
+
+	fread(dest, 1, size, file);
+	fclose(file);
+
+	return true;
+}
+// ========================================
+// FICHIER : source/AudioManager.cpp
+// ========================================
+
+#include "pch.h"
+#include "AudioManager.h"
+
+using namespace std;
+
+AudioManager::~AudioManager()
+{
+    soundDisable();
+}
+
+void AudioManager::PlayRandomFootstep()
+{
+	std::mt19937 rng(time(0));
+	std::uniform_int_distribution<> footstep(1, 6);
+
+	switch(footstep(rng))
+	{
+		case 1: mmEffect(SFX_FOOTSTEP1); break;
+		case 2: mmEffect(SFX_FOOTSTEP2); break;
+		case 3: mmEffect(SFX_FOOTSTEP3); break;
+		case 4: mmEffect(SFX_FOOTSTEP4); break;
+		case 5: mmEffect(SFX_FOOTSTEP5); break;
+		case 6: mmEffect(SFX_FOOTSTEP6); break;
+	}
+}
+
+
+AudioManager::AudioManager(string name): GameObject(name)
+{
+    mmInitDefault("nitro:/soundbank.bin");
+    mmLoad(MOD_CORRIDORSUIT);
+    mmLoadEffect(SFX_FOOTSTEP1);
+    mmLoadEffect(SFX_FOOTSTEP2);
+    mmLoadEffect(SFX_FOOTSTEP3);
+    mmLoadEffect(SFX_FOOTSTEP4);
+    mmLoadEffect(SFX_FOOTSTEP5);
+    mmLoadEffect(SFX_FOOTSTEP6);
+    soundEnable();
+    mmStart(MOD_CORRIDORSUIT, MM_PLAY_LOOP);
+
+    mmSetEffectsVolume(700);
+}
+// ========================================
+// FICHIER : source/Camera.cpp
+// ========================================
+
+#include "Camera.h"
+#include "GameContext.h"
+
+using namespace std;
+
+void Camera::Update(float dt)
+{
+	m_Offset = static_cast<Vector2i>(GameContext::get().m_Player->GetPosition())
+	- Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
+	bgSetScroll(BG::ID, 
+		BG::SIZE_W/2 + m_Offset.x % META_TILE::SIZE,
+		BG::SIZE_H/2 + m_Offset.y % META_TILE::SIZE);
+}
+
+const Vector2i Camera::GetDisplayPos(const Entity& entity) const
+{
+	if(&entity == GameContext::get().m_Player) return {SCREEN_SIZE_W/2,SCREEN_SIZE_H/2};
+
+	return {0,0};
+}
+
+const Vector2i Camera::GetMetaTileOffset() const
+{
+	return m_Offset / META_TILE::SIZE;
+}
+
+
+Camera::Camera(string name): GameObject(name), m_Offset{0,0} {}
+// ========================================
+// FICHIER : source/Debug.cpp
+// ========================================
+
+#include "pch.h"
+#include "Debug.h"
+#include "NDSTime.h"
+#include "Entity.h"
+
+namespace
+{
+	// Internal profiling state
+	u32 s_ticks = 0;
+	u32 s_usec = 0;
+}
+
+namespace Debug
+{
+	void Init()
+	{
+		consoleDemoInit();
+	}
+
+	void ClearConsole()
+	{
+		printf("\x1b[2J\x1b[H");
+	}
+
+	void LogFps()
+	{
+		printf("\x1b[23;23HFPS:%5.2d\x1b[0;0H", NDSTime::Get().GetFps());
+	}
+
+	void LogEntityInfo(Entity& entity)
+	{
+		printf("\x1b[10;0HPosition: (%.2f, %.2f)", entity.GetPosition().x, entity.GetPosition().y);
+		printf("\x1b[11;0HSize: (%d, %d)", entity.GetSize().x, entity.GetSize().y);
+		printf("\x1b[12;0HDirections: %s%s%s%s%s",
+			entity.GetDirection(DIRECTION::TOP)   ? "TOP "   : "",
+			entity.GetDirection(DIRECTION::BOT)   ? "BOT "   : "",
+			entity.GetDirection(DIRECTION::LEFT)  ? "LEFT "  : "",
+			entity.GetDirection(DIRECTION::RIGHT) ? "RIGHT " : "",
+			!entity.GetDirection(DIRECTION::ALL)  ? "NONE"   : ""
+		);
+		auto bounds = entity.GetHitbox().GetBounds();
+		printf("\x1b[13;0HHitbox:(%d, %d, %d, %d)", bounds.x, bounds.y, bounds.w, bounds.h);
+		printf("\x1b[14;0HSpeed: %.2f\x1b[0;0H", entity.GetSpeed());
+	}
+
+	void BeginProfile()
+	{
+		cpuStartTiming(2);
+	}
+
+	void EndProfile()
+	{
+		s_ticks = cpuEndTiming();
+		s_usec = timerTicks2usec(s_ticks);
+	}
+
+	void LogProfile()
+	{
+		printf("Profile: %lu ticks (%lu us)\n", s_ticks, s_usec);
+	}
+}
+// ========================================
+// FICHIER : source/Entity.cpp
+// ========================================
+
+#include "Entity.h"
+#include "Camera.h"
+#include "AudioManager.h"
+#include "GameContext.h"
+
+using namespace std;
+
+void Entity::Move(Vector2f delta)
+{
+	// X axe
+	if (delta.x != 0)
+	{
+		Hitbox futureHitbox = m_Hitbox;
+		futureHitbox.SetX(futureHitbox.GetBounds().x + NDSMath::RoundAbsCeil(delta.x));
+
+		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+			m_Position.x += delta.x;
+	}
+
+	// Y axe
+	if (delta.y != 0)
+	{
+		Hitbox futureHitbox = m_Hitbox;
+		futureHitbox.SetY(futureHitbox.GetBounds().y + NDSMath::RoundAbsCeil(delta.y));
+
+		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+			m_Position.y += delta.y;
+	}
+	
+	UpdateHitboxPos();
+
+	UpdateAudio();
+}
+
+void Entity::Update(float delta)
+{
+	using namespace DIRECTION;
+	Vector2f deltaPos = m_Speed * delta * Vector2f
+	{
+		static_cast<float>(GetDirection(RIGHT) - GetDirection(LEFT)),
+		static_cast<float>(GetDirection(BOT)   - GetDirection(TOP))
+	};
+
+	Move(deltaPos);
+
+	UpdateSpriteDirection();
+	m_Sprite->Update(deltaPos.y != 0 ? 2.f : 1.f);
+}
+
+void Entity::Display()
+{
+	m_Sprite->Display(GameContext::get().m_Camera->GetDisplayPos(*this) - m_Size/2);
+}
+
+
+
+void Entity::SetDirection(u8 direction, bool enable)
+{
+	enable ? m_Directions |= direction : m_Directions &= ~direction;
+}
+
+void Entity::SetAllDirections(u8 directions)
+{
+	m_Directions = directions;
+}
+
+void Entity::SetSprite(Sprite* sprite)
+{
+	m_Sprite = sprite;
+}
+
+void Entity::SetSize(Vector2i size)
+{
+	m_Size = size;
+
+	UpdateHitboxPos();
+	m_Hitbox.SetWidth(m_Size.x);
+	m_Hitbox.SetHeight(m_Size.y/2);
+}
+
+
+
+bool Entity::GetDirection(u8 direction)
+{
+	return m_Directions & direction;
+}
+
+const Vector2f& Entity::GetPosition()
+{
+	return m_Position;
+}
+
+const Vector2i Entity::GetCoordinates()
+{
+	return static_cast<Vector2i>(m_Position/META_TILE::SIZE) - Vector2i{m_Position.x < 0, m_Position.y < 0};
+}
+
+const Vector2i& Entity::GetSize()
+{
+	return m_Size;
+}
+
+float Entity::GetSpeed() const
+{
+	return m_Speed;
+}
+
+const Hitbox& Entity::GetHitbox()
+{
+	return m_Hitbox;
+}
+
+bool Entity::IsMoving()
+{
+	return m_Directions != DIRECTION::NONE;
+}
+
+
+void Entity::UpdateHitboxPos()
+{
+	m_Hitbox.SetPos(m_Position.x - m_Size.x/2,m_Position.y);
+}
+
+void Entity::UpdateSpriteDirection()
+{
+	namespace Anim = ENTITY::ANIMATION;
+	using AnimDir = Anim::DIRECTION;
+	namespace Dir = DIRECTION;
+
+	if (IsMoving())
+		m_Sprite->SetState(
+			GetDirection(Dir::TOP)  ? AnimDir::TOP_MOVING  :
+			GetDirection(Dir::BOT)  ? AnimDir::BOT_MOVING  :
+			GetDirection(Dir::LEFT) ? AnimDir::LEFT_MOVING :
+									  AnimDir::RIGHT_MOVING);
+	else if (Anim::IsMovingState(m_Sprite->GetState()))
+		m_Sprite->SetState(m_Sprite->GetState() - Anim::MOVING_STATE_OFFSET);
+}
+
+void Entity::UpdateAudio()
+{
+	if(!IsMoving())
+	{
+		m_SfxElapsedFrames = m_SfxPlayInterval;
+		return;
+	}
+	if(m_SfxElapsedFrames++ != m_SfxPlayInterval) return;
+
+	m_SfxElapsedFrames = 0;
+	GameContext::get().m_AudioManager->PlayRandomFootstep();
+}
+
+
+
+
+Entity::Entity(string name):
+	GameObject(name),
+	m_Sprite{nullptr},
+	m_Position{META_TILE::SIZE/2,META_TILE::SIZE/3},
+	m_Size{20,20}, //default size
+	m_Directions{DIRECTION::NONE},
+	m_Hitbox{{0,0,0,0}},
+	m_Speed(50.f),
+	m_SfxPlayInterval(36),
+	m_SfxElapsedFrames(0)
+{}
+// ========================================
+// FICHIER : source/GameManager.cpp
+// ========================================
+
+#include "GameManager.h"
+
+GameManager::GameManager() {}
+GameManager::~GameManager() {}
+
+void GameManager::InitAll(bool debugMode)
+{
+	std::srand(std::time({}));
+	videoSetMode(MODE_5_2D);
+
+	// Memory mapping
+	vramSetBankB(VRAM_B_MAIN_BG_0x06020000);
+	vramSetBankC(VRAM_C_SUB_BG_0x06200000);
+	vramSetBankD(VRAM_D_MAIN_BG_0x06060000);
+	
+	bgInit(BG::ID, BG::TYPE, BG::SIZE, 0, 1);
+	bgSetControlBits(BG::ID, BG_WRAP_ON);
+
+	bool nitroFSInitSuccess = nitroFSInit(NULL);
+
+	if(!debugMode) return;
+
+	//init debug console
+	Debug::Init();
+	std::cout << (nitroFSInitSuccess ? "nitroFSInit succeed" : "nitroFSInit failed") << std::endl;
+}
+// ========================================
+// FICHIER : source/GameMap.cpp
+// ========================================
+
+#include "GameMap.h"
+#include "Camera.h"
+#include "GameContext.h"
+#include <limits>
+
+using namespace std;
+
+// Alias for better readability
+namespace MT = META_TILE;
+
+
+void GameMap::Update(float dt)
+{
+	if(Vector2i const& offset = GameContext::get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
+	{
+		LoadDisplayableTilesIntoTileMap(offset);
+		m_TileMap.Flush();
+	}
+
+	if(m_PlayerChunk != GetPlayerChunk())
+		UpdatePlayerChunk();
+
+	if(!m_ChunksToGenerate.empty())
+	{
+		GenerateChunk(m_ChunksToGenerate.front());
+		m_ChunksToGenerate.pop();
+	}
+}
+
+MT::Type GameMap::GetTile(const Vector2i& tileCoordinate) const
+{
+	auto pair = m_Map.find(tileCoordinate);
+
+	if (pair == m_Map.end())
+		return MT::Type::Wall;
+	
+	return pair->second;
+}
+
+bool GameMap::IsCrossable(const Vector2i& tileCoordinate) const
+{
+	return GetTile(tileCoordinate) != MT::Type::Wall;
+}
+
+bool GameMap::IsChunkGenerated(const Vector2i& chunkCoordinate) const
+{	
+	return m_GeneratedChunks.find(chunkCoordinate) != m_GeneratedChunks.end();
+}
+
+void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
+{
+	//temporary
+	unsigned int globalSeed = time(0);
+
+	// Generate deterministic seed for this chunk
+	unsigned int seed = globalSeed ^ (chunkCoordinate.x * 73856093) ^ (chunkCoordinate.y * 19349663);
+	std::mt19937 rng(seed);
+	std::uniform_int_distribution<> roomChance(0, 100);
+
+	// Try to generate a room in this chunk
+	if (roomChance(rng) < 60) // 40% chance to create a room
+	{
+		Vector2i roomSize = {
+			2 + static_cast<int>(rng() % 4),
+			2 + static_cast<int>(rng() % 4)
+		};
+
+		Vector2i roomCoord = {
+			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.x),
+			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.y)
+		};
+
+		Room newRoom{roomCoord, roomSize};
+
+		// Check for overlap with existing rooms
+		bool overlaps = false;
+		for (const auto& room : m_ReservedRooms)
+		{
+			Room o = room.Oversized(1);
+			if (roomCoord.x < o.Coordinate.x + o.Size.x &&
+				roomCoord.x + roomSize.x > o.Coordinate.x &&
+				roomCoord.y < o.Coordinate.y + o.Size.y &&
+				roomCoord.y + roomSize.y > o.Coordinate.y)
+			{
+				overlaps = true;
+				break;
+			}
+		}
+
+		if (!overlaps)
+		{
+			ConnectNearestRoom(newRoom, rng);
+			CreateRoom(newRoom);
+		}
+	}
+		
+	m_GeneratedChunks[chunkCoordinate] = true;
+}
+
+// Function to compute the center of a room
+Vector2i getRoomCenter(const Room& room) {
+	return { room.Coordinate.x + room.Size.x / 2, room.Coordinate.y + room.Size.y / 2 };
+}
+
+// Function to connect the new room to one of the nearest reserved rooms
+// newRoom: the room to connect (not yet in m_reservedRooms)
+// rng: a random number generator passed from the caller
+void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
+{
+	auto connectRooms = [&](const Room& a, const Room& b)
+	{
+		Vector2i centerA = {a.Coordinate.x + a.Size.x / 2, a.Coordinate.y + a.Size.y / 2};
+		Vector2i centerB = {b.Coordinate.x + b.Size.x / 2, b.Coordinate.y + b.Size.y / 2};
+
+		// Corridor horizontal then vertical
+		for (int x = std::min(centerA.x, centerB.x); x <= std::max(centerA.x, centerB.x); ++x)
+			CollapseTile({x, centerA.y});
+
+		for (int y = std::min(centerA.y, centerB.y); y <= std::max(centerA.y, centerB.y); ++y)
+			CollapseTile({centerB.x, y});
+	};
+
+
+	if (m_ReservedRooms.empty())
+		return; // Nothing to connect to
+
+	// Calculate the center of the new room
+	Vector2i newCenter = getRoomCenter(newRoom);
+	
+	// List to hold indices of rooms with the minimum distance squared
+	std::vector<size_t> candidateIndices;
+	int minDistSq = std::numeric_limits<int>::max();
+	
+	// Traverse all reserved rooms to find those with the smallest distance
+	for (size_t i = 0; i < m_ReservedRooms.size(); ++i)
+	{
+		Vector2i roomCenter = getRoomCenter(m_ReservedRooms[i]);
+		int dx = newCenter.x - roomCenter.x;
+		int dy = newCenter.y - roomCenter.y;
+		int distSq = dx * dx + dy * dy;
+		
+		if (distSq < minDistSq)
+		{
+			minDistSq = distSq;
+			candidateIndices.clear();
+			candidateIndices.push_back(i);
+		}
+		else if (distSq == minDistSq)
+			candidateIndices.push_back(i);
+	}
+	
+	// Randomly select one candidate room from the candidates
+	if (!candidateIndices.empty())
+	{
+		std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
+		size_t chosenIndex = candidateIndices[candidateDist(rng)];
+		connectRooms(m_ReservedRooms[chosenIndex], newRoom);
+	}
+}
+
+
+
+
+void GameMap::UpdatePlayerChunk()
+{
+	Vector2i center = GetPlayerChunk();
+	int radius = 3;
+
+	for (int x = -radius; x <= radius; ++x)
+		for (int y = -radius; y <= radius; ++y)
+			AddToQueue(center + Vector2i{x, y});
+}
+
+void GameMap::CollapseTile(const Vector2i& tileCoordinate)
+{
+	m_Map[tileCoordinate] = MT::Type::Path;
+}
+
+void GameMap::CreateRoom(const Room& room)
+{
+	m_ReservedRooms.push_back(room);
+
+	for (int dx = 0; dx < room.Size.x; ++dx)
+		for (int dy = 0; dy < room.Size.y; ++dy)
+			CollapseTile({room.Coordinate.x + dx, room.Coordinate.y + dy});
+}
+
+void GameMap::AddToQueue(const Vector2i& chunkCoordinate)
+{
+	if(IsChunkGenerated(chunkCoordinate)) return;
+
+	m_ChunksToGenerate.push(chunkCoordinate);
+	m_GeneratedChunks[chunkCoordinate] = true;
+}
+
+const Vector2i GameMap::GetPlayerChunk() const
+{
+	if(GameContext::get().m_Player == nullptr) return {0,0};
+	const Vector2i playerCoo = GameContext::get().m_Player->GetCoordinates();
+	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
+}
+
+void GameMap::LoadDisplayableTilesIntoTileMap(Vector2i const& offset)
+{
+	m_LastOffset = offset;
+
+	int rows = MT::COUNT_W - WORD_BORDER_SIZE;
+	int cols = MT::COUNT_H - WORD_BORDER_SIZE;
+
+	// 2 represent how many tiles are out of camera fov
+	for (int i = WORD_BORDER_SIZE; i < rows; ++i)
+		for (int j = WORD_BORDER_SIZE; j < cols; ++j)
+			m_TileMap[i][j].SetType(GetTile({offset.y+i, offset.x+j}));
+
+	m_TileMap.CalculateConnections();
+}
+
+
+
+GameMap::GameMap(string name): GameObject(name)
+{
+	CreateRoom({{-2,-2},{5,5}});
+	GenerateChunk({0,0});
+	UpdatePlayerChunk();
+}
+// ========================================
+// FICHIER : source/GameObject.cpp
+// ========================================
+
+#include "GameObject.h"
+#include <utility>
+
+using namespace std;
+
+vector<unique_ptr<GameObject>> GameObject::s_GameObjects;
+
+void GameObject::Update(float dt) {}
+
+
+void GameObject::UpdateAllGameObjects(float dt)
+{
+	for(unique_ptr<GameObject>& go : s_GameObjects)
+		go->Update(dt);
+}
+
+GameObject::GameObject(string name): m_Name(name) {}
+// ========================================
+// FICHIER : source/Hitbox.cpp
+// ========================================
+
+#include "Hitbox.h"
+#include "GameMap.h"
+
+Hitbox::Hitbox(Rect<int> bounds):
+	m_bounds(bounds)
+{}
+
+Hitbox::~Hitbox(){}
+
+bool Hitbox::Intersects(const Hitbox& other) const
+{
+	// Check if there is no intersection between the two rectangles
+			 // This is completely to the left of other
+	return !(m_bounds.x + m_bounds.w <= other.m_bounds.x ||
+			 // Other is completely to the left of this
+			 other.m_bounds.x + other.m_bounds.w <= m_bounds.x ||
+			 // This is completely above other
+			 m_bounds.y + m_bounds.h <= other.m_bounds.y ||
+			 // Other is completely above this
+			 other.m_bounds.y + other.m_bounds.h <= m_bounds.y);
+}
+
+bool Hitbox::Intersects(const GameMap& gameMap) const
+{
+	namespace MT = META_TILE;
+
+	// Convert bounds to tile coordinates
+	int startX = m_bounds.x / MT::SIZE - static_cast<int>(m_bounds.x<0);
+	int startY = m_bounds.y / MT::SIZE - static_cast<int>(m_bounds.y<0);
+	int boundsR = m_bounds.x + m_bounds.w;
+	int boundsB = m_bounds.y + m_bounds.h;
+	int endX = boundsR / MT::SIZE - static_cast<int>(boundsR<0);
+	int endY = boundsB / MT::SIZE - static_cast<int>(boundsB<0);
+
+	for (int x = startX; x <= endX; ++x) 
+		for (int y = startY; y <= endY; ++y) 
+			if (!gameMap.IsCrossable({y,x})) 
+				return true;
+
+	return false;
+}
+
+
+const Rect<int>& Hitbox::GetBounds() const { return m_bounds; }
+
+void Hitbox::SetPos(int x, int y)
+{
+	m_bounds.x = x;
+	m_bounds.y = y;
+}
+
+void Hitbox::SetX(int x) { m_bounds.x = x; }
+void Hitbox::SetY(int y) { m_bounds.y = y; }
+void Hitbox::SetWidth(int width) { m_bounds.w = width; }
+void Hitbox::SetHeight(int height) { m_bounds.h = height; }
+
+// ========================================
+// FICHIER : source/main.cpp
+// ========================================
+
+#include "pch.h"
+#include "SpriteManager.h"
+#include "NDSTime.h"
+#include "GameMap.h"
+#include "GameContext.h"
+#include "Camera.h"
+#include "AudioManager.h"
+#include "GameManager.h"
+using namespace std::string_literals;
+
+int main()
+{
+	static_assert(__cplusplus > 202302L, "Not using C++26!");
+
+	GameManager::InitAll(true);
+
+	SpriteManager spManager;
+
+	GameContext& GameCtxt = GameContext::get();
+
+	GameCtxt.m_AudioManager = GameObject::InstantiateGO<AudioManager>("AudioManager"s);
+	GameCtxt.m_GameMap      = GameObject::InstantiateGO<GameMap>("GameMap"s);
+	GameCtxt.m_Camera       = GameObject::InstantiateGO<Camera>("Camera"s);
+	GameCtxt.m_Player       = GameObject::InstantiateGO<Entity>("Player"s);
+
+	GameCtxt.m_Player->SetSprite(spManager.GetPlayerSprite());
+	GameCtxt.m_Player->SetSize({24, 34});
+
+
+	
+	int cx = SCREEN_SIZE_W/2, cy = SCREEN_SIZE_H/2;
+
+	int scale = 1 << 8;
+
+
+	while (true)
+	{
+		Debug::ClearConsole();
+		Debug::LogProfile();
+
+		bgUpdate();
+
+		scanKeys();
+
+		u16 keys_held = keysHeld();
+
+		u8 dir = DIRECTION::NONE;
+
+		if (keys_held & KEY_UP)
+			dir |= DIRECTION::TOP;
+		else if (keys_held & KEY_DOWN)
+			dir |= DIRECTION::BOT;
+		if (keys_held & KEY_LEFT)
+			dir |= DIRECTION::LEFT;
+		else if (keys_held & KEY_RIGHT)
+			dir |= DIRECTION::RIGHT;
+
+		GameCtxt.m_Player->SetAllDirections(dir);
+
+		if (keys_held & KEY_SELECT)
+			scale += 1 << 3;
+		else if (keys_held & KEY_START)
+			scale -= 1 << 3;
+
+		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
+		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
+
+		Debug::LogEntityInfo(*GameCtxt.m_Player);
+
+		GameObject::UpdateAllGameObjects(NDSTime::Get().GetDeltaTime());
+		GameCtxt.m_Player->Display();
+
+		oamUpdate(&oamMain);
+
+		bgSetCenter(BG::ID, cx, cy);
+		bgSetScale(BG::ID, scale, scale);
+
+		NDSTime::Get().NewFrame();
+		Debug::LogFps();
+
+		
+		swiWaitForVBlank();
+	}
+	
+	return 0;
+}
+
+// ========================================
+// FICHIER : source/MetaTile.cpp
+// ========================================
+
+#include "MetaTile.h"
+
+using namespace META_TILE;
+
+MetaTile::MetaTile(META_TILE::Type type):
+	m_Tiles
+	{
+		Tile(CORNER::TOP_LEFT),
+		Tile(CORNER::TOP_RIGHT),
+		Tile(CORNER::BOT_LEFT),
+		Tile(CORNER::BOT_RIGHT)
+	},
+	m_Type(type)
+{}
+
+void MetaTile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos)
+{
+	pos *= 2;
+	m_Tiles[CORNER::TOP_LEFT ].Flush(bgTileMap, m_Type, pos);
+	m_Tiles[CORNER::TOP_RIGHT].Flush(bgTileMap, m_Type, {pos.x  , pos.y+1});
+	m_Tiles[CORNER::BOT_LEFT ].Flush(bgTileMap, m_Type, {pos.x+1, pos.y  });
+	m_Tiles[CORNER::BOT_RIGHT].Flush(bgTileMap, m_Type, {pos.x+1, pos.y+1});
+}
+
+const Type& MetaTile::GetType() const
+{
+	return m_Type;
+}
+
+void MetaTile::SetType(const META_TILE::Type& type)
+{
+	m_Type = type;
+}
+
+constexpr u8 bitCheck(u8 source, u8 filter, u8 offset)
+{
+	return ((source & filter) == filter) << offset;
+}
+constexpr u8 cornerFilter(u8 source)
+{
+	if(source == 0b0000'0111) return 0b0000'0100;
+	return source & 0b0000'0011;
+}
+void MetaTile::SetConnections(u8 connections)
+{
+    m_Connections = connections;
+
+    // Alias for DIRECTION and CORNER
+    namespace Dir = DIRECTION;
+    namespace Cor = CORNER;
+
+    // Helper lambda to calculate corner connections and set them
+    auto setCorCon = [this, connections](u8 corner, u8 dir1, u8 dir2, u8 dir3)
+    {
+        u8 cornerValue = 
+            bitCheck(connections, dir1, 0) | 
+            bitCheck(connections, dir2, 1) | 
+            bitCheck(connections, dir3, 2);
+        m_Tiles[corner].SetConnections(cornerFilter(cornerValue));
+    };
+
+    // Apply the lambda to all corners
+    setCorCon(Cor::TOP_LEFT,  Dir::TOP, Dir::LEFT,  Dir::TOP_LEFT);
+    setCorCon(Cor::TOP_RIGHT, Dir::TOP, Dir::RIGHT, Dir::TOP_RIGHT);
+    setCorCon(Cor::BOT_LEFT,  Dir::BOT, Dir::LEFT,  Dir::BOT_LEFT);
+    setCorCon(Cor::BOT_RIGHT, Dir::BOT, Dir::RIGHT, Dir::BOT_RIGHT);
+}
+
+// ========================================
+// FICHIER : source/NDSMath.cpp
+// ========================================
+
+#include "NDSMath.h"
+
+int NDSMath::RoundAbsCeil(float x)
+{
+	return x>=0 ?
+		static_cast<int>(std::ceil(x)):
+		- static_cast<int>(std::ceil(std::abs(x)));
+}
+
+Vector2i NDSMath::RoundAbsCeil(Vector2f vec)
+{
+	return {RoundAbsCeil(vec.x), RoundAbsCeil(vec.y)};
+}
+// ========================================
+// FICHIER : source/NDSTime.cpp
+// ========================================
+
+#include "NDSTime.h"
+#include <cmath>
+
+NDSTime::NDSTime(int updatesPerSeconds)
+	: m_Fps(0), m_UpdatesPerSeconds(updatesPerSeconds), m_DeltaTime(0.016667f)
+{
+	timerStart(0, ClockDivider_1024, TIMER_FREQ_1024(m_UpdatesPerSeconds), [](){Get().NewTickCallback();});
+}
+
+void NDSTime::NewFrame()
+{
+	m_Fps = std::ceil(1.f / m_DeltaTime);
+
+	m_DeltaTime = 0.f;
+}
+
+void NDSTime::NewTickCallback()
+{
+	m_DeltaTime += 1.f / static_cast<float>(m_UpdatesPerSeconds);
+}
+
+int NDSTime::GetFps()
+{
+	return m_Fps;
+}
+
+float NDSTime::GetDeltaTime()
+{
+	return m_DeltaTime;
+}
+// ========================================
+// FICHIER : source/Sprite.cpp
+// ========================================
+
+#include "Sprite.h"
+
+using namespace std;
+
+Sprite::Sprite(
+	SpriteManager* manager,
+	int id,
+	SpriteSize spriteSize,
+	u16* data,
+	Vector2i pixelSize,
+	int frameCount,
+	int stateCount,
+	int animSpeed) :
+
+	m_Manager(manager),
+	m_PixelSize(pixelSize),
+	m_SpriteSize(spriteSize),
+	m_Data(data),
+	m_Id(id),
+	
+	// Initialize animation-related members
+	m_CurrentFrame(0),
+	m_FrameCount(frameCount),
+	m_CurrentState(0),
+	m_StateCount(stateCount),
+	m_AnimSpeed(animSpeed),
+	m_Counter(0),
+	m_FrameMemoryOffset(pixelSize.x * pixelSize.y / 4)
+{
+}
+
+Sprite::~Sprite()
+{
+	for (int i = 0 ; i < m_FrameCount*m_StateCount ; i++)
+    	oamFreeGfx(&oamMain, m_Data + i*m_FrameMemoryOffset);
+}
+
+void Sprite::Update(float speedFactor)
+{
+	if (m_AnimSpeed == 0) return;
+	if (++m_Counter >= m_AnimSpeed * speedFactor)
+	{
+		SkipFrame();
+		m_Counter = 0;
+	}
+}
+
+void Sprite::Display(Vector2i pos, bool zoomed)
+{
+	float scale = zoomed ? 0.5f : 1.f;
+	oamRotateScale(&oamMain, m_Id, 0, 256.f * scale, 256.f * scale);
+	oamSet(&oamMain,
+		   m_Id,
+		   pos.x, pos.y,
+		   0, //priority
+		   m_Id, // palette_alpha
+		   m_SpriteSize,
+		   SpriteColorFormat_16Color, //systematic
+		   m_Data + (m_CurrentFrame + m_CurrentState * m_FrameCount) * m_FrameMemoryOffset,
+		   0, //affine index
+		   zoomed, //sizeDouble
+		   false, false, false, false);
+}
+
+void Sprite::SkipFrame(int num)
+{
+	// Modulo ensures that we do not set a non-existent frame
+	m_CurrentFrame = (m_CurrentFrame + num) % m_FrameCount;
+	//updateOffset();
+}
+
+void Sprite::SetState(int state)
+{
+	// Modulo ensures that we do not set a non-existent state
+	m_CurrentState = state % m_StateCount;
+	//updateOffset();
+}
+
+void Sprite::SetFrame(int frame)
+{
+	// Ensure frame does not exceed allowed range
+	m_CurrentFrame = std::min(frame, m_FrameCount - 1);
+	//updateOffset();
+}
+
+int Sprite::GetState() { return m_CurrentState; }
+
+const Vector2i& Sprite::getPixelSize() const
+{
+	return m_PixelSize;
+}
+
+// ========================================
+// FICHIER : source/SpriteManager.cpp
+// ========================================
+
+#include "SpriteManager.h"
+#include "MainCharacterSprite.h"
+#include "AssetManager.h"
+
+using namespace std;
+
+SpriteManager::SpriteManager(): m_PlayerSprite(nullptr)
+{
+	//alloc memory banks dedicated to sprites
+	vramSetBankE(VRAM_E_MAIN_SPRITE);
+	vramSetBankF(VRAM_F_MAIN_SPRITE_0x06410000);
+	vramSetBankG(VRAM_G_MAIN_SPRITE_0x06414000);
+	oamInit(&oamMain, SpriteMapping_1D_128 , false);
+}
+SpriteManager::~SpriteManager()
+{
+	for (auto i = m_Sprites.begin(); i != m_Sprites.end(); ++i)
+		delete *i;
+}
+
+
+Sprite* SpriteManager::CreateSprite(
+	string const& name,
+	uint32 tilesLen,
+	uint32 palLen,
+	SpriteSize spriteSize,
+	Vector2i pixelSize,
+	int frameCount,
+	int stateCount,
+	int animSpeed
+)
+{
+	//memory allocation
+	u16* spriteData = NULL;
+    for (int i = 0 ; i < frameCount*stateCount ; i++)
+    {
+        u16* ptr = oamAllocateGfx(&oamMain, spriteSize, SpriteColorFormat_16Color);
+        if (i == 0) spriteData = ptr; 
+    }
+
+    //binary files loading
+	AssetManager::LoadBin(name + ".img.bin"s, spriteData, tilesLen);
+	AssetManager::LoadBin(name + ".pal.bin"s, SPRITE_PALETTE + m_Sprites.size()*PALETTE_SIZE, palLen);
+
+	//sprite creation
+	Sprite* newSprite = new Sprite(this,m_Sprites.size(),spriteSize,spriteData,pixelSize, frameCount, stateCount, animSpeed);
+
+	//add the sprite to the sprite list
+	m_Sprites.push_back(newSprite);
+	return newSprite;
+}
+
+Sprite* SpriteManager::GetPlayerSprite()
+{
+	if(!m_PlayerSprite)
+		m_PlayerSprite = CREATE_PARAMETRIZED_SPRITE((*this), MainCharacterSprite, 32, 64, 4, 8, 8);
+
+	return m_PlayerSprite;
+}
+// ========================================
+// FICHIER : source/Tile.cpp
+// ========================================
+
+#include "Tile.h"
+
+Tile::Tile(u8 corner):
+	m_Flips{(bool)(corner&1), (bool)(corner/2)}
+{
+	m_Connections = 0;
+}
+
+void Tile::SetConnections(u8 connections)
+{
+	m_Connections = connections;
+}
+
+void Tile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos)
+{
+	// Layout constants
+	constexpr int SUBTILES_PER_AXIS = (TILE::SIZE / SUB_TILE::SIZE);
+	constexpr int TILESET_STRIDE    = TILESET::COUNT_W * SUBTILES_PER_AXIS;
+	constexpr int TYPE_OFFSET_Y     = 5; // Vertical offset per MetaTile type
+
+	// 1. Calculate source index in VRAM
+	const int metaTileIndex     = m_Connections; 
+	const int metaTileColumn    = metaTileIndex % TILESET::COUNT_W;
+	
+	// Calculate linear start index for the row + type offset
+	const int metaTileRowOffset = (metaTileIndex - metaTileColumn) + (static_cast<int>(type) * TYPE_OFFSET_Y); 
+	
+	// Convert to absolute sub-tile index (VRAM address)
+	const int sourceSubTileIndex = (metaTileColumn * SUBTILES_PER_AXIS) + (metaTileRowOffset * SUBTILES_PER_AXIS * SUBTILES_PER_AXIS);
+	
+	// 2. Define sub-tile indices (Row-major)
+	//T = Top, L = Left, B = Bottom, R = Right
+	u16 subTileTL = sourceSubTileIndex;
+	u16 subTileTR = sourceSubTileIndex + 1;
+	u16 subTileBL = sourceSubTileIndex + TILESET_STRIDE;
+	u16 subTileBR = sourceSubTileIndex + TILESET_STRIDE + 1;
+
+	// 3. Handle Flips (Swap indices geometrically)
+	if (m_Flips.x)
+	{
+		std::swap(subTileTL, subTileTR);
+		std::swap(subTileBL, subTileBR);
+	}
+
+	if (m_Flips.y)
+	{
+		std::swap(subTileTL, subTileBL);
+		std::swap(subTileTR, subTileBR);
+	}
+
+	// 4. Compute Hardware Attributes (Palette + Flips)
+	const u16 hwAttributes = (m_Flips.x << TILE::FLIP_H) | (m_Flips.y << TILE::FLIP_V);
+
+	// 5. Write to Map
+	const int mapX = pos.x * SUBTILES_PER_AXIS;
+	const int mapY = pos.y * SUBTILES_PER_AXIS;
+
+	// Note: Mapping assumes specific target layout (TR mapped to Y+1)
+	bgTileMap[mapX][mapY]         = subTileTL | hwAttributes;
+	bgTileMap[mapX][mapY + 1]     = subTileTR | hwAttributes;
+	bgTileMap[mapX + 1][mapY]     = subTileBL | hwAttributes;
+	bgTileMap[mapX + 1][mapY + 1] = subTileBR | hwAttributes;
+}
+// ========================================
+// FICHIER : source/TileMap.cpp
+// ========================================
+
+#include "TileMap.h"
+#include "TileSet.h"
+
+u16 TileMap::m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
+
+TileMap::TileMap(): 
+	m_TileMap(META_TILE::COUNT_W, std::vector<MetaTile>(META_TILE::COUNT_H))
+{
+	// Load tiles data in memory
+	swiFastCopy(TileSetTiles, bgGetGfxPtr(BG::ID), TileSetTilesLen>>2);
+	swiFastCopy(TileSetPal, BG_PALETTE, TileSetPalLen>>2);
+
+	CalculateConnections();
+}
+
+void TileMap::Flush()
+{
+	ConvertMap();
+	dmaCopyAsynch(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
+}
+
+std::vector<MetaTile>& TileMap::operator[](int key)
+{
+	return m_TileMap[key];
+}
+
+
+
+void TileMap::ConvertMap()
+{
+	int rows = m_TileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_TileMap[0].size() - WORD_BORDER_SIZE;
+
+	for (int i = WORD_BORDER_SIZE ; i < rows ; ++i)
+		for (int j = WORD_BORDER_SIZE ; j < cols ; ++j)
+			m_TileMap[i][j].Flush(m_BgTileMap, {i, j});
+}
+
+
+void TileMap::CalculateConnections()
+{
+	using namespace META_TILE;
+	using namespace DIRECTION;
+
+	int rows = m_TileMap.size() - WORD_BORDER_SIZE;
+	int cols = m_TileMap[0].size() - WORD_BORDER_SIZE;
+
+	for (int y = WORD_BORDER_SIZE; y < rows; ++y)
+	{
+		for (int x = WORD_BORDER_SIZE; x < cols; ++x)
+		{
+			MetaTile& tile = m_TileMap[y][x];
+			const Type& type = tile.GetType();
+			int con = 0;
+
+			// This lambda is here to compress the code, it check if the tile type is the same as the one of the wanted other tile
+			auto t = [&](int X, int Y){ return m_TileMap[X][Y].GetType() == type; };
+
+			// Precompute boundaries to avoid redundant checks
+			bool top = y > 0, bot = y < rows-1, left = x > 0, right = x < cols-1;
+
+			// Cardinal directions
+			if (top   && t(y-1, x)) con |= TOP;
+			if (bot   && t(y+1, x)) con |= BOT;
+			if (left  && t(y, x-1)) con |= LEFT;
+			if (right && t(y, x+1)) con |= RIGHT;
+
+			// Diagonal directions
+			if (top && left  && t(y-1, x-1)) con |= TOP_LEFT;
+			if (top && right && t(y-1, x+1)) con |= TOP_RIGHT;
+			if (bot && left  && t(y+1, x-1)) con |= BOT_LEFT;
+			if (bot && right && t(y+1, x+1)) con |= BOT_RIGHT;
+
+			tile.SetConnections(con);
+		}
+	}
+}

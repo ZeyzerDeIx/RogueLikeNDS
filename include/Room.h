@@ -4,10 +4,10 @@
 
 struct Room
 {
-	Vector2i coordinate;
-	Vector2i size;
-	Room oversized(int oversize) const noexcept
+	Vector2i Coordinate;
+	Vector2i Size;
+	[[nodiscard]] Room Oversized(int oversize) const noexcept
 	{
-		return {coordinate - oversize, size + oversize*2};
+		return {Coordinate - oversize, Size + oversize*2};
 	}
 };

@@ -3,7 +3,7 @@
 GameManager::GameManager() {}
 GameManager::~GameManager() {}
 
-void GameManager::initAll(bool debugMode)
+void GameManager::InitAll(bool debugMode)
 {
 	std::srand(std::time({}));
 	videoSetMode(MODE_5_2D);
@@ -21,6 +21,6 @@ void GameManager::initAll(bool debugMode)
 	if(!debugMode) return;
 
 	//init debug console
-	Debug::init();
+	Debug::Init();
 	std::cout << (nitroFSInitSuccess ? "nitroFSInit succeed" : "nitroFSInit failed") << std::endl;
 }

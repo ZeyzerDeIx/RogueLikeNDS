@@ -1,17 +1,17 @@
 #include "Tile.h"
 
 Tile::Tile(u8 corner):
-	m_flips{(bool)(corner&1), (bool)(corner/2)}
+	m_Flips{(bool)(corner&1), (bool)(corner/2)}
 {
-	m_connections = 0;
+	m_Connections = 0;
 }
 
-void Tile::setConnections(u8 connections)
+void Tile::SetConnections(u8 connections)
 {
-	m_connections = connections;
+	m_Connections = connections;
 }
 
-void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos)
+void Tile::Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type type, Vector2i pos)
 {
 	// Layout constants
 	constexpr int SUBTILES_PER_AXIS = (TILE::SIZE / SUB_TILE::SIZE);
@@ -19,7 +19,7 @@ void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type ty
 	constexpr int TYPE_OFFSET_Y     = 5; // Vertical offset per MetaTile type
 
 	// 1. Calculate source index in VRAM
-	const int metaTileIndex     = m_connections; 
+	const int metaTileIndex     = m_Connections; 
 	const int metaTileColumn    = metaTileIndex % TILESET::COUNT_W;
 	
 	// Calculate linear start index for the row + type offset
@@ -36,20 +36,20 @@ void Tile::flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, META_TILE::Type ty
 	u16 subTileBR = sourceSubTileIndex + TILESET_STRIDE + 1;
 
 	// 3. Handle Flips (Swap indices geometrically)
-	if (m_flips.x)
+	if (m_Flips.x)
 	{
 		std::swap(subTileTL, subTileTR);
 		std::swap(subTileBL, subTileBR);
 	}
 
-	if (m_flips.y)
+	if (m_Flips.y)
 	{
 		std::swap(subTileTL, subTileBL);
 		std::swap(subTileTR, subTileBR);
 	}
 
 	// 4. Compute Hardware Attributes (Palette + Flips)
-	const u16 hwAttributes = (m_flips.x << TILE::FLIP_H) | (m_flips.y << TILE::FLIP_V);
+	const u16 hwAttributes = (m_Flips.x << TILE::FLIP_H) | (m_Flips.y << TILE::FLIP_V);
 
 	// 5. Write to Map
 	const int mapX = pos.x * SUBTILES_PER_AXIS;

@@ -5,6 +5,6 @@
 class AssetManager
 {
 public:
-	static bool loadBin(std::string const& assetPath, void* dest, std::size_t size);
+	static bool LoadBin(std::string const& assetPath, void* dest, std::size_t size);
 	
 };

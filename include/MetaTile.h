@@ -8,14 +8,14 @@ class MetaTile
 public:
 	MetaTile(META_TILE::Type type = META_TILE::Type::Path);
 
-	void flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
+	void Flush(std::span<u16[SUB_TILE::COUNT_H]> bgTileMap, Vector2i pos);
 
-	const META_TILE::Type& getType() const;
+	[[nodiscard]] const META_TILE::Type& GetType() const;
 	
-	void setType(const META_TILE::Type& type);
-	void setConnections(u8 connections);
+	void SetType(const META_TILE::Type& type);
+	void SetConnections(u8 connections);
 private:
-	Tile m_tiles[4];
-	u8 m_connections;
-	META_TILE::Type m_type;
+	Tile m_Tiles[4];
+	u8 m_Connections;
+	META_TILE::Type m_Type;
 };

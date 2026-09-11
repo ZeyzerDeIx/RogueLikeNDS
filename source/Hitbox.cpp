@@ -7,7 +7,7 @@ Hitbox::Hitbox(Rect<int> bounds):
 
 Hitbox::~Hitbox(){}
 
-bool Hitbox::intersects(const Hitbox& other) const
+bool Hitbox::Intersects(const Hitbox& other) const
 {
 	// Check if there is no intersection between the two rectangles
 			 // This is completely to the left of other
@@ -20,7 +20,7 @@ bool Hitbox::intersects(const Hitbox& other) const
 			 other.m_bounds.y + other.m_bounds.h <= m_bounds.y);
 }
 
-bool Hitbox::intersects(const GameMap& gameMap) const
+bool Hitbox::Intersects(const GameMap& gameMap) const
 {
 	namespace MT = META_TILE;
 
@@ -34,22 +34,22 @@ bool Hitbox::intersects(const GameMap& gameMap) const
 
 	for (int x = startX; x <= endX; ++x) 
 		for (int y = startY; y <= endY; ++y) 
-			if (!gameMap.isCrossable({y,x})) 
+			if (!gameMap.IsCrossable({y,x})) 
 				return true;
 
 	return false;
 }
 
 
-const Rect<int>& Hitbox::getBounds() const { return m_bounds; }
+const Rect<int>& Hitbox::GetBounds() const { return m_bounds; }
 
-void Hitbox::setPos(int x, int y)
+void Hitbox::SetPos(int x, int y)
 {
 	m_bounds.x = x;
 	m_bounds.y = y;
 }
 
-void Hitbox::setX(int x) { m_bounds.x = x; }
-void Hitbox::setY(int y) { m_bounds.y = y; }
-void Hitbox::setWidth(int width) { m_bounds.w = width; }
-void Hitbox::setHeight(int height) { m_bounds.h = height; }
+void Hitbox::SetX(int x) { m_bounds.x = x; }
+void Hitbox::SetY(int y) { m_bounds.y = y; }
+void Hitbox::SetWidth(int width) { m_bounds.w = width; }
+void Hitbox::SetHeight(int height) { m_bounds.h = height; }

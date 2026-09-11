@@ -5,20 +5,22 @@
 class NDSTime
 {
 public:
-	void newFrame();
-	void newTickCallback();
-	int getFps();
-	float getDeltaTime();
-	static NDSTime& get()
+	void NewFrame();
+	void NewTickCallback();
+	int GetFps();
+	float GetDeltaTime();
+	static NDSTime& Get()
 	{
-		static NDSTime instance(120);
-		return instance;
+		static NDSTime s_Instance(120);
+		return s_Instance;
 	}
-private:
-	int m_fps;
-	int m_updatesPerSeconds;
-	float m_deltaTime;
 
 	NDSTime() = delete;
+
+private:
+	int m_Fps;
+	int m_UpdatesPerSeconds;
+	float m_DeltaTime;
+
 	NDSTime(int updatesPerSeconds);
 };
