@@ -72,20 +72,19 @@ void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
 
 	// Generate deterministic seed for this chunk
 	unsigned int seed = globalSeed ^ (chunkCoordinate.x * 73856093) ^ (chunkCoordinate.y * 19349663);
-	std::mt19937 rng(seed);
-	std::uniform_int_distribution<> roomChance(0, 100);
+	FastRNG rng{seed};
 
 	// Try to generate a room in this chunk
-	if (roomChance(rng) < 60) // 40% chance to create a room
+	if (rng.Range(0,100) < 60) // 40% chance to create a room
 	{
 		Vector2i roomSize = {
-			2 + static_cast<int>(rng() % 4),
-			2 + static_cast<int>(rng() % 4)
+			rng.Range(2,5),
+			rng.Range(2,5)
 		};
 
 		Vector2i roomCoord = {
-			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.x),
-			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + static_cast<int>(rng() % roomSize.y)
+			chunkCoordinate.x * GAME_MAP::CHUNK_SIZE + rng.Range(0, roomSize.x - 1),
+			chunkCoordinate.y * GAME_MAP::CHUNK_SIZE + rng.Range(0, roomSize.y - 1)
 		};
 
 		Room newRoom{roomCoord, roomSize};
@@ -128,7 +127,7 @@ Vector2i GetRoomCenter(const Room& room) {
 // Function to connect the new room to one of the nearest reserved rooms
 // newRoom: the room to connect (not yet in m_reservedRooms)
 // rng: a random number generator passed from the caller
-void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
+void GameMap::ConnectNearestRoom(const Room& newRoom, FastRNG& rng)
 {
 	auto connectRooms = [&](const Room& a, const Room& b)
 	{
@@ -175,8 +174,7 @@ void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
 	// Randomly select one candidate room from the candidates
 	if (!candidateIndices.empty())
 	{
-		std::uniform_int_distribution<> candidateDist(0, candidateIndices.size() - 1);
-		size_t chosenIndex = candidateIndices[candidateDist(rng)];
+		size_t chosenIndex = candidateIndices[rng.Range(0, candidateIndices.size() - 1)];
 		connectRooms(m_ReservedRooms[chosenIndex], newRoom);
 	}
 }

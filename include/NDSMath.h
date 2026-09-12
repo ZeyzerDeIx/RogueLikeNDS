@@ -134,3 +134,15 @@ namespace NDSMath
 		}
 	};
 }
+
+struct FastRNG {
+	unsigned int state;
+	unsigned int Next() {
+		state = state * 1103515245 + 12345;
+		return (state >> 16) & 0x7FFF;
+	}
+	int Range(int min, int max) {
+		if (max < min) return min;
+		return min + (Next() % (max - min + 1));
+	}
+};

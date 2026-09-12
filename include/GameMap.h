@@ -36,7 +36,7 @@ private:
 	void CreateRoom(const Room& room);
 	void AddToQueue(const Vector2i& chunkCoordinate);
 	const Vector2i GetPlayerChunk() const;
-	void ConnectNearestRoom(const Room& newRoom, std::mt19937& rng);
+	void ConnectNearestRoom(const Room& newRoom, FastRNG& rng);
 
 	GameMap(std::string name);
 

@@ -15,7 +15,6 @@ using ushort = unsigned short;
 #include <maxmod9.h>
 #include <filesystem.h>
 #include <queue>
-#include <random>
 #include "Constants.h"
 #include "NDSMath.h"
 #include "Debug.h"

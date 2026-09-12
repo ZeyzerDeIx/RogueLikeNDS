@@ -10,10 +10,9 @@ AudioManager::~AudioManager()
 
 void AudioManager::PlayRandomFootstep()
 {
-	std::mt19937 rng(time(0));
-	std::uniform_int_distribution<> footstep(1, 6);
+	int step = (std::rand() % 6) + 1; // NOLINT(*-msc50-cpp)
 
-	switch(footstep(rng))
+	switch(step)
 	{
 		case 1: mmEffect(SFX_FOOTSTEP1); break;
 		case 2: mmEffect(SFX_FOOTSTEP2); break;
@@ -21,6 +20,7 @@ void AudioManager::PlayRandomFootstep()
 		case 4: mmEffect(SFX_FOOTSTEP4); break;
 		case 5: mmEffect(SFX_FOOTSTEP5); break;
 		case 6: mmEffect(SFX_FOOTSTEP6); break;
+		default:;
 	}
 }
 
