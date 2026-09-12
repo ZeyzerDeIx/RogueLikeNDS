@@ -1,5 +1,7 @@
 #pragma once
 
+static_assert(__cplusplus >= 202400L, "This project requires C++26 or higher support!");
+
 using uint = unsigned int;
 using ushort = unsigned short;
 
