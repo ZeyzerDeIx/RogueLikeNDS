@@ -11,12 +11,11 @@ TileMap::TileMap(GameMap* map): m_GameMap(map)
 	swiFastCopy(TileSetTiles, bgGetGfxPtr(BG::ID), TileSetTilesLen>>2);
 	swiFastCopy(TileSetPal, BG_PALETTE, TileSetPalLen>>2);
 
-	UpdateAndFlushAllMetaTiles({0,0});
+	UpdateAllMetaTiles({0,0});
 }
 
-void TileMap::Flush(Vector2i const& offset)
+void TileMap::Flush()
 {
-	UpdateAndFlushAllMetaTiles(offset);
 	dmaCopyAsynch(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
 }
 
@@ -26,14 +25,19 @@ u16* TileMap::operator[](int key)
 }
 
 
-void TileMap::UpdateAndFlushAllMetaTiles(Vector2i const& offset)
+void TileMap::UpdateAllMetaTiles(Vector2i const& offset)
 {
 	for (int localX = 0; localX < META_TILE::COUNT_W; ++localX)
 		for (int localY = 0; localY < META_TILE::COUNT_H; ++localY)
-			UpdateAndFlushMetaTile({offset.x + localX, offset.y + localY}, {localX, localY});
+			UpdateMetaTile({offset.x + localX, offset.y + localY});
 }
 
-void TileMap::UpdateAndFlushMetaTile(Vector2i const& worldPos, Vector2i const& localPos)
+[[nodiscard]] constexpr int WrapPos16(int val) noexcept
+{
+	return val & 0xF;
+}
+
+void TileMap::UpdateMetaTile(Vector2i const& worldPos) const
 {
 	MetaTile metaTile(m_GameMap->GetTile(worldPos));
 
@@ -55,5 +59,29 @@ void TileMap::UpdateAndFlushMetaTile(Vector2i const& worldPos, Vector2i const& l
 
 	metaTile.SetConnections(con);
 
-	metaTile.Flush(m_BgTileMap, localPos);
+	metaTile.Flush(m_BgTileMap, {WrapPos16(worldPos.x), WrapPos16(worldPos.y)});
+}
+
+void TileMap::UpdateMetaTileLine(int direction, Vector2i const& offset)
+{
+	switch (direction)
+	{
+	case DIRECTION::TOP:
+		for (int x = 0; x < META_TILE::COUNT_W; ++x)
+			UpdateMetaTile({offset.x + x, offset.y});
+		break;
+	case DIRECTION::BOT:
+		for (int x = 0; x < META_TILE::COUNT_W; ++x)
+			UpdateMetaTile({offset.x + x, offset.y + META_TILE::COUNT_H-1});
+		break;
+	case DIRECTION::LEFT:
+		for (int y = 0; y < META_TILE::COUNT_H; ++y)
+			UpdateMetaTile({offset.x, offset.y + y});
+		break;
+	case DIRECTION::RIGHT:
+		for (int y = 0; y < META_TILE::COUNT_H; ++y)
+			UpdateMetaTile({offset.x + META_TILE::COUNT_W-1, offset.y + y});
+		break;
+	default:;
+	}
 }

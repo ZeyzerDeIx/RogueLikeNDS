@@ -5,16 +5,34 @@
 
 using namespace std;
 
-// Alias for better readability
-namespace MT = META_TILE;
-
 
 void GameMap::Update(float dt)
 {
 	if(Vector2i const& offset = GameContext::Get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{
-		m_TileMap.Flush(offset);
+		Vector2i delta = offset - m_LastOffset;
+
+		if (std::abs(delta.x) > 1 || std::abs(delta.y) > 1)
+		{
+			m_TileMap.UpdateAllMetaTiles(offset);
+		}
+		else
+		{
+			if (delta.x > 0)
+				m_TileMap.UpdateMetaTileLine(DIRECTION::RIGHT, offset);
+			else if (delta.x < 0)
+				m_TileMap.UpdateMetaTileLine(DIRECTION::LEFT, offset);
+
+			if (delta.y > 0)
+				m_TileMap.UpdateMetaTileLine(DIRECTION::BOT, offset);
+			else if (delta.y < 0)
+				m_TileMap.UpdateMetaTileLine(DIRECTION::TOP, offset);
+		}
+
+		m_LastOffset = offset;
 	}
+
+	m_TileMap.Flush();
 
 	if(m_PlayerChunk != GetPlayerChunk())
 		UpdatePlayerChunk();
@@ -26,19 +44,19 @@ void GameMap::Update(float dt)
 	}
 }
 
-MT::Type GameMap::GetTile(const Vector2i& tileCoordinate) const
+META_TILE::Type GameMap::GetTile(const Vector2i& tileCoordinate) const
 {
 	auto pair = m_Map.find(tileCoordinate);
 
 	if (pair == m_Map.end())
-		return MT::Type::Wall;
+		return META_TILE::Type::Wall;
 	
 	return pair->second;
 }
 
 bool GameMap::IsCrossable(const Vector2i& tileCoordinate) const
 {
-	return GetTile(tileCoordinate) != MT::Type::Wall;
+	return GetTile(tileCoordinate) != META_TILE::Type::Wall;
 }
 
 bool GameMap::IsChunkGenerated(const Vector2i& chunkCoordinate) const
@@ -172,7 +190,7 @@ void GameMap::UpdatePlayerChunk()
 
 void GameMap::CollapseTile(const Vector2i& tileCoordinate)
 {
-	m_Map[tileCoordinate] = MT::Type::Path;
+	m_Map[tileCoordinate] = META_TILE::Type::Path;
 }
 
 void GameMap::CreateRoom(const Room& room)
