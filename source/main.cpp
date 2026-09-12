@@ -16,7 +16,7 @@ int main()
 
 	SpriteManager spManager;
 
-	GameContext& GameCtxt = GameContext::get();
+	GameContext& GameCtxt = GameContext::Get();
 
 	GameCtxt.m_AudioManager = GameObject::InstantiateGO<AudioManager>("AudioManager"s);
 	GameCtxt.m_GameMap      = GameObject::InstantiateGO<GameMap>("GameMap"s);

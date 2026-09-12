@@ -11,7 +11,7 @@ public:
 	// size in tiles
 	TileMap(GameMap* map);
 
-	//flush the map into background VRAM
+	// Flush the map into background VRAM
 	void Flush(Vector2i const& offset);
 
 	u16* operator[](int key);
@@ -19,10 +19,12 @@ public:
 private:
 	GameMap* m_GameMap;
 
-	// real background accurate tilemap based on sub tiles made by grit
+	// Real background accurate tilemap based on sub tiles made by grit
 	static u16 m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
 
-	void CalculateConnections(Vector2i const& offset);
+	void UpdateAndFlushAllMetaTiles(Vector2i const& offset);
+
+	void UpdateAndFlushMetaTile(Vector2i const& worldPos, Vector2i const& localPos);
 
 	friend class GameMap;
 };

@@ -13,7 +13,7 @@ void Entity::Move(Vector2f delta)
 		Hitbox futureHitbox = m_Hitbox;
 		futureHitbox.SetX(futureHitbox.GetBounds().x + NDSMath::RoundAbsCeil(delta.x));
 
-		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.x += delta.x;
 	}
 
@@ -23,7 +23,7 @@ void Entity::Move(Vector2f delta)
 		Hitbox futureHitbox = m_Hitbox;
 		futureHitbox.SetY(futureHitbox.GetBounds().y + NDSMath::RoundAbsCeil(delta.y));
 
-		if (!futureHitbox.Intersects(*GameContext::get().m_GameMap))
+		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.y += delta.y;
 	}
 	
@@ -49,7 +49,7 @@ void Entity::Update(float delta)
 
 void Entity::Display()
 {
-	m_Sprite->Display(GameContext::get().m_Camera->GetDisplayPos(*this) - m_Size/2);
+	m_Sprite->Display(GameContext::Get().m_Camera->GetDisplayPos(*this) - m_Size/2);
 }
 
 
@@ -147,7 +147,7 @@ void Entity::UpdateAudio()
 	if(m_SfxElapsedFrames++ != m_SfxPlayInterval) return;
 
 	m_SfxElapsedFrames = 0;
-	GameContext::get().m_AudioManager->PlayRandomFootstep();
+	GameContext::Get().m_AudioManager->PlayRandomFootstep();
 }
 
 

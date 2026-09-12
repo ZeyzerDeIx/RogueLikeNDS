@@ -7,7 +7,7 @@ class AudioManager;
 
 struct GameContext
 {
-	static GameContext& get()
+	static GameContext& Get()
 	{
 		static GameContext s_Instance;
 		return s_Instance;

@@ -11,7 +11,7 @@ namespace MT = META_TILE;
 
 void GameMap::Update(float dt)
 {
-	if(Vector2i const& offset = GameContext::get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
+	if(Vector2i const& offset = GameContext::Get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{
 		m_TileMap.Flush(offset);
 	}
@@ -194,8 +194,8 @@ void GameMap::AddToQueue(const Vector2i& chunkCoordinate)
 
 const Vector2i GameMap::GetPlayerChunk() const
 {
-	if(GameContext::get().m_Player == nullptr) return {0,0};
-	const Vector2i playerCoo = GameContext::get().m_Player->GetCoordinates();
+	if(GameContext::Get().m_Player == nullptr) return {0,0};
+	const Vector2i playerCoo = GameContext::Get().m_Player->GetCoordinates();
 	return playerCoo / GAME_MAP::CHUNK_SIZE - Vector2i{playerCoo.x < 0, playerCoo.y < 0};
 }
 

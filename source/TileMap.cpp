@@ -11,12 +11,12 @@ TileMap::TileMap(GameMap* map): m_GameMap(map)
 	swiFastCopy(TileSetTiles, bgGetGfxPtr(BG::ID), TileSetTilesLen>>2);
 	swiFastCopy(TileSetPal, BG_PALETTE, TileSetPalLen>>2);
 
-	CalculateConnections({0,0});
+	UpdateAndFlushAllMetaTiles({0,0});
 }
 
 void TileMap::Flush(Vector2i const& offset)
 {
-	CalculateConnections(offset);
+	UpdateAndFlushAllMetaTiles(offset);
 	dmaCopyAsynch(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
 }
 
@@ -26,41 +26,34 @@ u16* TileMap::operator[](int key)
 }
 
 
-void TileMap::CalculateConnections(Vector2i const& offset)
+void TileMap::UpdateAndFlushAllMetaTiles(Vector2i const& offset)
 {
-	using namespace DIRECTION;
+	for (int localX = 0; localX < META_TILE::COUNT_W; ++localX)
+		for (int localY = 0; localY < META_TILE::COUNT_H; ++localY)
+			UpdateAndFlushMetaTile({offset.x + localX, offset.y + localY}, {localX, localY});
+}
 
-	int boundX = META_TILE::COUNT_W - WORD_BORDER_SIZE;
-	int boundY = META_TILE::COUNT_H - WORD_BORDER_SIZE;
+void TileMap::UpdateAndFlushMetaTile(Vector2i const& worldPos, Vector2i const& localPos)
+{
+	MetaTile metaTile(m_GameMap->GetTile(worldPos));
 
-	for (int localX = WORD_BORDER_SIZE; localX < boundX; ++localX)
-	{
-		for (int localY = WORD_BORDER_SIZE; localY < boundY; ++localY)
-		{
-			int worldX = offset.x + localX;
-			int worldY = offset.y + localY;
+	int con = 0;
 
-			MetaTile metaTile(m_GameMap->GetTile({worldX, worldY}));
+	auto SameType = [&](int X, int Y){ return m_GameMap->GetTile({X, Y}) == metaTile.GetType(); };
 
-			int con = 0;
+	// Cardinales
+	if (SameType(worldPos.x, worldPos.y - 1)) con |= DIRECTION::TOP;
+	if (SameType(worldPos.x, worldPos.y + 1)) con |= DIRECTION::BOT;
+	if (SameType(worldPos.x - 1, worldPos.y)) con |= DIRECTION::LEFT;
+	if (SameType(worldPos.x + 1, worldPos.y)) con |= DIRECTION::RIGHT;
 
-			auto SameType = [&](int X, int Y){ return m_GameMap->GetTile({X, Y}) == metaTile.GetType(); };
+	// Diagonales
+	if (SameType(worldPos.x - 1, worldPos.y - 1)) con |= DIRECTION::TOP_LEFT;
+	if (SameType(worldPos.x + 1, worldPos.y - 1)) con |= DIRECTION::TOP_RIGHT;
+	if (SameType(worldPos.x - 1, worldPos.y + 1)) con |= DIRECTION::BOT_LEFT;
+	if (SameType(worldPos.x + 1, worldPos.y + 1)) con |= DIRECTION::BOT_RIGHT;
 
-			// Cardinales
-			if (SameType(worldX, worldY - 1)) con |= TOP;
-			if (SameType(worldX, worldY + 1)) con |= BOT;
-			if (SameType(worldX - 1, worldY)) con |= LEFT;
-			if (SameType(worldX + 1, worldY)) con |= RIGHT;
+	metaTile.SetConnections(con);
 
-			// Diagonales
-			if (SameType(worldX - 1, worldY - 1)) con |= TOP_LEFT;
-			if (SameType(worldX + 1, worldY - 1)) con |= TOP_RIGHT;
-			if (SameType(worldX - 1, worldY + 1)) con |= BOT_LEFT;
-			if (SameType(worldX + 1, worldY + 1)) con |= BOT_RIGHT;
-
-			metaTile.SetConnections(con);
-
-			metaTile.Flush(m_BgTileMap, {localX, localY});
-		}
-	}
+	metaTile.Flush(m_BgTileMap, localPos);
 }
