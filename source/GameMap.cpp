@@ -114,8 +114,13 @@ void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
 	m_GeneratedChunks[chunkCoordinate] = true;
 }
 
+Vector2i GameMap::GetLateOffset() const
+{
+	return m_LastOffset;
+}
+
 // Function to compute the center of a room
-Vector2i getRoomCenter(const Room& room) {
+Vector2i GetRoomCenter(const Room& room) {
 	return { room.Coordinate.x + room.Size.x / 2, room.Coordinate.y + room.Size.y / 2 };
 }
 
@@ -142,7 +147,7 @@ void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
 		return; // Nothing to connect to
 
 	// Calculate the center of the new room
-	Vector2i newCenter = getRoomCenter(newRoom);
+	Vector2i newCenter = GetRoomCenter(newRoom);
 	
 	// List to hold indices of rooms with the minimum distance squared
 	std::vector<size_t> candidateIndices;
@@ -151,7 +156,7 @@ void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
 	// Traverse all reserved rooms to find those with the smallest distance
 	for (size_t i = 0; i < m_ReservedRooms.size(); ++i)
 	{
-		Vector2i roomCenter = getRoomCenter(m_ReservedRooms[i]);
+		Vector2i roomCenter = GetRoomCenter(m_ReservedRooms[i]);
 		int dx = newCenter.x - roomCenter.x;
 		int dy = newCenter.y - roomCenter.y;
 		int distSq = dx * dx + dy * dy;
@@ -191,6 +196,7 @@ void GameMap::UpdatePlayerChunk()
 void GameMap::CollapseTile(const Vector2i& tileCoordinate)
 {
 	m_Map[tileCoordinate] = META_TILE::Type::Path;
+	m_TileMap.UpdateTileIfVisible(tileCoordinate);
 }
 
 void GameMap::CreateRoom(const Room& room)

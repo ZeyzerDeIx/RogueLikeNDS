@@ -18,6 +18,8 @@ public:
 
 	void UpdateMetaTileLine(int direction, Vector2i const& offset);
 
+	void UpdateTileIfVisible(const Vector2i& worldPos, bool updateNeighbors = true);
+
 	u16* operator[](int key);
 
 private:
@@ -25,6 +27,5 @@ private:
 
 	// Real background accurate tilemap based on sub tiles made by grit
 	static u16 m_BgTileMap[SUB_TILE::COUNT_W][SUB_TILE::COUNT_H];
-
 	void UpdateMetaTile(Vector2i const& worldPos) const;
 };

@@ -17,6 +17,7 @@ public:
 	bool IsChunkGenerated(const Vector2i& chunkCoordinate) const;
 
 	void GenerateChunk(const Vector2i& chunkCoordinate);
+	[[nodiscard]] Vector2i GetLateOffset() const;
 
 private:
 	// Speed to expand but also to access + do not store useless data

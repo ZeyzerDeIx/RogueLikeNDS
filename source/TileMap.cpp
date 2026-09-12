@@ -1,5 +1,7 @@
 #include "TileMap.h"
 
+#include "Camera.h"
+#include "GameContext.h"
 #include "GameMap.h"
 #include "TileSet.h"
 
@@ -35,6 +37,29 @@ void TileMap::UpdateAllMetaTiles(Vector2i const& offset)
 [[nodiscard]] constexpr int WrapPos16(int val) noexcept
 {
 	return val & 0xF;
+}
+
+void TileMap::UpdateTileIfVisible(const Vector2i& worldPos, bool updateNeighbors)
+{
+	Vector2i windowPos = m_GameMap->GetLateOffset();
+
+	if (worldPos.x >= windowPos.x && worldPos.x < windowPos.x + 16 &&
+		worldPos.y >= windowPos.y && worldPos.y < windowPos.y + 16)
+	{
+		UpdateMetaTile(worldPos);
+	}
+
+	if (!updateNeighbors) return;
+
+	UpdateTileIfVisible({worldPos.x - 1, worldPos.y}, false);
+	UpdateTileIfVisible({worldPos.x + 1, worldPos.y}, false);
+	UpdateTileIfVisible({worldPos.x, worldPos.y - 1}, false);
+	UpdateTileIfVisible({worldPos.x, worldPos.y + 1}, false);
+
+	UpdateTileIfVisible({worldPos.x - 1, worldPos.y - 1}, false);
+	UpdateTileIfVisible({worldPos.x + 1, worldPos.y - 1}, false);
+	UpdateTileIfVisible({worldPos.x - 1, worldPos.y + 1}, false);
+	UpdateTileIfVisible({worldPos.x + 1, worldPos.y + 1}, false);
 }
 
 void TileMap::UpdateMetaTile(Vector2i const& worldPos) const
