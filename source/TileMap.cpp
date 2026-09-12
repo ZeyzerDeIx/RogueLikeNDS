@@ -16,7 +16,7 @@ TileMap::TileMap(GameMap* map): m_GameMap(map)
 
 void TileMap::Flush()
 {
-	dmaCopyAsynch(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
+	dmaCopy(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
 }
 
 u16* TileMap::operator[](int key)
