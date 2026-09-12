@@ -14,7 +14,7 @@ TileMap::TileMap(GameMap* map): m_GameMap(map)
 	UpdateAllMetaTiles({0,0});
 }
 
-void TileMap::Flush()
+void TileMap::Flush() // NOLINT(*-convert-member-functions-to-static)
 {
 	dmaCopy(m_BgTileMap, bgGetMapPtr(BG::ID), sizeof(m_BgTileMap));
 }

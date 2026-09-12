@@ -49,7 +49,7 @@ void Entity::Update(float delta)
 
 void Entity::Display()
 {
-	m_Sprite->Display(GameContext::Get().m_Camera->GetDisplayPos(*this) - m_Size/2);
+	m_Sprite->Display(Camera::GetDisplayPos(*this) - m_Size/2);
 }
 
 

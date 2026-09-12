@@ -8,7 +8,7 @@ class Hitbox
 {
 public:
 	Hitbox(Rect<int> bounds = {0,0,0,0});
-	~Hitbox();
+	~Hitbox() = default;
 
 	[[nodiscard]] const Rect<int>& GetBounds() const;
 	void SetPos(int x, int y);

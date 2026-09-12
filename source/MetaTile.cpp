@@ -2,7 +2,7 @@
 
 using namespace META_TILE;
 
-MetaTile::MetaTile(META_TILE::Type type):
+MetaTile::MetaTile(META_TILE::Type type) :
 	m_Tiles
 	{
 		Tile(CORNER::TOP_LEFT),
@@ -10,6 +10,7 @@ MetaTile::MetaTile(META_TILE::Type type):
 		Tile(CORNER::BOT_LEFT),
 		Tile(CORNER::BOT_RIGHT)
 	},
+	m_Connections(0),
 	m_Type(type)
 {}
 
