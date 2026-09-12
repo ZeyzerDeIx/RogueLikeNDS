@@ -161,6 +161,8 @@ namespace GAME_MAP
 	constexpr int SIZE_W = 201;
 	constexpr int SIZE_H = 201;
 	constexpr int CHUNK_SIZE = 6;
+	constexpr int CHUNKS_W = (SIZE_W / CHUNK_SIZE) + 2;
+	constexpr int CHUNKS_H = (SIZE_H / CHUNK_SIZE) + 2;
 }
 
 #define PALETTE_SIZE 16

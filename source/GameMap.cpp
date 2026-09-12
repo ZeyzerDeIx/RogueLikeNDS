@@ -62,7 +62,27 @@ bool GameMap::IsCrossable(const Vector2i& tileCoordinate) const
 
 bool GameMap::IsChunkGenerated(const Vector2i& chunkCoordinate) const
 {	
-	return m_GeneratedChunks.find(chunkCoordinate) != m_GeneratedChunks.end();
+	Vector2i arrayCoord = chunkCoordinate + Vector2i{(GAME_MAP::CHUNKS_W / 2), (GAME_MAP::CHUNKS_H / 2)};
+
+	if (arrayCoord.x < 0 || arrayCoord.x >= GAME_MAP::CHUNKS_W ||
+		arrayCoord.y < 0 || arrayCoord.y >= GAME_MAP::CHUNKS_H)
+	{
+		return true;
+	}
+
+	return m_GeneratedChunks[arrayCoord.x * GAME_MAP::CHUNKS_W + arrayCoord.y];
+}
+
+void GameMap::SetChunkGenerated(const Vector2i& chunkCoordinate)
+{
+	Vector2i arrayCoord = chunkCoordinate + Vector2i{(GAME_MAP::CHUNKS_W / 2), (GAME_MAP::CHUNKS_H / 2)};
+
+	if (arrayCoord.x < 0 || arrayCoord.x >= GAME_MAP::CHUNKS_W ||
+		arrayCoord.y < 0 || arrayCoord.y >= GAME_MAP::CHUNKS_H)
+	{
+		return;
+	}
+	m_GeneratedChunks[arrayCoord.x * GAME_MAP::CHUNKS_W + arrayCoord.y] = true;
 }
 
 void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
@@ -111,7 +131,7 @@ void GameMap::GenerateChunk(const Vector2i& chunkCoordinate)
 		}
 	}
 		
-	m_GeneratedChunks[chunkCoordinate] = true;
+	SetChunkGenerated(chunkCoordinate);
 }
 
 Vector2i GameMap::GetLateOffset() const
@@ -221,7 +241,7 @@ void GameMap::AddToQueue(const Vector2i& chunkCoordinate)
 	if(IsChunkGenerated(chunkCoordinate)) return;
 
 	m_ChunksToGenerate.push(chunkCoordinate);
-	m_GeneratedChunks[chunkCoordinate] = true;
+	SetChunkGenerated(chunkCoordinate);
 }
 
 const Vector2i GameMap::GetPlayerChunk() const
