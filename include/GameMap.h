@@ -20,8 +20,7 @@ public:
 	[[nodiscard]] Vector2i GetLateOffset() const;
 
 private:
-	// Speed to expand but also to access + do not store useless data
-	std::unordered_map<Vector2i, META_TILE::Type, NDSMath::HashVector2i> m_Map;
+	std::array<META_TILE::Type, GAME_MAP::SIZE_W * GAME_MAP::SIZE_H> m_Map;
 	std::unordered_map<Vector2i, bool, NDSMath::HashVector2i> m_GeneratedChunks;
 	std::queue<Vector2i> m_ChunksToGenerate;
 	TileMap m_TileMap;
@@ -29,6 +28,8 @@ private:
 	std::vector<Room> m_ReservedRooms;
 
 	Vector2i m_LastOffset = {0,0};
+
+	void SetTile(const Vector2i& tileCoordinate, META_TILE::Type tileType);
 
 	void UpdatePlayerChunk();
 	void CollapseTile(const Vector2i& tileCoordinate);

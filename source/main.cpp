@@ -35,6 +35,7 @@ int main()
 
 	while (true)
 	{
+		Debug::BeginProfile();
 		Debug::ClearConsole();
 		Debug::LogProfile();
 
@@ -78,7 +79,7 @@ int main()
 		NDSTime::Get().NewFrame();
 		Debug::LogFps();
 
-		
+		Debug::EndProfile();
 		swiWaitForVBlank();
 	}
 	

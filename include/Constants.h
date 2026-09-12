@@ -115,7 +115,7 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 
-	enum class Type { Path, Wall, Debug, Last };
+	enum class Type : u8 { Path, Wall, Debug, Last };
 	namespace CORNER {enum { TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT };}
 }
 
@@ -158,8 +158,8 @@ namespace ENTITY::ANIMATION
 
 namespace GAME_MAP
 {
-	constexpr int SIZE_W = 200;
-	constexpr int SIZE_H = 200;
+	constexpr int SIZE_W = 201;
+	constexpr int SIZE_H = 201;
 	constexpr int CHUNK_SIZE = 6;
 }
 

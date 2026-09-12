@@ -46,12 +46,13 @@ void GameMap::Update(float dt)
 
 META_TILE::Type GameMap::GetTile(const Vector2i& tileCoordinate) const
 {
-	auto pair = m_Map.find(tileCoordinate);
-
-	if (pair == m_Map.end())
+	Vector2i realCoordinate = tileCoordinate + Vector2i{GAME_MAP::SIZE_W/2,GAME_MAP::SIZE_H/2};
+	if (realCoordinate.x < 0 || realCoordinate.x >= GAME_MAP::SIZE_W ||
+		realCoordinate.y < 0 || realCoordinate.y >= GAME_MAP::SIZE_H)
+	{
 		return META_TILE::Type::Wall;
-	
-	return pair->second;
+	}
+	return m_Map[realCoordinate.x * GAME_MAP::SIZE_W + realCoordinate.y];
 }
 
 bool GameMap::IsCrossable(const Vector2i& tileCoordinate) const
@@ -181,7 +182,16 @@ void GameMap::ConnectNearestRoom(const Room& newRoom, std::mt19937& rng)
 }
 
 
-
+void GameMap::SetTile(const Vector2i& tileCoordinate, META_TILE::Type tileType)
+{
+	Vector2i realCoordinate = tileCoordinate + Vector2i{GAME_MAP::SIZE_W/2,GAME_MAP::SIZE_H/2};
+	if (realCoordinate.x < 0 || realCoordinate.x >= GAME_MAP::SIZE_W ||
+		realCoordinate.y < 0 || realCoordinate.y >= GAME_MAP::SIZE_H)
+	{
+		return;
+	}
+	m_Map[realCoordinate.x * GAME_MAP::SIZE_W + realCoordinate.y] = tileType;
+}
 
 void GameMap::UpdatePlayerChunk()
 {
@@ -195,7 +205,7 @@ void GameMap::UpdatePlayerChunk()
 
 void GameMap::CollapseTile(const Vector2i& tileCoordinate)
 {
-	m_Map[tileCoordinate] = META_TILE::Type::Path;
+	SetTile(tileCoordinate, META_TILE::Type::Path);
 	m_TileMap.UpdateTileIfVisible(tileCoordinate);
 }
 
@@ -227,6 +237,7 @@ const Vector2i GameMap::GetPlayerChunk() const
 
 GameMap::GameMap(string name): GameObject(name), m_TileMap(this)
 {
+	m_Map.fill(META_TILE::Type::Wall);
 	CreateRoom({{-2,-2},{5,5}});
 	GenerateChunk({0,0});
 	UpdatePlayerChunk();
