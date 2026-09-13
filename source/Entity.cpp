@@ -13,7 +13,7 @@ void Entity::Move(Vector2i delta)
 	if (delta.x != 0)
 	{
 		Hitbox futureHitbox = m_Hitbox;
-		futureHitbox.SetX(NDSMath::ToNormalInt(m_Position.x + delta.x));
+		futureHitbox.SetX(NDSMath::ToNormalInt(m_Position.x + delta.x)- m_Size.x/2);
 
 		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.x += delta.x;
