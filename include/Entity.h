@@ -19,14 +19,14 @@ public:
 	void SetSprite(Sprite* sprite);
 	void SetSize(Vector2i size);
 
-	bool GetDirection(u8 direction) const;
+	[[nodiscard]] bool GetDirection(u8 direction) const;
 	[[nodiscard]] const Vector2i& GetPosition() const;
 	[[nodiscard]] Vector2i GetPixelPosition() const;
-	Vector2i GetCoordinates() const;
-	const Vector2i& GetSize();
+	[[nodiscard]] Vector2i GetCoordinates() const;
+	[[nodiscard]] const Vector2i& GetSize();
 	[[nodiscard]] int GetSpeed() const;
-	const Hitbox& GetHitbox();
-	bool IsMoving() const;
+	[[nodiscard]] const Hitbox& GetHitbox();
+	[[nodiscard]] bool IsMoving() const;
 	
 private:
 	Sprite* m_Sprite;
