@@ -34,10 +34,10 @@ void Entity::Move(Vector2i delta)
 	UpdateAudio();
 }
 
-void Entity::Update(int delta)
+void Entity::Update(int dt)
 {
 	using namespace DIRECTION;
-	Vector2i deltaPos = NDSMath::FixedPointMult(m_Speed, delta) * Vector2i
+	Vector2i deltaPos = NDSMath::FixedPointMult(m_Speed, dt) * Vector2i
 	{
 		GetDirection(RIGHT) - GetDirection(LEFT),
 		GetDirection(BOT)   - GetDirection(TOP)
@@ -101,9 +101,10 @@ Vector2i Entity::GetPixelPosition() const
 	};
 }
 
-Vector2i Entity::GetCoordinates()
+Vector2i Entity::GetCoordinates() const
 {
-	return m_Position/META_TILE::SIZE - Vector2i{m_Position.x < 0, m_Position.y < 0};
+	Vector2i pixPos = GetPixelPosition();
+	return { pixPos.x >> META_TILE::SHIFT, pixPos.y >> META_TILE::SHIFT };
 }
 
 const Vector2i& Entity::GetSize()

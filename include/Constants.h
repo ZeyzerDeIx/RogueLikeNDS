@@ -112,6 +112,8 @@ namespace META_TILE // Tiles at a gameplay level, composed of 4 Tile
 {
 	constexpr int SIZE = 2 * TILE::SIZE;
 
+	constexpr int SHIFT = std::countr_zero(static_cast<unsigned>(SIZE));
+
 	constexpr int COUNT_W = BG::SIZE_W / SIZE;
 	constexpr int COUNT_H = BG::SIZE_H / SIZE;
 

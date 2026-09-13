@@ -22,7 +22,7 @@ public:
 	bool GetDirection(u8 direction) const;
 	[[nodiscard]] const Vector2i& GetPosition() const;
 	[[nodiscard]] Vector2i GetPixelPosition() const;
-	Vector2i GetCoordinates();
+	Vector2i GetCoordinates() const;
 	const Vector2i& GetSize();
 	[[nodiscard]] int GetSpeed() const;
 	const Hitbox& GetHitbox();
