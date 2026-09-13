@@ -45,10 +45,9 @@ void Sprite::Update(int speedFactor)
 	}
 }
 
-void Sprite::Display(Vector2i pos, bool zoomed)
+void Sprite::Display(Vector2i pos)
 {
-	float scale = zoomed ? 0.5f : 1.f;
-	oamRotateScale(&oamMain, m_Id, 0, 256.f * scale, 256.f * scale);
+	oamRotateScale(&oamMain, m_Id, 0, 256 , 256);
 	oamSet(&oamMain,
 		   m_Id,
 		   pos.x, pos.y,
@@ -58,7 +57,7 @@ void Sprite::Display(Vector2i pos, bool zoomed)
 		   SpriteColorFormat_16Color, //systematic
 		   m_Data + (m_CurrentFrame + m_CurrentState * m_FrameCount) * m_FrameMemoryOffset,
 		   0, //affine index
-		   zoomed, //sizeDouble
+		   false, //sizeDouble
 		   false, false, false, false);
 }
 
