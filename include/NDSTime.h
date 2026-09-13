@@ -7,8 +7,8 @@ class NDSTime
 public:
 	void NewFrame();
 	void NewTickCallback();
-	int GetFps();
-	float GetDeltaTime();
+	[[nodiscard]] int GetFps() const;
+	[[nodiscard]] int GetDeltaTime() const;
 	static NDSTime& Get()
 	{
 		static NDSTime s_Instance(120);
@@ -20,7 +20,8 @@ public:
 private:
 	int m_Fps;
 	int m_UpdatesPerSeconds;
-	float m_DeltaTime;
+	const int m_DeltaTickDuration;
+	int m_DeltaTime;
 
 	NDSTime(int updatesPerSeconds);
 };

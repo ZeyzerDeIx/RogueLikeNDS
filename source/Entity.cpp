@@ -1,17 +1,19 @@
 #include "Entity.h"
+
+#include <utility>
 #include "Camera.h"
 #include "AudioManager.h"
 #include "GameContext.h"
 
 using namespace std;
 
-void Entity::Move(Vector2f delta)
+void Entity::Move(Vector2i delta)
 {
 	// X axe
 	if (delta.x != 0)
 	{
 		Hitbox futureHitbox = m_Hitbox;
-		futureHitbox.SetX(futureHitbox.GetBounds().x + NDSMath::RoundAbsCeil(delta.x));
+		futureHitbox.SetX(NDSMath::ToNormalInt(m_Position.x + delta.x));
 
 		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.x += delta.x;
@@ -21,7 +23,7 @@ void Entity::Move(Vector2f delta)
 	if (delta.y != 0)
 	{
 		Hitbox futureHitbox = m_Hitbox;
-		futureHitbox.SetY(futureHitbox.GetBounds().y + NDSMath::RoundAbsCeil(delta.y));
+		futureHitbox.SetY(NDSMath::ToNormalInt(m_Position.y + delta.y));
 
 		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.y += delta.y;
@@ -32,19 +34,19 @@ void Entity::Move(Vector2f delta)
 	UpdateAudio();
 }
 
-void Entity::Update(float delta)
+void Entity::Update(int delta)
 {
 	using namespace DIRECTION;
-	Vector2f deltaPos = m_Speed * delta * Vector2f
+	Vector2i deltaPos = NDSMath::FixedPointMult(m_Speed, delta) * Vector2i
 	{
-		static_cast<float>(GetDirection(RIGHT) - GetDirection(LEFT)),
-		static_cast<float>(GetDirection(BOT)   - GetDirection(TOP))
+		GetDirection(RIGHT) - GetDirection(LEFT),
+		GetDirection(BOT)   - GetDirection(TOP)
 	};
 
 	Move(deltaPos);
 
 	UpdateSpriteDirection();
-	m_Sprite->Update(deltaPos.y != 0 ? 2.f : 1.f);
+	m_Sprite->Update(NDSMath::ToFixedPointInt(deltaPos.y != 0 ? 2 : 1));
 }
 
 void Entity::Display()
@@ -80,19 +82,28 @@ void Entity::SetSize(Vector2i size)
 
 
 
-bool Entity::GetDirection(u8 direction)
+bool Entity::GetDirection(u8 direction) const
 {
 	return m_Directions & direction;
 }
 
-const Vector2f& Entity::GetPosition()
+const Vector2i& Entity::GetPosition() const
 {
 	return m_Position;
 }
 
-const Vector2i Entity::GetCoordinates()
+Vector2i Entity::GetPixelPosition() const
 {
-	return static_cast<Vector2i>(m_Position/META_TILE::SIZE) - Vector2i{m_Position.x < 0, m_Position.y < 0};
+	return
+	{
+		NDSMath::ToNormalInt(m_Position.x),
+		NDSMath::ToNormalInt(m_Position.y)
+	};
+}
+
+Vector2i Entity::GetCoordinates()
+{
+	return m_Position/META_TILE::SIZE - Vector2i{m_Position.x < 0, m_Position.y < 0};
 }
 
 const Vector2i& Entity::GetSize()
@@ -100,7 +111,7 @@ const Vector2i& Entity::GetSize()
 	return m_Size;
 }
 
-float Entity::GetSpeed() const
+int Entity::GetSpeed() const
 {
 	return m_Speed;
 }
@@ -110,7 +121,7 @@ const Hitbox& Entity::GetHitbox()
 	return m_Hitbox;
 }
 
-bool Entity::IsMoving()
+bool Entity::IsMoving() const
 {
 	return m_Directions != DIRECTION::NONE;
 }
@@ -118,7 +129,8 @@ bool Entity::IsMoving()
 
 void Entity::UpdateHitboxPos()
 {
-	m_Hitbox.SetPos(m_Position.x - m_Size.x/2,m_Position.y);
+	Vector2i pixelPosition = GetPixelPosition();
+	m_Hitbox.SetPos(pixelPosition.x - m_Size.x/2,pixelPosition.y);
 }
 
 void Entity::UpdateSpriteDirection()
@@ -154,13 +166,13 @@ void Entity::UpdateAudio()
 
 
 Entity::Entity(string name):
-	GameObject(name),
+	GameObject(std::move(name)),
 	m_Sprite{nullptr},
 	m_Position{META_TILE::SIZE/2,META_TILE::SIZE/3},
 	m_Size{20,20}, //default size
 	m_Directions{DIRECTION::NONE},
 	m_Hitbox{{0,0,0,0}},
-	m_Speed(50.f),
+	m_Speed(NDSMath::ToFixedPointInt(50)),
 	m_SfxPlayInterval(36),
 	m_SfxElapsedFrames(0)
 {}

@@ -17,7 +17,7 @@ public:
 	);
 	~Sprite();
 
-	void Update(float speedFactor = 1);
+	void Update(int speedFactor = 1 << NDSMath::FIXED_POINT_SHIFT);
 	void Display(Vector2i pos = {0,0}, bool zoomed = false);
 	void SkipFrame(int num = 1);
 	void SetState(int state);

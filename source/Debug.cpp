@@ -29,7 +29,7 @@ namespace Debug
 
 	void LogEntityInfo(Entity& entity)
 	{
-		printf("\x1b[10;0HPosition: (%.2f, %.2f)", entity.GetPosition().x, entity.GetPosition().y);
+		printf("\x1b[10;0HPosition: (%.2d, %.2d)", entity.GetPosition().x, entity.GetPosition().y);
 		printf("\x1b[11;0HSize: (%d, %d)", entity.GetSize().x, entity.GetSize().y);
 		printf("\x1b[12;0HDirections: %s%s%s%s%s",
 			entity.GetDirection(DIRECTION::TOP)   ? "TOP "   : "",
@@ -40,7 +40,7 @@ namespace Debug
 		);
 		auto bounds = entity.GetHitbox().GetBounds();
 		printf("\x1b[13;0HHitbox:(%d, %d, %d, %d)", bounds.x, bounds.y, bounds.w, bounds.h);
-		printf("\x1b[14;0HSpeed: %.2f\x1b[0;0H", entity.GetSpeed());
+		printf("\x1b[14;0HSpeed: %.2d\x1b[0;0H", entity.GetSpeed());
 	}
 
 	void BeginProfile()

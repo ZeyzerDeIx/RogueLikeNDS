@@ -35,10 +35,10 @@ Sprite::~Sprite()
     	oamFreeGfx(&oamMain, m_Data + i*m_FrameMemoryOffset);
 }
 
-void Sprite::Update(float speedFactor)
+void Sprite::Update(int speedFactor)
 {
 	if (m_AnimSpeed == 0) return;
-	if (++m_Counter >= m_AnimSpeed * speedFactor)
+	if (++m_Counter >= NDSMath::ToNormalInt(m_AnimSpeed * speedFactor))
 	{
 		SkipFrame();
 		m_Counter = 0;

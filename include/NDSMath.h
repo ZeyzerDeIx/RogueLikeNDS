@@ -115,8 +115,8 @@ struct Rect { T x, y, w, h; };
 namespace NDSMath
 {
 	// Return ceil of the abs value while conserving sign
-	int RoundAbsCeil(float x);
-	Vector2i RoundAbsCeil(Vector2f vec);
+	int RoundAbsCeil(int x);
+	Vector2i RoundAbsCeil(Vector2i vec);
 
 	// A hash function used to hash a Vector2i
 	struct HashVector2i
@@ -133,6 +133,25 @@ namespace NDSMath
 					  + (hash1 >> 2));
 		}
 	};
+
+	int ToFixedPointInt(int x);
+	int ToNormalInt(int x);
+
+
+	constexpr int FIXED_POINT_SHIFT = 8;
+	constexpr int TIME_FIXED_POINT_SHIFT = 16; // More precision for delta time
+	constexpr int TO_STANDARD_FIXED_POINT_SHIFT = TIME_FIXED_POINT_SHIFT - FIXED_POINT_SHIFT;
+
+	constexpr int FixedPointMult(int a, int b) noexcept
+	{
+		// Casting to int64_t prevents overflow during multiplication
+		return static_cast<int>((static_cast<int64_t>(a) * b) >> FIXED_POINT_SHIFT);
+	}
+
+	constexpr Vector2i FixedPointMult(const Vector2i& vec, int scalar) noexcept
+	{
+		return { FixedPointMult(vec.x, scalar), FixedPointMult(vec.y, scalar) };
+	}
 }
 
 struct FastRNG {

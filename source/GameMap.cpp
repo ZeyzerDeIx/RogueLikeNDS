@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void GameMap::Update(float dt)
+void GameMap::Update(int dt)
 {
 	if(Vector2i const& offset = GameContext::Get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{
@@ -244,7 +244,7 @@ void GameMap::AddToQueue(const Vector2i& chunkCoordinate)
 	SetChunkGenerated(chunkCoordinate);
 }
 
-const Vector2i GameMap::GetPlayerChunk() const
+Vector2i GameMap::GetPlayerChunk() const
 {
 	if(GameContext::Get().m_Player == nullptr) return {0,0};
 	const Vector2i playerCoo = GameContext::Get().m_Player->GetCoordinates();

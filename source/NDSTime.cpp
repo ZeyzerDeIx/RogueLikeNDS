@@ -1,30 +1,40 @@
 #include "NDSTime.h"
-#include <cmath>
 
 NDSTime::NDSTime(int updatesPerSeconds)
-	: m_Fps(0), m_UpdatesPerSeconds(updatesPerSeconds), m_DeltaTime(0.016667f)
+	: m_Fps(0),
+	  m_UpdatesPerSeconds(updatesPerSeconds),
+	  m_DeltaTickDuration((1 << NDSMath::TIME_FIXED_POINT_SHIFT) / updatesPerSeconds),
+	  m_DeltaTime(m_DeltaTickDuration)
 {
 	timerStart(0, ClockDivider_1024, TIMER_FREQ_1024(m_UpdatesPerSeconds), [](){Get().NewTickCallback();});
 }
 
 void NDSTime::NewFrame()
 {
-	m_Fps = std::ceil(1.f / m_DeltaTime);
+	if (m_DeltaTime > 0)
+	{
+		m_Fps = ((1 << 16) + m_DeltaTime - 1) / m_DeltaTime;
+	}
+	else
+	{
+		m_Fps = 0;
+	}
 
-	m_DeltaTime = 0.f;
+	m_DeltaTime = 0;
 }
 
 void NDSTime::NewTickCallback()
 {
-	m_DeltaTime += 1.f / static_cast<float>(m_UpdatesPerSeconds);
+	m_DeltaTime += m_DeltaTickDuration;
 }
 
-int NDSTime::GetFps()
+int NDSTime::GetFps() const
 {
 	return m_Fps;
 }
 
-float NDSTime::GetDeltaTime()
+int NDSTime::GetDeltaTime() const
 {
-	return m_DeltaTime;
+	// Conversion of internal precision (shift-16) to project standard (shift-8)
+	return m_DeltaTime >> NDSMath::TO_STANDARD_FIXED_POINT_SHIFT;
 }

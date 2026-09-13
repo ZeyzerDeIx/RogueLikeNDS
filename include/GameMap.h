@@ -11,12 +11,12 @@
 class GameMap: public GameObject
 {
 public:
-	void Update(float dt) override;
+	void Update(int dt) override;
 
-	META_TILE::Type GetTile(const Vector2i& tileCoordinate) const;
+	[[nodiscard]] META_TILE::Type GetTile(const Vector2i& tileCoordinate) const;
 
-	bool IsCrossable(const Vector2i& tileCoordinate) const;
-	bool IsChunkGenerated(const Vector2i& chunkCoordinate) const;
+	[[nodiscard]] bool IsCrossable(const Vector2i& tileCoordinate) const;
+	[[nodiscard]] bool IsChunkGenerated(const Vector2i& chunkCoordinate) const;
 
 	void SetChunkGenerated(const Vector2i& chunkCoordinate);
 	void GenerateChunk(const Vector2i& chunkCoordinate);
@@ -38,7 +38,7 @@ private:
 	void CollapseTile(const Vector2i& tileCoordinate);
 	void CreateRoom(const Room& room);
 	void AddToQueue(const Vector2i& chunkCoordinate);
-	const Vector2i GetPlayerChunk() const;
+	[[nodiscard]] Vector2i GetPlayerChunk() const;
 	void ConnectNearestRoom(const Room& newRoom, FastRNG& rng);
 
 	GameMap(std::string name);

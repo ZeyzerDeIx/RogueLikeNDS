@@ -3,9 +3,9 @@
 
 using namespace std;
 
-void Camera::Update(float dt)
+void Camera::Update(int dt)
 {
-	m_Offset = static_cast<Vector2i>(GameContext::Get().m_Player->GetPosition()) - Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
+	m_Offset = GameContext::Get().m_Player->GetPixelPosition() - Vector2i{BG::SIZE_W/2,BG::SIZE_H/2};
 	bgSetScroll(BG::ID, BG::SIZE_W/2 + m_Offset.x, BG::SIZE_H/2 + m_Offset.y);
 }
 

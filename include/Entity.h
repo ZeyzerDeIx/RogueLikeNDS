@@ -10,8 +10,8 @@ class Camera;
 class Entity: public GameObject
 {
 public:
-	void Move(Vector2f delta);
-	void Update(float dt) override;
+	void Move(Vector2i delta);
+	void Update(int dt) override;
 	void Display();
 
 	void SetDirection(u8 direction, bool enable);
@@ -19,22 +19,23 @@ public:
 	void SetSprite(Sprite* sprite);
 	void SetSize(Vector2i size);
 
-	bool GetDirection(u8 direction);
-	const Vector2f& GetPosition();
-	const Vector2i GetCoordinates();
+	bool GetDirection(u8 direction) const;
+	[[nodiscard]] const Vector2i& GetPosition() const;
+	[[nodiscard]] Vector2i GetPixelPosition() const;
+	Vector2i GetCoordinates();
 	const Vector2i& GetSize();
-	[[nodiscard]] float GetSpeed() const;
+	[[nodiscard]] int GetSpeed() const;
 	const Hitbox& GetHitbox();
-	bool IsMoving();
+	bool IsMoving() const;
 	
 private:
 	Sprite* m_Sprite;
 	// Center of the entity
-	Vector2f m_Position;
+	Vector2i m_Position;
 	Vector2i m_Size;
 	u8 m_Directions;
 	Hitbox m_Hitbox;
-	float m_Speed;
+	int m_Speed;
 	short m_SfxPlayInterval; //in frames
 	short m_SfxElapsedFrames; //in frames
 

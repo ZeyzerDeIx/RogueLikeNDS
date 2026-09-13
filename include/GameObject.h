@@ -9,7 +9,7 @@ class GameObject
 public:
 	virtual ~GameObject() = default;
 	
-	virtual void Update(float dt);
+	virtual void Update(int dt);
 
 	template <class T>
 	static T* InstantiateGO(std::string name)
@@ -19,7 +19,7 @@ public:
 		return static_cast<T*>(s_GameObjects.back().get());
 	}
 
-	static void UpdateAllGameObjects(float dt);
+	static void UpdateAllGameObjects(int dt);
 
 protected:
 	GameObject(std::string name);
