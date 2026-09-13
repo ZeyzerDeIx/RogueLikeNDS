@@ -5,10 +5,10 @@ using namespace std;
 
 vector<unique_ptr<GameObject>> GameObject::s_GameObjects;
 
-void GameObject::Update(int dt) {}
+void GameObject::Update(FixedPoint dt) {}
 
 
-void GameObject::UpdateAllGameObjects(int dt)
+void GameObject::UpdateAllGameObjects(FixedPoint dt)
 {
 	for(unique_ptr<GameObject>& go : s_GameObjects)
 		go->Update(dt);

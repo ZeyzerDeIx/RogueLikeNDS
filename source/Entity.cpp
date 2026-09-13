@@ -7,23 +7,23 @@
 
 using namespace std;
 
-void Entity::Move(Vector2i delta)
+void Entity::Move(Vector2fp delta)
 {
 	// X axe
-	if (delta.x != 0)
+	if (delta.x.m_Raw != 0)
 	{
 		Hitbox futureHitbox = m_Hitbox;
-		futureHitbox.SetX(NDSMath::ToNormalInt(m_Position.x + delta.x)- m_Size.x/2);
+		futureHitbox.SetX((m_Position.x + delta.x).ToInt() - m_Size.x/2);
 
 		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.x += delta.x;
 	}
 
 	// Y axe
-	if (delta.y != 0)
+	if (delta.y.m_Raw != 0)
 	{
 		Hitbox futureHitbox = m_Hitbox;
-		futureHitbox.SetY(NDSMath::ToNormalInt(m_Position.y + delta.y));
+		futureHitbox.SetY((m_Position.y + delta.y).ToInt());
 
 		if (!futureHitbox.Intersects(*GameContext::Get().m_GameMap))
 			m_Position.y += delta.y;
@@ -34,19 +34,20 @@ void Entity::Move(Vector2i delta)
 	UpdateAudio();
 }
 
-void Entity::Update(int dt)
+void Entity::Update(FixedPoint dt)
 {
 	using namespace DIRECTION;
-	Vector2i deltaPos = NDSMath::FixedPointMult(m_Speed, dt) * Vector2i
+	Vector2i directions =
 	{
 		GetDirection(RIGHT) - GetDirection(LEFT),
 		GetDirection(BOT)   - GetDirection(TOP)
 	};
+	Vector2fp deltaPos = (m_Speed * dt) * directions;
 
 	Move(deltaPos);
 
 	UpdateSpriteDirection();
-	m_Sprite->Update(NDSMath::ToFixedPointInt(deltaPos.y != 0 ? 2 : 1));
+	m_Sprite->Update(FixedPoint::FromInt(deltaPos.y.m_Raw != 0 ? 2 : 1));
 }
 
 void Entity::Display()
@@ -87,7 +88,7 @@ bool Entity::GetDirection(u8 direction) const
 	return m_Directions & direction;
 }
 
-const Vector2i& Entity::GetPosition() const
+const Vector2fp& Entity::GetPosition() const
 {
 	return m_Position;
 }
@@ -96,8 +97,8 @@ Vector2i Entity::GetPixelPosition() const
 {
 	return
 	{
-		NDSMath::ToNormalInt(m_Position.x),
-		NDSMath::ToNormalInt(m_Position.y)
+		m_Position.x.ToInt(),
+		m_Position.y.ToInt()
 	};
 }
 
@@ -112,7 +113,7 @@ const Vector2i& Entity::GetSize()
 	return m_Size;
 }
 
-int Entity::GetSpeed() const
+FixedPoint Entity::GetSpeed() const
 {
 	return m_Speed;
 }
@@ -169,11 +170,11 @@ void Entity::UpdateAudio()
 Entity::Entity(string name):
 	GameObject(std::move(name)),
 	m_Sprite{nullptr},
-	m_Position{META_TILE::SIZE/2,META_TILE::SIZE/3},
+	m_Position{FixedPoint(META_TILE::SIZE/2),FixedPoint(META_TILE::SIZE/3)},
 	m_Size{20,20}, //default size
 	m_Directions{DIRECTION::NONE},
 	m_Hitbox{{0,0,0,0}},
-	m_Speed(NDSMath::ToFixedPointInt(50)),
+	m_Speed(FixedPoint::FromInt(50)),
 	m_SfxPlayInterval(36),
 	m_SfxElapsedFrames(0)
 {}

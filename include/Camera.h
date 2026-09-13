@@ -7,7 +7,7 @@
 class Camera: public GameObject
 {
 public:
-	void Update(int dt) override;
+	void Update(FixedPoint dt) override;
 
 	[[nodiscard]] static Vector2i GetDisplayPos(const Entity& entity) ;
 	[[nodiscard]] Vector2i GetMetaTileOffset() const;

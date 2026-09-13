@@ -114,25 +114,52 @@ struct Rect { T x, y, w, h; };
 
 namespace NDSMath
 {
-	int ToFixedPointInt(int x);
-	int ToNormalInt(int x);
-
-
 	constexpr int FIXED_POINT_SHIFT = 8;
 	constexpr int TIME_FIXED_POINT_SHIFT = 16; // More precision for delta time
 	constexpr int TO_STANDARD_FIXED_POINT_SHIFT = TIME_FIXED_POINT_SHIFT - FIXED_POINT_SHIFT;
-
-	constexpr int FixedPointMult(int a, int b) noexcept
-	{
-		// Casting to int64_t prevents overflow during multiplication
-		return static_cast<int>((static_cast<int64_t>(a) * b) >> FIXED_POINT_SHIFT);
-	}
-
-	constexpr Vector2i FixedPointMult(const Vector2i& vec, int scalar) noexcept
-	{
-		return { FixedPointMult(vec.x, scalar), FixedPointMult(vec.y, scalar) };
-	}
 }
+
+struct FixedPoint
+{
+	int m_Raw = 0;
+
+	constexpr FixedPoint() noexcept = default;
+	constexpr explicit FixedPoint(int rawVal) noexcept : m_Raw(rawVal) {}
+
+	[[nodiscard]] static constexpr FixedPoint FromInt(int v) noexcept
+	{
+		return FixedPoint(v << NDSMath::FIXED_POINT_SHIFT);
+	}
+	[[nodiscard]] constexpr int ToInt() const noexcept
+	{
+		return m_Raw >> NDSMath::FIXED_POINT_SHIFT;
+	}
+
+	constexpr FixedPoint operator*(FixedPoint other) const noexcept
+	{
+		return FixedPoint(static_cast<int>((static_cast<int64_t>(m_Raw) * other.m_Raw) >> NDSMath::FIXED_POINT_SHIFT));
+	}
+
+	constexpr FixedPoint operator*(int scalar) const noexcept
+	{
+		return FixedPoint(m_Raw * scalar);
+	}
+
+	template <typename T>
+	constexpr Vector2<FixedPoint> operator*(const Vector2<T>& v) noexcept
+	{ return {*this * v.x, *this * v.y}; }
+
+	FixedPoint operator+(const FixedPoint& fixed_point) const
+	{
+		return static_cast<FixedPoint>(m_Raw + fixed_point.m_Raw);
+	}
+
+	void operator+=(const FixedPoint& fixed_point)
+	{
+		*this = *this + fixed_point;
+	}
+};
+using Vector2fp = Vector2<FixedPoint>;
 
 struct FastRNG {
 	unsigned int state;

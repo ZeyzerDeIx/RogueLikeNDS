@@ -6,7 +6,7 @@
 using namespace std;
 
 
-void GameMap::Update(int dt)
+void GameMap::Update(FixedPoint dt)
 {
 	if(Vector2i const& offset = GameContext::Get().m_Camera->GetMetaTileOffset();  offset != m_LastOffset)
 	{

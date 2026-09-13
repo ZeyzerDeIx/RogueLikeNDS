@@ -11,7 +11,7 @@
 class GameMap: public GameObject
 {
 public:
-	void Update(int dt) override;
+	void Update(FixedPoint dt) override;
 
 	[[nodiscard]] META_TILE::Type GetTile(const Vector2i& tileCoordinate) const;
 

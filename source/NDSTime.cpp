@@ -33,8 +33,8 @@ int NDSTime::GetFps() const
 	return m_Fps;
 }
 
-int NDSTime::GetDeltaTime() const
+FixedPoint NDSTime::GetDeltaTime() const
 {
 	// Conversion of internal precision (shift-16) to project standard (shift-8)
-	return m_DeltaTime >> NDSMath::TO_STANDARD_FIXED_POINT_SHIFT;
+	return static_cast<FixedPoint>(m_DeltaTime >> NDSMath::TO_STANDARD_FIXED_POINT_SHIFT);
 }

@@ -8,7 +8,7 @@ public:
 	void NewFrame();
 	void NewTickCallback();
 	[[nodiscard]] int GetFps() const;
-	[[nodiscard]] int GetDeltaTime() const;
+	[[nodiscard]] FixedPoint GetDeltaTime() const;
 	static NDSTime& Get()
 	{
 		static NDSTime s_Instance(120);

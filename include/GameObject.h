@@ -1,5 +1,6 @@
 #pragma once
 
+#include "pch.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -9,7 +10,7 @@ class GameObject
 public:
 	virtual ~GameObject() = default;
 	
-	virtual void Update(int dt);
+	virtual void Update(FixedPoint dt);
 
 	template <class T>
 	static T* InstantiateGO(std::string name)
@@ -19,7 +20,7 @@ public:
 		return static_cast<T*>(s_GameObjects.back().get());
 	}
 
-	static void UpdateAllGameObjects(int dt);
+	static void UpdateAllGameObjects(FixedPoint dt);
 
 protected:
 	GameObject(std::string name);
