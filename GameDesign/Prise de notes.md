@@ -36,8 +36,11 @@
   * curseurs à positionner
   * objets à déplacer (ex : le prendre sur une étagère et le mettre sur une table) (ça risque d'être chaud selon le scope qu'on vise) (mais ça peut pousser à faire des allers retours donc être fun pour les galères de nombre pas)
   * texte à lire / image à voir qui donnent des conseils ou des indices sur le fonctionnement du labyrinthe et le lore
-  * objet à consommer ; possibles effets : - influence sur le nombre de pas / - permet au joueureuse de voir des trucs qu'iel pouvait pas voir avant
+  * objet à consommer ; possibles effets : - influence sur le nombre de pas / - permet au joueureuse de voir des trucs qu'iel pouvait pas voir avant (note : les objets doivent aussi apparaître systématiquement aux mêmes endroits pour neutraliser le facteur chance)
+  * l'effet de certains consommables changent selon ce qui s'est passé avant (ex : la nourriture dans la pièce verte redonne des pas si elle a été crée depuis la pièce rouge et en fait perdre si elle a été crée depuis une autre pièce)
   * téléportation
+  * des éléments sur lesquels marcher (dalles au sol), et d'autres à pousser dessus pour activer plusieurs dalles
+  * certains éléments sont trouvables dans plusieurs pièce ( nourriture pour regagner des pas / téléporteur)
 
 
 
@@ -79,4 +82,39 @@
 *les photos sont nulles parce que mon tel fait une mise à jour du coup j'ai du piquer celui de Léo déso*
 
 *faut que je trouve plus de refs mais ça arrive fort, là je est trop fatiguée pour les trouver*
+
+
+
+
+
+##### Pièces :
+
+Pièces simples : 13 (ou plus si possible)
+
+Pièces spéciales : 2 (spawn et ivoire)
+
+Total : 15
+
+
+
+Spécificité et condition d'apparition
+
+* spawn : toujours la pièce dans laquelle on réapparaît ; ne peut pas être invoquée autrement qu'en lançant une run
+* verte
+* jaune : est invoquée en tant que première quatrième pièce dans une direction
+* rouge 
+* bleu 
+* rose
+* violet
+* blanc
+* gris : ne peut être invoquée qu'en lançant une téléportation dans le vide
+* noir
+* marron : n'apparaît que dans la zone est
+* orange
+* turquoise : apparaît systématiquement quand on crée une pièce après avoir activé précisément 6? leviers dans l'ensemble de la run
+* beige
+
+
+
+* ivoire : pièce finale ; le nombre de pas de base permet d'y faire quelques pas avant de s'y effondrer
 
