@@ -29,6 +29,10 @@
 
 
 
+* où est-ce qu'on met le curseur entre subir et contrôler ? à quel point le joueur.euse a conscience de l'impact qu'iel a sur les pièces ? partagé entre le besoin de donner du contrôle pour qu'il puisse avoir un impact dans le jeu, mais est ce qu'on s'éloigne pas du bail ?
+
+
+
 * mécaniques dans les pièces
 
   * ah force à moi pour trouver des idées hein
@@ -97,24 +101,24 @@ Total : 15
 
 
 
-Spécificité et condition d'apparition
+Spécificité et condition d'apparition (en cours)
 
 * spawn : toujours la pièce dans laquelle on réapparaît ; ne peut pas être invoquée autrement qu'en lançant une run
-* verte
+* verte :
 * jaune : est invoquée en tant que première quatrième pièce dans une direction
-* rouge 
-* bleu 
-* rose
-* violet
-* blanc
+* rouge :
+* bleu :
+* rose :
+* violet :
+* blanc :
 * gris : ne peut être invoquée qu'en lançant une téléportation dans le vide
-* noir
+* noir :
 * marron : n'apparaît que dans la zone est
-* orange
+* orange : pas de porte sud
 * turquoise : apparaît systématiquement quand on crée une pièce après avoir activé précisément 6? leviers dans l'ensemble de la run
-* beige
+* beige :
 
 
 
-* ivoire : pièce finale ; le nombre de pas de base permet d'y faire quelques pas avant de s'y effondrer
+* ivoire : pièce finale ; le nombre de pas de base permet d'y faire quelques pas avant de s'y effondrer ; uniquement une porte sud ?
 
