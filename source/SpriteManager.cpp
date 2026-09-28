@@ -14,8 +14,8 @@ SpriteManager::SpriteManager(): m_PlayerSprite(nullptr)
 }
 SpriteManager::~SpriteManager()
 {
-	for (auto i = m_Sprites.begin(); i != m_Sprites.end(); ++i)
-		delete *i;
+	for (Sprite*& m_Sprite : m_Sprites)
+		delete m_Sprite;
 }
 
 
@@ -31,19 +31,15 @@ Sprite* SpriteManager::CreateSprite(
 )
 {
 	//memory allocation
-	u16* spriteData = NULL;
-    for (int i = 0 ; i < frameCount*stateCount ; i++)
-    {
-        u16* ptr = oamAllocateGfx(&oamMain, spriteSize, SpriteColorFormat_16Color);
-        if (i == 0) spriteData = ptr; 
-    }
+	u16* ramData = new u16[tilesLen / 2];
+	u16* vRamData = oamAllocateGfx(&oamMain, spriteSize, SpriteColorFormat_16Color);
 
     //binary files loading
-	AssetManager::LoadBin(name + ".img.bin"s, spriteData, tilesLen);
+	AssetManager::LoadBin(name + ".img.bin"s, ramData, tilesLen);
 	AssetManager::LoadBin(name + ".pal.bin"s, SPRITE_PALETTE + m_Sprites.size()*PALETTE_SIZE, palLen);
 
 	//sprite creation
-	Sprite* newSprite = new Sprite(this,m_Sprites.size(),spriteSize,spriteData,pixelSize, frameCount, stateCount, animSpeed);
+	Sprite* newSprite = new Sprite(this,m_Sprites.size(),spriteSize,ramData,vRamData,pixelSize, frameCount, stateCount, animSpeed);
 
 	//add the sprite to the sprite list
 	m_Sprites.push_back(newSprite);

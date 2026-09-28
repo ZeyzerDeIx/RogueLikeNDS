@@ -6,7 +6,8 @@ Sprite::Sprite(
 	SpriteManager* manager,
 	int id,
 	SpriteSize spriteSize,
-	u16* data,
+	u16* ramData,
+	u16* vRamData,
 	Vector2i pixelSize,
 	int frameCount,
 	int stateCount,
@@ -15,7 +16,8 @@ Sprite::Sprite(
 	m_Manager(manager),
 	m_PixelSize(pixelSize),
 	m_SpriteSize(spriteSize),
-	m_Data(data),
+	m_RamData(ramData),
+	m_VRamData(vRamData),
 	m_Id(id),
 	
 	// Initialize animation-related members
@@ -32,7 +34,7 @@ Sprite::Sprite(
 Sprite::~Sprite()
 {
 	for (int i = 0 ; i < m_FrameCount*m_StateCount ; i++)
-    	oamFreeGfx(&oamMain, m_Data + i*m_FrameMemoryOffset);
+    	oamFreeGfx(&oamMain, m_RamData + i*m_FrameMemoryOffset);
 }
 
 void Sprite::Update(FixedPoint speedFactor)
@@ -47,6 +49,7 @@ void Sprite::Update(FixedPoint speedFactor)
 
 void Sprite::Display(Vector2i pos)
 {
+	UpdateVRamData();
 	oamRotateScale(&oamMain, m_Id, 0, 256 , 256);
 	oamSet(&oamMain,
 		   m_Id,
@@ -55,7 +58,7 @@ void Sprite::Display(Vector2i pos)
 		   m_Id, // palette_alpha
 		   m_SpriteSize,
 		   SpriteColorFormat_16Color, //systematic
-		   m_Data + (m_CurrentFrame + m_CurrentState * m_FrameCount) * m_FrameMemoryOffset,
+		   m_VRamData,
 		   0, //affine index
 		   false, //sizeDouble
 		   false, false, false, false);
@@ -65,21 +68,19 @@ void Sprite::SkipFrame(int num)
 {
 	// Modulo ensures that we do not set a non-existent frame
 	m_CurrentFrame = (m_CurrentFrame + num) % m_FrameCount;
-	//updateOffset();
+	UpdateVRamData();
 }
 
 void Sprite::SetState(int state)
 {
 	// Modulo ensures that we do not set a non-existent state
 	m_CurrentState = state % m_StateCount;
-	//updateOffset();
 }
 
 void Sprite::SetFrame(int frame)
 {
 	// Ensure frame does not exceed allowed range
 	m_CurrentFrame = std::min(frame, m_FrameCount - 1);
-	//updateOffset();
 }
 
 int Sprite::GetState() { return m_CurrentState; }
@@ -87,4 +88,11 @@ int Sprite::GetState() { return m_CurrentState; }
 const Vector2i& Sprite::getPixelSize() const
 {
 	return m_PixelSize;
+}
+
+void Sprite::UpdateVRamData() const
+{
+	int offset = (m_CurrentFrame + m_CurrentState * m_FrameCount) * m_FrameMemoryOffset;
+	size_t frameBytes = m_FrameMemoryOffset * 2;
+	dmaCopy(m_RamData + offset, m_VRamData, frameBytes);
 }

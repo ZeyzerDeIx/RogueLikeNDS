@@ -9,7 +9,8 @@ public:
 	Sprite(SpriteManager* manager,
 		int id,
 		SpriteSize spriteSize,
-		u16* data,
+		u16* ramData,
+		u16* vRamData,
 		Vector2i pixelSize = {32, 32},
 		int frameCount = 1,
 		int stateCount = 1,
@@ -31,7 +32,8 @@ private:
 	SpriteManager* m_Manager;
 	Vector2i m_PixelSize;
 	SpriteSize m_SpriteSize;
-	u16* m_Data;
+	u16* m_RamData;
+	u16* m_VRamData;
 	int m_Id;
 
 	// Animation-related members
@@ -55,4 +57,6 @@ private:
 	 * - Division by 2 accounts for u16* pointer arithmetic (incrementing by 1 jumps 2 bytes).
 	 */
 	int const m_FrameMemoryOffset;
+
+	void UpdateVRamData() const;
 };
