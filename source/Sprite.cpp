@@ -33,8 +33,8 @@ Sprite::Sprite(
 
 Sprite::~Sprite()
 {
-	for (int i = 0 ; i < m_FrameCount*m_StateCount ; i++)
-    	oamFreeGfx(&oamMain, m_RamData + i*m_FrameMemoryOffset);
+	delete[] m_RamData;
+	oamFreeGfx(&oamMain, m_VRamData);
 }
 
 void Sprite::Update(FixedPoint speedFactor)
