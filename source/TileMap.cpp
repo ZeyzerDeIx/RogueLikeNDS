@@ -1,7 +1,7 @@
 #include "TileMap.h"
 
 #include "Camera.h"
-#include "GameContext.h"
+#include "MetaTile.h"
 #include "GameMap.h"
 #include "TileSet.h"
 
