@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "AudioManager.h"
+#include "soundbank.h"
 
 using namespace std;
 
