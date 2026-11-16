@@ -1,3 +1,4 @@
+#include <maxmod9.h>
 #include "pch.h"
 #include "AudioManager.h"
 #include "soundbank.h"

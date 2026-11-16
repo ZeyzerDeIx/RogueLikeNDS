@@ -11,7 +11,6 @@ using ushort = unsigned short;
 #include <span>
 #include <cstdlib>
 #include <ctime>
-#include <maxmod9.h>
 #include <filesystem.h>
 #include <queue>
 #include "Constants.h"
