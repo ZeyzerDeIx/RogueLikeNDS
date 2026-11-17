@@ -4,6 +4,7 @@ class GameMap;
 class Camera;
 class Entity;
 class AudioManager;
+class ScreensManager;
 
 struct GameContext
 {
@@ -17,6 +18,7 @@ struct GameContext
 	Camera* m_Camera = nullptr;
 	Entity* m_Player = nullptr;
 	AudioManager* m_AudioManager = nullptr;
+	ScreensManager* m_ScreensManager = nullptr;
 
 	GameContext(const GameContext&) = delete;
 	GameContext& operator=(const GameContext&) = delete;

@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "AudioManager.h"
 #include "GameManager.h"
+#include "ScreensManager.h"
 using namespace std::string_literals;
 
 int main()
@@ -18,10 +19,11 @@ int main()
 
 	GameContext& GameCtxt = GameContext::Get();
 
-	GameCtxt.m_AudioManager = GameObject::InstantiateGO<AudioManager>("AudioManager"s);
-	GameCtxt.m_GameMap      = GameObject::InstantiateGO<GameMap>("GameMap"s);
-	GameCtxt.m_Camera       = GameObject::InstantiateGO<Camera>("Camera"s);
-	GameCtxt.m_Player       = GameObject::InstantiateGO<Entity>("Player"s);
+	GameCtxt.m_AudioManager  = GameObject::InstantiateGO<AudioManager>("AudioManager"s);
+	GameCtxt.m_GameMap       = GameObject::InstantiateGO<GameMap>("GameMap"s);
+	GameCtxt.m_Camera        = GameObject::InstantiateGO<Camera>("Camera"s);
+	GameCtxt.m_Player        = GameObject::InstantiateGO<Entity>("Player"s);
+	GameCtxt.m_ScreensManager = GameObject::InstantiateGO<ScreensManager>("ScreensManager"s);
 
 	GameCtxt.m_Player->SetSprite(spManager.GetPlayerSprite());
 	GameCtxt.m_Player->SetSize({24, 34});
@@ -63,7 +65,7 @@ int main()
 		else if (keys_held & KEY_START)
 			scale -= 1 << 3;
 
-		if(keysDown() & KEY_X) lcdSwap();
+		if(keysDown() & KEY_X) GameCtxt.m_ScreensManager->SwapScreens();
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		Debug::LogEntityInfo(*GameCtxt.m_Player);
