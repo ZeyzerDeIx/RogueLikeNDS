@@ -168,3 +168,17 @@ namespace GAME_MAP
 }
 
 #define PALETTE_SIZE 16
+
+namespace BUILD_INFO
+{
+	#ifndef GIT_VERSION
+	#define GIT_VERSION "dev-local"
+	#endif
+
+	#ifndef GIT_BRANCH
+	#define GIT_BRANCH "unknown"
+	#endif
+
+	constexpr std::string_view VERSION = GIT_VERSION;
+	constexpr std::string_view BRANCH  = GIT_BRANCH;
+}

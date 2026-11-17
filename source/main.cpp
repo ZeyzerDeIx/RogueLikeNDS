@@ -67,6 +67,7 @@ int main()
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		Debug::LogEntityInfo(*GameCtxt.m_Player);
+		Debug::LogBuildInfo();
 
 		GameObject::UpdateAllGameObjects(NDSTime::Get().GetDeltaTime());
 		GameCtxt.m_Player->Display();

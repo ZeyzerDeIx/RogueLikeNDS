@@ -10,4 +10,5 @@ namespace Debug
     void BeginProfile();
     void EndProfile();
     void LogProfile();
+    void LogBuildInfo();
 }
