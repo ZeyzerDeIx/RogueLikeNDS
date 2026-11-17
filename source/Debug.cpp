@@ -58,4 +58,11 @@ namespace Debug
 	{
 		printf("Profile: %lu ticks (%lu us)\n", s_ticks, s_usec);
 	}
+
+	void LogBuildInfo()
+	{
+		printf("\x1b[23;0Hv:%.*s\x1b[0;0H",
+		   static_cast<int>(BUILD_INFO::VERSION.size()),
+		   BUILD_INFO::VERSION.data());
+	}
 }
