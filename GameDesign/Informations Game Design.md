@@ -10,7 +10,7 @@
 
 #### infos métas sur le fonctionnement du labyrinthe
 
-\-fonctionnement des 4 chambres spéciales : 
+\-fonctionnement des 4 chambres spéciales :
 
 \-6 leviers d’activés
 
@@ -92,7 +92,7 @@ Rare : Noire, Blanche
 
 
 
-\- quand le jeu est en configuration Basse, si la joueuse appuie sur les boutons L et R, elle active une lampe qui lui permet de voir des informations supplémentaires sur les documents qu’elle examine ; même si la joueuese se trouve dans une pièce électrisée, elle a besoin de réutilisé son électricité pour voir des informations (activer la lampe consomme une batterie)
+\- quand le jeu est en configuration Basse, si la joueuse appuie sur les boutons L et R, elle active une lampe qui lui permet de voir des informations supplémentaires sur les documents qu’elle examine ; même si la joueuse se trouve dans une pièce électrisée, elle a besoin de réutilisé son électricité pour voir des informations (activer la lampe consomme une batterie)
 
 
 
@@ -115,6 +115,4 @@ Rare : Noire, Blanche
 &#x20;  - le poison, on pense que c’est de l’alimentation mais en fait ça fait perdre des pas
 
 &#x20;  - la batterie, qui permet d’activer l’électricité ; quand la joueuse n'a plus de batterie, elle ne peut plus utiliser d'élécricité
-
-
 
