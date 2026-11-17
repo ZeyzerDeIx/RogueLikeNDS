@@ -63,7 +63,7 @@ int main()
 		else if (keys_held & KEY_START)
 			scale -= 1 << 3;
 
-		//if(keysDown() & KEY_X) mainCharacterSprite->skipFrame();
+		if(keysDown() & KEY_X) lcdSwap();
 		//if(keysDown() & KEY_Y) mainCharacterSprite->setState(6);
 
 		Debug::LogEntityInfo(*GameCtxt.m_Player);
