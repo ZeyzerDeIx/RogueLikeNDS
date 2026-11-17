@@ -169,3 +169,11 @@ Spécificité et condition d'apparition (en cours)
 
 * objet qu'on peut récupérer : un objet pour lire les documents écrits ; les blocs à déplacer sur le sol ; les consommables qui redonnent/enlèvent des pas ; les consommables qui redonnent des changements de config
 
+
+
+* ajouter des feedbacks visuels et sonores pour les pièces spéciales en plus des explications cachées dans le jeu
+
+
+
+* décos abstraites, décos figuratives...
+
