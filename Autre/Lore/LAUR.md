@@ -29,7 +29,7 @@
   * Cuisine
   * Laboratoire
   * Archive
-  * &#x20;Stockage
+  * Stockage
   * Salle d’eau
   * Serre
   * Salle de contrôle
@@ -58,4 +58,10 @@ notre but c’est de sortir du labyrinthe, pas forcément nécessaire de l’éc
 * ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces ; dans d’autres pièces, c’est le labyrinthe qui avait plus de pouvoir (car plus proche du cœur où avait était scellée la créature ? plus on va dans des pièces qui ont tendance à spawn en s’éloignant du spawn, mieux elles sont conservées, alors que dans les pièces les plus proches du spawn/ cœur
 
 
+
+* 2 types de documents à lire / voir : les rapports des scientifiques qui sont sur la méta du labyrinthe / des gravures laissées dans les murs ou dans le sol qu'on a écrit dans le passé parce qu'on sentait qu'on perdait la mémoire / notre conscience et qu'on a voulu laisser des traces à tout prix même si on avait pas de quoi écrire (on peut avoir laisser traîner nos outils par terre dans certaines pièces)
+
+
+
+* 
 

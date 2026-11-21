@@ -50,7 +50,7 @@
 
 \-la civilisation est partie
 
-\-on avait une famille et des gens auxquels on tenait avant 
+\-on avait une famille et des gens auxquels on tenait avant
 
 \-ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces ; dans d’autres pièces, c’est le labyrinthe qui avait plus de pouvoir (car plus proche du coeur où avait était scellée la créature ? plus on va dans des pièces qui ont tendance à spawn en s’éloignant du spawn, mieux elles sont conservées, alors que dans les pièces les plus proches du spawn, le labyrinthe est plus puissant, il efface ce qu’on écrit etc...)
 
@@ -88,7 +88,11 @@ Rare : Noire, Blanche
 
 
 
-\- quand le jeu est en configuration Basse, si la joueuse appuie sur les boutons L et R, elle active une lampe qui lui permet de voir des informations supplémentaires sur les documents qu’elle examine ; même si la joueuse se trouve dans une pièce électrisée, elle a besoin de réutilisé son électricité pour voir des informations (activer la lampe consomme une batterie)
+\- quand le jeu est en configuration Basse, si la joueuse appuie sur les boutons L et R, elle active une lampe qui lui permet de voir des informations supplémentaires sur les documents qu’elle examine ; même si la joueuse se trouve dans une pièce électrisée, elle a besoin de réutilisé son électricité pour voir des informations (activer la lampe consomme une batterie) ; cet effet s'active sur les documents papiers laissés par les scientifiques uniquement
+
+
+
+\- la lisibilité des documents est affectée par leur distance depuis le spawn ; plus une pièce apparaît loin du spawn, plus elle est éloignée de l'influence du cœur, et plus on y trouve d'infos
 
 
 
@@ -106,9 +110,9 @@ Rare : Noire, Blanche
 
 \- consommables : dans les pièces, la joueuse peut trouver 3 types de ressources consommables :
 
-&#x20;  - les aliments donnent des pas
+&#x20;  - les aliments donnent des pas (8 aliments dans la map)
 
-&#x20;  - le poison, on pense que c’est de l’alimentation mais en fait ça fait perdre des pas
+&#x20;  - le poison, on pense que c’est de l’alimentation mais en fait ça fait perdre des pas (4 poisons dans la map)
 
-&#x20;  - la batterie, qui permet d’activer l’électricité ; quand la joueuse n'a plus de batterie, elle ne peut plus utiliser d'élécricité
+&#x20;  - la batterie, qui permet d’activer l’électricité ; quand la joueuse n'a plus de batterie, elle ne peut plus utiliser d'élécricité (5 batteries dans la map)
 
