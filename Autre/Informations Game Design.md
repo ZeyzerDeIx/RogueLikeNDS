@@ -14,7 +14,7 @@
 * des écrits
 * les deux 
 
-\-proposition : pour s’éloigner de la boucle temporelle, les trucs dans une pièce ne se réinitialise pas d’une run à une autre, et les consommables réapparaissent après un certains nombre de pas dépensés (feedback sonore pour donner l'information qu'un consommable est réapparu, + une salle dans laquelle on peut voir cb de consomables sont disponibles, ordinateur verrouillé ? code trouvable dans un rapport de scientifiques)
+\-proposition : pour s’éloigner de la boucle temporelle, les trucs dans une pièce ne se réinitialise pas d’une run à une autre, et les consommables réapparaissent après un certains nombre de pas dépensés (feedback sonore pour donner l'information qu'un consommable est réapparu, + une salle dans laquelle on peut voir cb de consommables sont disponibles, ordinateur verrouillé ? code trouvable dans un rapport de scientifiques)
 
 
 
@@ -127,4 +127,44 @@ Rare : Noire, Blanche
 
 
 * la variante du spawn par lequel commence la partie dépend de la configuration choisit par la joueuse au début de la boucle
+
+
+
+
+
+**Fin du jeu :
+wip**
+---
+
+
+
+la salle ivoire : quand on y accède en ligne droite depuis le spawn, on s’évanouit juste avant d’arriver à la porte de sortie
+
+là-bas, une porte verrouillée qui mène jusqu'à la sortie du labyrinthe
+
+
+
+pour déverrouiller la porte
+
+1ère condition : avoir électrisée certaines pièces spécifiquement
+
+\-> trouver des justifications mécaniques et/ou dans le lore
+
+
+
+2ème condition, encore en réflexion : utiliser la mécanique des puzzles
+
+* Avoir résolu certain puzzles ? Mis les puzzles dans certaines configurations 
+* Un espèce de puzzle géant caché sous plusieurs petits puzzles
+* des fois les puzzles déverrouillent des trucs qu’on comprend pas et en fait c’est parce que c’est pour le truc final
+
+
+
+autre idée, un pattern spécifique
+
+Le pattern, ça marche pas, parce que c’est censé révéler les gravures qu’on a fait nous mêmes, donc ça serait pas logique ; par contre, on peut avoir un truc du style un pattern spécial un peu caché donne l’indice final du big puzzle genre « faut aller voir tel log de scientifique qui avait compris un truc de fou »
+
+
+
+quels feedbacks donnent ces informations ?
 
