@@ -55,7 +55,7 @@ notre but c’est de sortir du labyrinthe, pas forcément nécessaire de l’éc
 
 
 
-* ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces ; dans d’autres pièces, c’est le labyrinthe qui avait plus de pouvoir (car plus proche du cœur où avait était scellée la créature ? plus on va dans des pièces qui ont tendance à spawn en s’éloignant du spawn, mieux elles sont conservées, alors que dans les pièces les plus proches du spawn/ cœur
+* ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces
 
 
 

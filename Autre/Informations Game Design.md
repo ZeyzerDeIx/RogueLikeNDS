@@ -8,6 +8,16 @@
 
 
 
+**Questions : les traces que notre nous du passé à laisser dans le labyrinthe sont plutôt :
+- des dessins**
+
+* des écrits
+* les deux 
+
+\-proposition : pour s’éloigner de la boucle temporelle, les trucs dans une pièce ne se réinitialise pas d’une run à une autre, et les consommables réapparaissent après un certains nombre de pas dépensés (feedback sonore pour donner l'information qu'un consommable est réapparu, + une salle dans laquelle on peut voir cb de consomables sont disponibles, ordinateur verrouillé ? code trouvable dans un rapport de scientifiques)
+
+
+
 #### infos métas sur le fonctionnement du labyrinthe
 
 \-fonctionnement des 4 chambres spéciales :
@@ -32,8 +42,6 @@
 
 \-les différents patterns possibles (peut-être pas tous dans au même endroit)
 
-\-proposition : pour s’éloigner de la boucle temporelle, les trucs dans une pièce ne se réinitialise pas d’une run à une autre (mais du coup on aurait besoin de faire les puzzles qu’une fois ? besoin de trouver des raisons qu’on les réinitialise nous même=, et les consommables réaparraissent après un certains nombre de pas dépensé
-
 
 
 
@@ -52,7 +60,7 @@
 
 \-on avait une famille et des gens auxquels on tenait avant
 
-\-ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces ; dans d’autres pièces, c’est le labyrinthe qui avait plus de pouvoir (car plus proche du coeur où avait était scellée la créature ? plus on va dans des pièces qui ont tendance à spawn en s’éloignant du spawn, mieux elles sont conservées, alors que dans les pièces les plus proches du spawn, le labyrinthe est plus puissant, il efface ce qu’on écrit etc...)
+\-ambiance du labyrinthe, on a essayé de le rendre un peu cozy quand on avait encore une part d’humanité, ça a défini l’ambiance des pièces ; dans d’autres pièces, c’est le labyrinthe qui avait plus de pouvoir (car plus proche du cœur où avait était scellée la créature ? plus on va dans des pièces qui ont tendance à spawn en s’éloignant du spawn, mieux elles sont conservées, alors que dans les pièces les plus proches du spawn, le labyrinthe est plus puissant, il efface ce qu’on écrit etc...)
 
 \-avec le départ de la civilisation, la créature s’est de plus en plus affaiblie, c’est ce qui fait qu’après nous avoir fait tomber dans le coma parce qu’elle avais pris trop de pouvoir en nous, elle s’est vidée très petit à petit et on a fini par réussir à reprendre conscience)
 
@@ -114,5 +122,9 @@ Rare : Noire, Blanche
 
 &#x20;  - le poison, on pense que c’est de l’alimentation mais en fait ça fait perdre des pas (4 poisons dans la map)
 
-&#x20;  - la batterie, qui permet d’activer l’électricité ; quand la joueuse n'a plus de batterie, elle ne peut plus utiliser d'élécricité (5 batteries dans la map)
+&#x20;  - la batterie, qui permet d’activer l’électricité ; quand la joueuse n'a plus de batterie, elle ne peut plus utiliser d'électricité (5 batteries dans la map)
+
+
+
+* la variante du spawn par lequel commence la partie dépend de la configuration choisit par la joueuse au début de la boucle
 
