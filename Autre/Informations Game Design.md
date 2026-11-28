@@ -8,11 +8,11 @@
 
 
 
-**Questions : les traces que notre nous du passé à laisser dans le labyrinthe sont plutôt :
-- des dessins**
+Questions : les traces que notre nous du passé à laisser dans le labyrinthe sont plutôt :
 
+* des dessins
 * des écrits
-* les deux 
+* les deux
 
 \-proposition : pour s’éloigner de la boucle temporelle, les trucs dans une pièce ne se réinitialise pas d’une run à une autre, et les consommables réapparaissent après un certains nombre de pas dépensés (feedback sonore pour donner l'information qu'un consommable est réapparu, + une salle dans laquelle on peut voir cb de consommables sont disponibles, ordinateur verrouillé ? code trouvable dans un rapport de scientifiques)
 
@@ -26,7 +26,7 @@
 
 \-n’apparaît que si activée dans une certaine zone
 
-\-4éme pièce dans une direction
+\-4ème pièce dans une direction
 
 \-téléportation (mieux définir la règle de la téléportation)
 

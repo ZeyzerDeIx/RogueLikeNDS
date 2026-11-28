@@ -35,7 +35,7 @@
   * Salle de contrôle
   * Salle de batteries
   * Mécanisme
-  * Pièce perméable avec le monde extérieure (car éloignée du coeur)
+  * Pièce perméable avec le monde extérieure (car éloignée du cœur)
   * salle mystique
   * pièce ivoire, salle avec la porte vers le monde extérieure, verrouillée ?
 
@@ -63,5 +63,5 @@ notre but c’est de sortir du labyrinthe, pas forcément nécessaire de l’éc
 
 
 
-* 
+* certaines infos de lore pourraient aussi être sous-entendues par les écrits des scientifiques (ex : le fait que la civilisation prospérait peut-être dites par les scientifiques qui se réjouissent d'avoir de plus en plus de moyens)
 
